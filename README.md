@@ -79,3 +79,12 @@ This project uses [Doxygen](https://www.doxygen.nl/) for generating documentatio
 
 ```bash
 make doc
+```
+
+## Code of Conduct
+
+We are committed to fostering a welcoming and inclusive environment for all contributors. Please review our [Code of Conduct](CODE_OF_CONDUCT.md) to understand the behaviours we expect in the community.
+
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
