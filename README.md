@@ -44,7 +44,8 @@ This project is a console-based library management system written in C++. It sup
     ├── MultithreadingTest.cpp  
     ├── NetworkingTest.cpp  
     ├── PersistenceTest.cpp  
-    └── UserTest.cpp```
+    └── UserTest.cpp
+    ```
 
 ## CMake Setup
 
