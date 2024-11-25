@@ -15,37 +15,39 @@ This project is a console-based library management system written in C++. It sup
 
 ```
 Library-Management-System/
-├── CMakeLists.txt  
-├── doc/  
-│   └── Doxyfile  
-├── include/  
-│   ├── Application.hpp  
-│   ├── Book.hpp  
-│   ├── Database.hpp  
-│   ├── Library.hpp  
-│   ├── Multithreading.hpp  
-│   ├── Networking.hpp  
-│   ├── Persistence.hpp  
-│   └── User.hpp  
-├── lib/  
-│   ├── Book.cpp  
-│   ├── Database.cpp  
-│   ├── Library.cpp  
-│   └── User.cpp  
-├── src/  
-│   ├── Application.cpp  
-│   ├── main.cpp  
-│   ├── Multithreading.cpp  
-│   ├── Networking.cpp  
-│   └── Persistence.cpp  
-└── tests/  
-    ├── BookTest.cpp  
-    ├── DatabaseTest.cpp  
-    ├── LibraryTest.cpp  
-    ├── MultithreadingTest.cpp  
-    ├── NetworkingTest.cpp  
-    ├── PersistenceTest.cpp  
-    └── UserTest.cpp
+├── CMakeLists.txt              # Build configuration
+├── doc/                        # Documentation (e.g., Doxygen config)
+│   └── Doxyfile
+├── include/                    # Header files
+│   ├── Application.hpp         # Application logic (managing flow)
+│   ├── Book.hpp                # Book model (attributes & methods)
+│   ├── Database.hpp            # Database interaction (loading/saving data)
+│   ├── Library.hpp             # Manages library operations (book/user)
+│   ├── Multithreading.hpp      # Multithreading utilities
+│   ├── Networking.hpp          # Network-related functions
+│   ├── Persistence.hpp         # Handles saving/loading data to/from files
+│   ├── Transaction.hpp         # Transaction (borrow/return books)
+│   └── User.hpp                # User model (attributes & methods)
+├── lib/                        # Source files
+│   ├── Application.cpp         # Application logic (start, login/logout, menu)
+│   ├── Book.cpp                # Book class implementation
+│   ├── Database.cpp            # Database class implementation (load/save data)
+│   ├── Library.cpp             # LibraryManager logic (book/user management)
+│   ├── main.cpp                # Main entry point of the application
+│   ├── Multithreading.cpp      # Multithreading class implementation
+│   ├── Networking.cpp          # Networking-related functions
+│   ├── Persistence.cpp         # File I/O operations for persistence
+│   ├── Transaction.cpp         # Transaction handling (borrow/return)
+│   └── User.cpp                # User class implementation
+└── tests/                      # Unit tests
+    ├── BookTest.cpp            # Tests for the Book class
+    ├── DatabaseTest.cpp        # Tests for Database interactions
+    ├── LibraryTest.cpp         # Tests for LibraryManager logic
+    ├── MultithreadingTest.cpp  # Tests for Multithreading utilities
+    ├── NetworkingTest.cpp      # Tests for Networking functionality
+    ├── PersistenceTest.cpp     # Tests for Persistence operations
+    ├── TransactionTest.cpp     # Tests for Transaction handling
+    └── UserTest.cpp            # Tests for User class
 ```
 
 ## CMake Setup
