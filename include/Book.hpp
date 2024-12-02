@@ -15,6 +15,9 @@ class Book {
     public:
         // Constructor
         Book(const std::string& title, const std::string& author, const std::string& isbn, int yearPublished, bool available);
+        
+        // Destructor
+        ~Book();
 
         // Getters
         std::string getTitle() const;
