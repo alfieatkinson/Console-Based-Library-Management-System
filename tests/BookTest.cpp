@@ -44,3 +44,19 @@ TEST_CASE("Borrowing a book") {
         REQUIRE_FALSE(result);
     }
 }
+
+TEST_CASE("Returning a book") {
+    Book book("Moby Dick", "Herman Melville", "9780142437247", false, 1851);
+    book.borrowBook();  // Borrow the book first
+
+    SECTION("Book becomes available after returning") {
+        book.returnBook();
+        REQUIRE(book.isAvailable());
+    }
+
+    SECTION("Returning a book that is already available") {
+        book.returnBook();  // Return the book twice
+        book.returnBook();
+        REQUIRE(book.isAvailable());
+    }
+}
