@@ -46,3 +46,11 @@ bool Book::borrowBook() {
 void Book::returnBook() {
     setIsAvailable(true);
 }
+
+std::string Book::getBookInfo() const {
+    return "Title: " + getTitle() + "\n" +
+           "Author: " + getAuthor() + "\n" +
+           "ISBN: " + getISBN() + "\n" +
+           "Year: " + std::to_string(getYearPublished()) + "\n" +
+           "Available: " + (isAvailable() ? "true" : "false");
+}
