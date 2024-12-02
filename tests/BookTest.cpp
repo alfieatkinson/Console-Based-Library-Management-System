@@ -114,7 +114,7 @@ TEST_CASE("Book state integrity") {
     }
 
     SECTION("Returning a book multiple times doesn't affect state") {
-        book.borrow();
+        book.borrowBook();
         book.returnBook();  // Should become available
         book.returnBook();  // Should stay available
         REQUIRE(book.isAvailable());
