@@ -9,12 +9,12 @@ class Book {
         std::string title;
         std::string author;
         std::string isbn;
-        int yearPublished;
+        int year_published;
         bool available;
 
     public:
         // Constructor
-        Book(const std::string& title, const std::string& author, const std::string& isbn, int yearPublished, bool available);
+        Book(const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available);
         
         // Destructor
         ~Book();
@@ -27,10 +27,11 @@ class Book {
         bool isAvailable() const;
 
         // Setters
-        void setTitle(const std::string& newTitle);
-        void setAuthor(const std::string& newAuthor);
-        void setISBN(const std::string& newIsbn);
-        void setIsAvailable(bool newAvailability);
+        void setTitle(const std::string& new_title);
+        void setAuthor(const std::string& new_author);
+        void setISBN(const std::string& new_isbn);
+        void setYearPublished(int new_year_published);
+        void setIsAvailable(bool new_availability);
 
         // Methods for borrowing and returning the book
         bool borrowBook();
