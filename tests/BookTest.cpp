@@ -22,6 +22,25 @@ TEST_CASE("Book Constructor initializes correctly") {
     }
 
     SECTION("Availability is correct") {
-        REQUIRE(book.isAvailable() == true);
+        REQUIRE(book.isAvailable());
+    }
+}
+
+TEST_CASE("Borrowing a book") {
+    Book book("1984", "George Orwell", "9780451524935", 1949, true);
+
+    SECTION("Book is available before borrowing") {
+        REQUIRE(book.isAvailable());
+    }
+
+    SECTION("Book becomes unavailable after borrowing") {
+        book.borrowBook();
+        REQUIRE_FALSE(book.isAvailable());
+    }
+
+    SECTION("Attempting to borrow an unavailable book") {
+        book.borrowBook();
+        bool result = book.borrowBook();  // Trying to borrow again while unavailable
+        REQUIRE_FALSE(result);
     }
 }
