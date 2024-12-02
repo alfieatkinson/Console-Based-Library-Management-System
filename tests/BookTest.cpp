@@ -75,3 +75,28 @@ TEST_CASE("Get Book Information") {
         REQUIRE(book.getBookInfo() == expectedInfo);
     }
 }
+
+TEST_CASE("Setting book attributes using setters") {
+    Book book("War and Peace", "Leo Tolstoy", "9780198800545", 1869, true);
+    
+    book.setTitle("War and Peace: Updated Edition");
+    book.setAuthor("Leo Tolstoy (Edited by X)");
+    book.setISBN("9780198800546");
+    book.setIsAvailable(false);
+    
+    SECTION("Title updated correctly") {
+        REQUIRE(book.getTitle() == "War and Peace: Updated Edition");
+    }
+
+    SECTION("Author updated correctly") {
+        REQUIRE(book.getAuthor() == "Leo Tolstoy (Edited by X)");
+    }
+
+    SECTION("ISBN updated correctly") {
+        REQUIRE(book.getISBN() == "9780198800546");
+    }
+
+    SECTION("Availability updated correctly") {
+        REQUIRE_FALSE(book.isAvailable());
+    }
+}
