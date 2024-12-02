@@ -33,3 +33,16 @@ void Book::setISBN(const std::string& new_isbn) {
 }
 void Book::setYearPublished(int new_year_published) { year_published = new_year_published; }
 void Book::setIsAvailable(bool new_availability) { available = new_availability; }
+
+// Methods
+bool Book::borrowBook() {
+    if (isAvailable()) {
+        setIsAvailable(false);
+        return true;
+    }
+    return false;
+}
+
+void Book::returnBook() {
+    setIsAvailable(true);
+}
