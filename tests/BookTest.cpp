@@ -100,3 +100,7 @@ TEST_CASE("Setting book attributes using setters") {
         REQUIRE_FALSE(book.isAvailable());
     }
 }
+
+TEST_CASE("Book constructor handles invalid ISBN length") {
+    REQUIRE_THROWS_AS(Book("Invalid Book", "Unknown Author", "123", 2024, true),std::invalid_argument);
+}
