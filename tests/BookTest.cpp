@@ -104,3 +104,19 @@ TEST_CASE("Setting book attributes using setters") {
 TEST_CASE("Book constructor handles invalid ISBN length") {
     REQUIRE_THROWS_AS(Book("Invalid Book", "Unknown Author", "123", 2024, true),std::invalid_argument);
 }
+
+TEST_CASE("Book state integrity") {
+    Book book("Test Book", "Author", "1234567890", 2022, true);
+
+    SECTION("Book cannot be borrowed twice if already borrowed") {
+        book.borrowBook();
+        REQUIRE_FALSE(book.borrowBook());  // Should fail to borrow again
+    }
+
+    SECTION("Returning a book multiple times doesn't affect state") {
+        book.borrow();
+        book.returnBook();  // Should become available
+        book.returnBook();  // Should stay available
+        REQUIRE(book.isAvailable());
+    }
+}
