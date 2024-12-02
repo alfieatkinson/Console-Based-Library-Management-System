@@ -40,6 +40,7 @@ Library-Management-System/
 │   ├── Transaction.cpp         # Transaction handling (borrow/return)
 │   └── User.cpp                # User class implementation
 └── tests/                      # Unit tests
+    ├── ApplicationTest.cpp     # Tests for the Application class
     ├── BookTest.cpp            # Tests for the Book class
     ├── DatabaseTest.cpp        # Tests for Database interactions
     ├── LibraryTest.cpp         # Tests for LibraryManager logic
