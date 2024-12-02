@@ -16,10 +16,11 @@ add_library(libLibraryManagementSystem
     lib/User.cpp
     lib/Book.cpp
     lib/Database.cpp
-    src/Application.cpp
-    src/Networking.cpp
-    src/Multithreading.cpp
-    src/Persistence.cpp
+    lib/Application.cpp
+    lib/Networking.cpp
+    lib/Multithreading.cpp
+    lib/Persistence.cpp
+    lib/Transaction.cpp
 )
 
 # Add the executable for the main program
@@ -32,26 +33,12 @@ target_link_libraries(LibraryManagementSystem libLibraryManagementSystem)
 find_package(Catch2 REQUIRED)
 
 # Add test executables and link them to Catch2 and the main library
-add_executable(NetworkingTest tests/NetworkingTest.cpp)
-target_link_libraries(NetworkingTest libLibraryManagementSystem Catch2::Catch2)
-
-add_executable(MultithreadingTest tests/MultithreadingTest.cpp)
-target_link_libraries(MultithreadingTest libLibraryManagementSystem Catch2::Catch2)
-
-add_executable(PersistenceTest tests/PersistenceTest.cpp)
-target_link_libraries(PersistenceTest libLibraryManagementSystem Catch2::Catch2)
-
-add_executable(LibraryTest tests/LibraryTest.cpp)
-target_link_libraries(LibraryTest libLibraryManagementSystem Catch2::Catch2)
-
-add_executable(UserTest tests/UserTest.cpp)
-target_link_libraries(UserTest libLibraryManagementSystem Catch2::Catch2)
-
-add_executable(BookTest tests/BookTest.cpp)
-target_link_libraries(BookTest libLibraryManagementSystem Catch2::Catch2)
-
-add_executable(DatabaseTest tests/DatabaseTest.cpp)
-target_link_libraries(DatabaseTest libLibraryManagementSystem Catch2::Catch2)
+file(GLOB TEST_SOURCES tests/*.cpp)
+foreach(test_source ${TEST_SOURCES})
+    get_filename_component(test_name ${test_source} NAME_WE)
+    add_executable(${test_name} ${test_source})
+    target_link_libraries(${test_name} libLibraryManagementSystem Catch2::Catch2)
+endforeach()
 
 # Add custom targets for documentation generation
 find_package(Doxygen)
