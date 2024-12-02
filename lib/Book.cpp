@@ -3,7 +3,7 @@
 #include <string>
 
 // Constructor
-Book::Book(const std::string& title, const std::string& author, const std::string& isbn, int yearPublished, bool available)
+Book::Book(const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available)
     : title(title), author(author), isbn(isbn), year_published(year_published), available(available) {
     if (isbn.length() != 13) {
         throw std::invalid_argument("ISBN must be 13 characters long.");
