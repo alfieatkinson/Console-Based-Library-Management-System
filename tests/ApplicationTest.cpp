@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 #include "Application.hpp"
 
-// Tests for Application::start
+// Tests for Application initialisation
 
 TEST_CASE("start sets is_running to true") {
     Application app;
@@ -35,7 +35,7 @@ TEST_CASE("start initialises user as null") {
     REQUIRE(app.getCurrentUser() == nullptr);
 }
 
-// Tests for Application::loginUser and Application::logoutUser
+// Tests for login/logout functionality
 
 TEST_CASE("loginUser sets current_user to the correct user") {
     Application app;
@@ -52,4 +52,20 @@ TEST_CASE("logoutUser sets current_user to null") {
     app.loginUser(test_user);
     app.logoutUser();
     REQUIRE(app.getCurrentUser() == nullptr);
+}
+
+// Tests for menu display functionality
+
+TEST_CASE("displayMenu sets current_menu to the correct menu") {
+    Application app;
+    app.start();
+    app.displayMenu("main");
+    REQUIRE(app.getCurrentMenu() == "main");
+}
+
+TEST_CASE("displayMenu sets current_menu to login if no menu is specified") {
+    Application app;
+    app.start();
+    app.displayMenu();
+    REQUIRE(app.getCurrentMenu() == "login");
 }
