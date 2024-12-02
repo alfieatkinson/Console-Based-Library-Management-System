@@ -46,7 +46,7 @@ TEST_CASE("Borrowing a book") {
 }
 
 TEST_CASE("Returning a book") {
-    Book book("Moby Dick", "Herman Melville", "9780142437247", false, 1851);
+    Book book("Moby Dick", "Herman Melville", "9780142437247", 1851, false);
     book.borrowBook();  // Borrow the book first
 
     SECTION("Book becomes available after returning") {
@@ -58,5 +58,20 @@ TEST_CASE("Returning a book") {
         book.returnBook();  // Return the book twice
         book.returnBook();
         REQUIRE(book.isAvailable());
+    }
+}
+
+TEST_CASE("Get Book Information") {
+    Book book("Pride and Prejudice", "Jane Austen", "9781503290563", 1813, true);
+
+    SECTION("Correct book info returned with newlines") {
+        std::string expectedInfo = 
+            "Title: Pride and Prejudice\n"
+            "Author: Jane Austen\n"
+            "ISBN: 9781503290563\n"
+            "Year: 1813\n"
+            "Available: true";
+
+        REQUIRE(book.getBookInfo() == expectedInfo);
     }
 }
