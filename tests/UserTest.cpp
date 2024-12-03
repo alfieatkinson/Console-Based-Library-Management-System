@@ -83,3 +83,18 @@ TEST_CASE("User can return books") {
     }
 }
 
+TEST_CASE("User Information Retrieval") {
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+
+    SECTION("Correct user info returned") {
+        std::string expectedInfo = 
+            "User ID: 1\n"
+            "Username: john_doe\n"
+            "Forename: John\n"
+            "Surname: Doe\n"
+            "Email: johndoe@email.com\n"
+            "Phone Number: 01234567890";
+
+        REQUIRE(user.getUserInfo() == expectedInfo);
+    }
+}
