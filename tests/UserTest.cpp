@@ -4,10 +4,14 @@
 #include "Book.hpp"
 
 TEST_CASE("User Constructor initialises correctly") {
-    User user(1, "John", "Doe", "johndoe@email.com", "01234567890", "john_doe", "password123");
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User ID is correct") {
         REQUIRE(user.getUserID() == 1);
+    }
+
+    SECTION("Username is correct") {
+        REQUIRE(user.getUsername() == "john_doe");
     }
 
     SECTION("Forename is correct") {
@@ -26,10 +30,6 @@ TEST_CASE("User Constructor initialises correctly") {
         REQUIRE(user.getPhoneNumber() == "01234567890");
     }
 
-    SECTION("Username is correct") {
-        REQUIRE(user.getUsername() == "john_doe");
-    }
-
     SECTION("Password is correct") {
         REQUIRE(user.getPassword() == "password123");
     }
@@ -41,7 +41,7 @@ TEST_CASE("User Constructor initialises correctly") {
 
 TEST_CASE("User can borrow books") {
     Book book("1984", "George Orwell", "9780451524935", 1949, true);
-    User user(1, "John", "Doe", "johndoe@email.com", "01234567890", "john_doe", "password123");
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User can borrow an available book") {
         user.borrowBook(book);
@@ -63,7 +63,7 @@ TEST_CASE("User can borrow books") {
 
 TEST_CASE("User can return books") {
     Book book("1984", "George Orwell", "9780451524935", 1949, true);
-    User user(1, "John", "Doe", "johndoe@email.com", "01234567890", "john_doe", "password123");
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User can return a borrowed book") {
         user.borrowBook(book);
@@ -82,3 +82,4 @@ TEST_CASE("User can return books") {
         REQUIRE(user.getBorrowedBooks().empty());
     }
 }
+
