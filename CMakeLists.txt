@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the project name and version
-project(LibraryManagementSystem VERSION 1.0)
+project(LibraryManagementSystem VERSION 0.1)
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -24,7 +24,7 @@ add_library(libLibraryManagementSystem
 )
 
 # Add the executable for the main program
-add_executable(LibraryManagementSystem src/main.cpp)
+add_executable(LibraryManagementSystem lib/main.cpp)
 
 # Link the library to the executable
 target_link_libraries(LibraryManagementSystem libLibraryManagementSystem)
@@ -32,13 +32,16 @@ target_link_libraries(LibraryManagementSystem libLibraryManagementSystem)
 # Find Catch2
 find_package(Catch2 REQUIRED)
 
-# Add test executables and link them to Catch2 and the main library
+# Add test executables but don't register them with `add_test()` yet
 file(GLOB TEST_SOURCES tests/*.cpp)
 foreach(test_source ${TEST_SOURCES})
     get_filename_component(test_name ${test_source} NAME_WE)
+    message(STATUS "Adding test: ${test_name} from ${test_source}")
     add_executable(${test_name} ${test_source})
     target_link_libraries(${test_name} libLibraryManagementSystem Catch2::Catch2)
 endforeach()
+
+option(BUILD_DOC "Build documentation" ON)
 
 # Add custom targets for documentation generation
 find_package(Doxygen)
@@ -46,11 +49,9 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-    add_custom_command(
-        OUTPUT ${DOXYGEN_OUT}
-        COMMAND ${CMAKE_COMMAND} -E copy ${DOXYGEN_IN} ${DOXYGEN_OUT}
-        COMMENT "Copying Doxyfile to build directory"
-    )
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
 
     add_custom_target(doc ALL
         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
@@ -58,4 +59,6 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM
     )
+else (DOXYGEN_FOUND)
+  message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
