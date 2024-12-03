@@ -13,7 +13,7 @@ private:
     std::string forename;
     std::string surname;
     std::string email;
-    std::string phone_umber;
+    std::string phone_number;
     std::string password;
     std::vector<Book> borrowed_books;
 
