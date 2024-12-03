@@ -133,3 +133,13 @@ TEST_CASE("Setting user attributes using setters") {
         REQUIRE(user.getPassword() == "newpassword123");
     }
 }
+
+TEST_CASE("User constructor handles invalid phone number length") {
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "johndoe@email.com", "12345", "password123"), std::invalid_argument);  // Invalid phone number length
+}
+
+TEST_CASE("User constructor handles invalid email format") {
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "invalidemail.com", "01234567890", "password123"), std::invalid_argument);  // Missing '@'
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "user@domain", "01234567890", "password123"), std::invalid_argument);  // Missing domain
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "user@domain@domain.com", "01234567890", "password123"), std::invalid_argument);  // Extra '@'
+}
