@@ -98,3 +98,38 @@ TEST_CASE("User Information Retrieval") {
         REQUIRE(user.getUserInfo() == expectedInfo);
     }
 }
+
+TEST_CASE("Setting user attributes using setters") {
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+
+    user.setUsername("new_username");
+    user.setForename("Jane");
+    user.setSurname("Smith");
+    user.setEmail("newemail@email.com");
+    user.setPhoneNumber("09876543210");
+    user.setPassword("newpassword123");
+
+    SECTION("Username updated correctly") {
+        REQUIRE(user.getUsername() == "new_username");
+    }
+
+    SECTION("Forename updated correctly") {
+        REQUIRE(user.getForename() == "Jane");
+    }
+
+    SECTION("Surname updated correctly") {
+        REQUIRE(user.getSurname() == "Smith");
+    }
+
+    SECTION("Email updated correctly") {
+        REQUIRE(user.getEmail() == "newemail@email.com");
+    }
+
+    SECTION("Phone number updated correctly") {
+        REQUIRE(user.getPhoneNumber() == "09876543210");
+    }
+
+    SECTION("Password updated correctly") {
+        REQUIRE(user.getPassword() == "newpassword123");
+    }
+}
