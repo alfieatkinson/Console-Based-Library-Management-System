@@ -18,6 +18,11 @@ User::User(int user_id, const std::string& username, const std::string& forename
     }
 }
 
+// Destructor
+User::~User() {
+    // No dynamic memory allocation to clean up
+}
+
 // Getters
 int User::getUserID() const { return user_id; }
 std::string User::getUsername() const { return username; }

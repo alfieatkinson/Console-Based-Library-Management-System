@@ -21,6 +21,9 @@ public:
     // Constructor
     User(int user_id, const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone_number, const std::string& password);
 
+    // Destructor
+    ~User();
+
     // Getters
     int getUserID() const;
     std::string getUsername() const;
