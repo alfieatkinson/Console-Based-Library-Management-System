@@ -60,3 +60,25 @@ TEST_CASE("User can borrow books") {
         REQUIRE(user.getBorrowedBooks()[0] == book);
     }
 }
+
+TEST_CASE("User can return books") {
+    Book book("1984", "George Orwell", "9780451524935", 1949, true);
+    User user(1, "John", "Doe", "johndoe@email.com", "01234567890", "john_doe", "password123");
+
+    SECTION("User can return a borrowed book") {
+        user.borrowBook(book);
+        user.returnBook(book);
+        REQUIRE_FALSE(user.checkOutStatus(book));  // Should be false
+    }
+
+    SECTION("User cannot return a book they haven't borrowed") {
+        bool result = user.returnBook(book);
+        REQUIRE_FALSE(result);  // Should fail to return
+    }
+
+    SECTION("User's borrowed_books does not contain the returned book") {
+        user.borrowBook(book);
+        user.returnBook(book);
+        REQUIRE(user.getBorrowedBooks().empty());
+    }
+}
