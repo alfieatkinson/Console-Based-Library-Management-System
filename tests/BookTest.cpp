@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 #include "Book.hpp"
 
-TEST_CASE("Book Constructor initializes correctly") {
+TEST_CASE("Book Constructor initialises correctly") {
     Book book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925, true);
 
     SECTION("Title is correct") {
@@ -106,7 +106,7 @@ TEST_CASE("Book constructor handles invalid ISBN length") {
 }
 
 TEST_CASE("Book state integrity") {
-    Book book("Test Book", "Author", "1234567890", 2022, true);
+    Book book("Test Book", "Author", "1234567890000", 2022, true);
 
     SECTION("Book cannot be borrowed twice if already borrowed") {
         book.borrowBook();
