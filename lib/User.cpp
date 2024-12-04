@@ -31,7 +31,7 @@ std::string User::getSurname() const { return surname; }
 std::string User::getEmail() const { return email; }
 std::string User::getPhoneNumber() const { return phone_number; }
 std::string User::getPassword() const { return password; }
-std::vector<Book> User::getBorrowedBooks() const { return borrowed_books; }
+std::vector<Book*> User::getBorrowedBooks() const { return borrowed_books; }
 
 // Setters
 void User::setUsername(const std::string& new_username) { username = new_username; }
@@ -42,27 +42,27 @@ void User::setPhoneNumber(const std::string& new_phone_number) { phone_number = 
 void User::setPassword(const std::string& new_password) { password = new_password; }
 
 // Methods for borrowing and returning books
-bool User::borrowBook(Book& book) {
-    if (book.isAvailable()) {
+bool User::borrowBook(Book* book) {
+    if (book->isAvailable()) {
         borrowed_books.push_back(book);
-        book.borrowBook();
+        book->borrowBook();
         return true;
     }
     return false;
 }
 
-bool User::returnBook(Book& book) {
+bool User::returnBook(Book* book) {
     auto it = std::find(borrowed_books.begin(), borrowed_books.end(), book);
     if (it != borrowed_books.end()) {
         borrowed_books.erase(it);
-        book.returnBook();
+        book->returnBook();
         return true;
     }
     return false;
 }
 
 // Method to check the checkout status of a book
-bool User::checkOutStatus(const Book& book) const {
+bool User::checkOutStatus(const Book* book) const {
     return std::find(borrowed_books.begin(), borrowed_books.end(), book) != borrowed_books.end();
 }
 
