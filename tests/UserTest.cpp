@@ -44,20 +44,20 @@ TEST_CASE("User can borrow books") {
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User can borrow an available book") {
-        user.borrowBook(book);
-        REQUIRE(user.checkOutStatus(book));  // Should be true
+        user.borrowBook(&book);
+        REQUIRE(user.checkOutStatus(&book));  // Should be true
     }
 
     SECTION("User cannot borrow an unavailable book") {
         book.borrowBook();  // Mark the book as unavailable
-        bool result = user.borrowBook(book);  // Trying to borrow again
+        bool result = user.borrowBook(&book);  // Trying to borrow again
         REQUIRE_FALSE(result);  // Should fail to borrow again
     }
 
     SECTION("User's borrowed_books contains the borrowed book") {
-        user.borrowBook(book);
+        user.borrowBook(&book);
         REQUIRE(user.getBorrowedBooks().size() == 1);
-        REQUIRE(user.getBorrowedBooks()[0] == book);
+        REQUIRE(user.getBorrowedBooks()[0] == &book);
     }
 }
 
@@ -66,19 +66,19 @@ TEST_CASE("User can return books") {
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User can return a borrowed book") {
-        user.borrowBook(book);
-        user.returnBook(book);
-        REQUIRE_FALSE(user.checkOutStatus(book));  // Should be false
+        user.borrowBook(&book);
+        user.returnBook(&book);
+        REQUIRE_FALSE(user.checkOutStatus(&book));  // Should be false
     }
 
     SECTION("User cannot return a book they haven't borrowed") {
-        bool result = user.returnBook(book);
+        bool result = user.returnBook(&book);
         REQUIRE_FALSE(result);  // Should fail to return
     }
 
     SECTION("User's borrowed_books does not contain the returned book") {
-        user.borrowBook(book);
-        user.returnBook(book);
+        user.borrowBook(&book);
+        user.returnBook(&book);
         REQUIRE(user.getBorrowedBooks().empty());
     }
 }
