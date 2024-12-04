@@ -15,7 +15,7 @@ private:
     std::string email;
     std::string phone_number;
     std::string password;
-    std::vector<Book> borrowed_books;
+    std::vector<Book*> borrowed_books; // Vector of pointers to Book objects
 
 public:
     // Constructor
@@ -32,7 +32,7 @@ public:
     std::string getEmail() const;
     std::string getPhoneNumber() const;
     std::string getPassword() const;
-    std::vector<Book> getBorrowedBooks() const;
+    std::vector<Book*> getBorrowedBooks() const;
 
     // Setters
     void setUsername(const std::string& new_username);
@@ -43,11 +43,11 @@ public:
     void setPassword(const std::string& new_password);
 
     // Methods for borrowing and returning books
-    bool borrowBook(Book& book);
-    bool returnBook(Book& book);
+    bool borrowBook(Book* book);
+    bool returnBook(Book* book);
 
     // Method to check the checkout status of a book
-    bool checkOutStatus(const Book& book) const;
+    bool checkOutStatus(const Book* book) const;
 
     // Method to get user info
     std::string getUserInfo() const;
