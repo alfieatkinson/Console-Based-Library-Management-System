@@ -40,7 +40,7 @@ TEST_CASE("User Constructor initialises correctly") {
 }
 
 TEST_CASE("User can borrow books") {
-    Book book("1984", "George Orwell", "9780451524935", 1949, true);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User can borrow an available book") {
@@ -62,7 +62,7 @@ TEST_CASE("User can borrow books") {
 }
 
 TEST_CASE("User can return books") {
-    Book book("1984", "George Orwell", "9780451524935", 1949, true);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User can return a borrowed book") {
