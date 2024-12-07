@@ -66,3 +66,44 @@ TEST_CASE("Execute borrow transaction") {
         REQUIRE(transaction.getStatus() == "completed");  // Status should remain completed
     }
 }
+
+TEST_CASE("Execute return transaction") {
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    user.borrowBook(&book);  // Borrow the book first
+    Transaction transaction(1, "return", &book, &user);
+
+    SECTION("Transaction status changes to completed after execution") {
+        transaction.execute();
+        REQUIRE(transaction.getStatus() == "completed");
+    }
+
+    SECTION("Book becomes available after execution") {
+        transaction.execute();
+        REQUIRE(book.isAvailable());
+    }
+
+    SECTION("User's borrowed_books does not contain the returned book after execution") {
+        user.borrowBook(&book);  // Borrow the book first
+        transaction.execute();
+        REQUIRE(user.getBorrowedBooks().empty());
+    }
+
+    SECTION("Transaction datetime is set after execution") {
+        transaction.execute();
+        REQUIRE_FALSE(transaction.getDatetime().empty());
+    }
+
+    SECTION("Cannot execute a completed transaction") {
+        transaction.execute();  // Execute the transaction once
+        REQUIRE_THROWS_AS(transaction.execute(), std::logic_error);  // Try to execute
+        REQUIRE(transaction.getStatus() == "completed");  // Status should remain completed
+    }
+
+    SECTION("Cannot return a book not in borrowed_books") {
+        Book book2(2, "Pride and Prejudice", "Jane Austen", "9781503290563", 1813, true);
+        Transaction transaction2(2, "return", &book2, &user);
+
+        REQUIRE_THROWS_AS(transaction2.execute(), std::invalid_argument);  // Try to return a book not borrowed
+    }
+}
