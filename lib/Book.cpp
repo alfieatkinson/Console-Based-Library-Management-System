@@ -3,8 +3,8 @@
 #include <string>
 
 // Constructor
-Book::Book(const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available)
-    : title(title), author(author), isbn(isbn), year_published(year_published), available(available) {
+Book::Book(int book_id, const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available)
+    : book_id(book_id), title(title), author(author), isbn(isbn), year_published(year_published), available(available) {
     if (isbn.length() != 13) {
         throw std::invalid_argument("ISBN must be 13 characters long.");
     }
@@ -16,6 +16,7 @@ Book::~Book() {
 }
 
 // Getters
+int Book::getBookID() const { return book_id; }
 std::string Book::getTitle() const { return title; }
 std::string Book::getAuthor() const { return author; }
 std::string Book::getISBN() const { return isbn; }
@@ -48,7 +49,8 @@ void Book::returnBook() {
 }
 
 std::string Book::getBookInfo() const {
-    return "Title: " + getTitle() + "\n" +
+    return "Book ID: " + std::to_string(getBookID()) + "\n" +
+           "Title: " + getTitle() + "\n" +
            "Author: " + getAuthor() + "\n" +
            "ISBN: " + getISBN() + "\n" +
            "Year: " + std::to_string(getYearPublished()) + "\n" +
