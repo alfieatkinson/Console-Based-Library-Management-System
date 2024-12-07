@@ -3,7 +3,11 @@
 #include "Book.hpp"
 
 TEST_CASE("Book Constructor initialises correctly") {
-    Book book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925, true);
+    Book book(1, "The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925, true);
+
+    SECTION("Book ID is correct") {
+        REQUIRE(book.getBookID() == 1);
+    }
 
     SECTION("Title is correct") {
         REQUIRE(book.getTitle() == "The Great Gatsby");
@@ -27,7 +31,7 @@ TEST_CASE("Book Constructor initialises correctly") {
 }
 
 TEST_CASE("Borrowing a book") {
-    Book book("1984", "George Orwell", "9780451524935", 1949, true);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
 
     SECTION("Book is available before borrowing") {
         REQUIRE(book.isAvailable());
@@ -46,7 +50,7 @@ TEST_CASE("Borrowing a book") {
 }
 
 TEST_CASE("Returning a book") {
-    Book book("Moby Dick", "Herman Melville", "9780142437247", 1851, false);
+    Book book(1, "Moby Dick", "Herman Melville", "9780142437247", 1851, false);
     book.borrowBook();  // Borrow the book first
 
     SECTION("Book becomes available after returning") {
@@ -62,10 +66,11 @@ TEST_CASE("Returning a book") {
 }
 
 TEST_CASE("Get Book Information") {
-    Book book("Pride and Prejudice", "Jane Austen", "9781503290563", 1813, true);
+    Book book(1, "Pride and Prejudice", "Jane Austen", "9781503290563", 1813, true);
 
     SECTION("Correct book info returned with newlines") {
         std::string expectedInfo = 
+            "Book ID: 1\n"
             "Title: Pride and Prejudice\n"
             "Author: Jane Austen\n"
             "ISBN: 9781503290563\n"
@@ -77,7 +82,7 @@ TEST_CASE("Get Book Information") {
 }
 
 TEST_CASE("Setting book attributes using setters") {
-    Book book("War and Peace", "Leo Tolstoy", "9780198800545", 1869, true);
+    Book book(1, "War and Peace", "Leo Tolstoy", "9780198800545", 1869, true);
     
     book.setTitle("War and Peace: Updated Edition");
     book.setAuthor("Leo Tolstoy (Edited by X)");
@@ -102,11 +107,11 @@ TEST_CASE("Setting book attributes using setters") {
 }
 
 TEST_CASE("Book constructor handles invalid ISBN length") {
-    REQUIRE_THROWS_AS(Book("Invalid Book", "Unknown Author", "123", 2024, true),std::invalid_argument);
+    REQUIRE_THROWS_AS(Book(1, "Invalid Book", "Unknown Author", "123", 2024, true),std::invalid_argument);
 }
 
 TEST_CASE("Book state integrity") {
-    Book book("Test Book", "Author", "1234567890000", 2022, true);
+    Book book(1, "Test Book", "Author", "1234567890000", 2022, true);
 
     SECTION("Book cannot be borrowed twice if already borrowed") {
         book.borrowBook();
