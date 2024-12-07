@@ -13,23 +13,23 @@ TEST_CASE("Transaction constructor initialises correctly") {
         REQUIRE(transaction.getTransactionID() == 1);
     }
 
-    SECTION("Transaction type is correct") {
-        REQUIRE(transaction.getTransactionType() == "borrow");
+    SECTION("Type is correct") {
+        REQUIRE(transaction.getType() == "borrow");
     }
 
-    SECTION("Transaction status is correct") {
-        REQUIRE(transaction.getTransactionStatus() == "open");
+    SECTION("Status is correct") {
+        REQUIRE(transaction.getStatus() == "open");
     }
 
-    SECTION("Transaction book is correct") {
+    SECTION("Book is correct") {
         REQUIRE(transaction.getBook() == &book);
     }
 
-    SECTION("Transaction user is correct") {
+    SECTION("User is correct") {
         REQUIRE(transaction.getUser() == &user);
     }
 
-    SECTION("Transaction datetime is initially empty") {
-        REQUIRE(transaction.getTransactionDatetime().empty());  // Datetime should be empty initially
+    SECTION("Datetime is initially empty") {
+        REQUIRE(transaction.getDatetime().empty());  // Datetime should be empty initially
     }
 }
