@@ -164,3 +164,12 @@ TEST_CASE("Get Transaction Information") {
         REQUIRE(transaction.getTransactionInfo() == expectedInfo);
     }
 }
+
+TEST_CASE("Invalid Transaction Type") {
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+
+    SECTION("Invalid transaction type throws an exception") {
+        REQUIRE_THROWS_AS(Transaction(1, "invalid", &book, &user), std::invalid_argument);
+    }
+}
