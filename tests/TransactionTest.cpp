@@ -28,4 +28,8 @@ TEST_CASE("Transaction constructor initialises correctly") {
     SECTION("Transaction user is correct") {
         REQUIRE(transaction.getUser() == &user);
     }
+
+    SECTION("Transaction datetime is initially empty") {
+        REQUIRE(transaction.getTransactionDatetime().empty());  // Datetime should be empty initially
+    }
 }
