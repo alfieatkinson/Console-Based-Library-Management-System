@@ -107,3 +107,41 @@ TEST_CASE("Execute return transaction") {
         REQUIRE_THROWS_AS(transaction2.execute(), std::invalid_argument);  // Try to return a book not borrowed
     }
 }
+
+TEST_CASE("Cancel transaction") {
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    Transaction transaction(1, "borrow", &book, &user);
+
+    SECTION("Transaction status changes to cancelled after execution") {
+        transaction.cancel();
+        REQUIRE(transaction.getStatus() == "cancelled");
+    }
+
+    SECTION("Book remains unavailable after cancellation") {
+        transaction.cancel();
+        REQUIRE_FALSE(book.isAvailable());
+    }
+
+    SECTION("User's borrowed_books does not contain the book after cancellation") {
+        transaction.cancel();
+        REQUIRE(user.getBorrowedBooks().empty());
+    }
+
+    SECTION("Transaction datetime is set after cancellation") {
+        transaction.cancel();
+        REQUIRE_FALSE(transaction.getDatetime().empty());
+    }
+
+    SECTION("Cannot cancel a completed transaction") {
+        transaction.execute();  // Execute the transaction first
+        REQUIRE_THROWS_AS(transaction.cancel(), std::logic_error);  // Try to cancel
+        REQUIRE(transaction.getStatus() == "completed");  // Status should remain completed
+    }
+
+    SECTION("Cannot cancel a cancelled transaction") {
+        transaction.cancel();  // Cancel the transaction first
+        REQUIRE_THROWS_AS(transaction.cancel(), std::logic_error);  // Try to cancel again
+        REQUIRE(transaction.getStatus() == "cancelled");  // Status should remain cancelled
+    }
+}
