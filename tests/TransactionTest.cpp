@@ -165,6 +165,23 @@ TEST_CASE("Get Transaction Information") {
     }
 }
 
+TEST_CASE("Setting transaction attributes using setters") {
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    Transaction transaction(1, "borrow", &book, &user);
+
+    transaction.setStatus("cancelled");
+    transaction.setDatetime("2021-10-01 12:00:00");
+
+    SECTION("Status updated correctly") {
+        REQUIRE(transaction.getStatus() == "cancelled");
+    }
+
+    SECTION("Datetime updated correctly") {
+        REQUIRE(transaction.getDatetime() == "2021-10-01 12:00:00");
+    }
+}
+
 TEST_CASE("Invalid Transaction Type") {
     Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
