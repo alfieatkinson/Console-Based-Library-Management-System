@@ -6,6 +6,7 @@
 
 class Book {
     private:
+        int book_id;
         std::string title;
         std::string author;
         std::string isbn;
@@ -14,12 +15,13 @@ class Book {
 
     public:
         // Constructor
-        Book(const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available);
+        Book(int book_id, const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available);
         
         // Destructor
         ~Book();
 
         // Getters
+        int getBookID() const;
         std::string getTitle() const;
         std::string getAuthor() const;
         std::string getISBN() const;
