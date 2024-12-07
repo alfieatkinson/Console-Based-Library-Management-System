@@ -145,3 +145,22 @@ TEST_CASE("Cancel transaction") {
         REQUIRE(transaction.getStatus() == "cancelled");  // Status should remain cancelled
     }
 }
+
+TEST_CASE("Get Transaction Information") {
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    Transaction transaction(1, "borrow", &book, &user);
+    transaction.execute();  // Execute the transaction
+
+    SECTION("Correct transaction info returned with newlines") {
+        std::string expectedInfo = 
+            "Transaction ID: 1\n"
+            "Type: borrow\n"
+            "Status: completed\n"
+            "Book: 1984 by George Orwell\n"
+            "User: John Doe\n"
+            "Datetime: " + transaction.getDatetime();
+
+        REQUIRE(transaction.getTransactionInfo() == expectedInfo);
+    }
+}
