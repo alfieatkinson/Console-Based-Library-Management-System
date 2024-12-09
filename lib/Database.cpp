@@ -30,3 +30,21 @@ void Database::createUser(const std::string& username, const std::string& forena
 void Database::createTransaction(const std::string& type, Book& book, User& user) {
     transactions.push_back(Transaction(++transaction_id_counter, type, &book, &user));
 }
+
+// Helper function for searching by ID (for Book, User, Transaction)
+template <typename T>
+T* findById(std::vector<T>& vec, int id) {
+    auto it = std::lower_bound(vec.begin(), vec.end(), id, 
+        [](const T& obj, int id) { return obj.getID() < id; });
+
+    if (it != vec.end() && it->getID() == id) {
+        return &(*it);  // Return pointer to found object
+    }
+
+    throw std::invalid_argument("Object not found");
+}
+
+// Read operations
+Book* Database::readBook(int id) { return findById(books, id); }
+User* Database::readUser(int id) { return findById(users, id); }
+Transaction* Database::readTransaction(int id) { return findById(transactions, id); }
