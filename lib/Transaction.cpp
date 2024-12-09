@@ -16,3 +16,11 @@ Transaction::Transaction(int transaction_id, const std::string& type, Book* book
 Transaction::~Transaction() {
     // No dynamic memory allocation to clean up
 }
+
+// Getters
+int Transaction::getTransactionID() const { return transaction_id; }
+std::string Transaction::getType() const { return type; }
+std::string Transaction::getStatus() const { return status; }
+Book* Transaction::getBook() const { return book; }
+User* Transaction::getUser() const { return user; }
+std::string Transaction::getDatetime() const { return datetime; }
