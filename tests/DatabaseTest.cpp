@@ -131,3 +131,43 @@ TEST_CASE("Delete operations") {
         REQUIRE(db.getTransactions().empty());
     }
 }
+
+TEST_CASE("Invalid operations") {
+    Database db;
+
+    SECTION("Read an invalid book") {
+        REQUIRE_THROWS_AS(db.readBook(1), std::invalid_argument);
+    }
+
+    SECTION("Read an invalid user") {
+        REQUIRE_THROWS_AS(db.readUser(1), std::invalid_argument);
+    }
+
+    SECTION("Read an invalid transaction") {
+        REQUIRE_THROWS_AS(db.readTransaction(1), std::invalid_argument);
+    }
+
+    SECTION("Update an invalid book") {
+        REQUIRE_THROWS_AS(db.updateBook(1, "title", "Animal Farm"), std::invalid_argument);
+    }
+
+    SECTION("Update an invalid user") {
+        REQUIRE_THROWS_AS(db.updateUser(1, "username", "johndoe"), std::invalid_argument);
+    }
+
+    SECTION("Update an invalid transaction") {
+        REQUIRE_THROWS_AS(db.updateTransaction(1, "status", "completed"), std::invalid_argument);
+    }
+
+    SECTION("Delete an invalid book") {
+        REQUIRE_THROWS_AS(db.deleteBook(1), std::invalid_argument);
+    }
+
+    SECTION("Delete an invalid user") {
+        REQUIRE_THROWS_AS(db.deleteUser(1), std::invalid_argument);
+    }
+
+    SECTION("Delete an invalid transaction") {
+        REQUIRE_THROWS_AS(db.deleteTransaction(1), std::invalid_argument);
+    }
+}
