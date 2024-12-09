@@ -83,3 +83,27 @@ TEST_CASE("Read operations") {
         REQUIRE(transaction->getType() == "borrow");
     }
 }
+
+TEST_CASE("Update operations") {
+    Database db;
+
+    SECTION("Update a book") {
+        db.createBook("1984", "George Orwell", "9780451524935", 1949, true);
+        db.updateBook(1, "title", "Animal Farm");
+        REQUIRE(db.readBook(1)->getTitle() == "Animal Farm");
+    }
+
+    SECTION("Update a user") {
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.updateUser(1, "username", "johndoe");
+        REQUIRE(db.readUser(1)->getUsername() == "johndoe");
+    }
+
+    SECTION("Update a transaction") {
+        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createTransaction("borrow", &book, &user);
+        db.updateTransaction(1, "status", "completed");
+        REQUIRE(db.readTransaction(1)->getStatus() == "completed");
+    }
+}
