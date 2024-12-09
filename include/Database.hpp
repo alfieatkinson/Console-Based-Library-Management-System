@@ -37,7 +37,7 @@ public:
     void setTransactionIDCounter(int new_counter);
 
     // Create operations
-    void createBook(const std::string& title, const std::string& author, const std::string& isbn, int year);
+    void createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
     void createUser(const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone, const std::string& password);
     void createTransaction(const std::string& type, Book& book, User& user);
 
