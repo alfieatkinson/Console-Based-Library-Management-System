@@ -59,3 +59,27 @@ TEST_CASE("Create operations") {
         REQUIRE(db.getTransactionIDCounter() == 1);
     }
 }
+
+TEST_CASE("Read operations") {
+    Database db;
+
+    SECTION("Read a book") {
+        db.createBook("1984", "George Orwell", "9780451524935", 1949, true);
+        Book* book = db.readBook(1);
+        REQUIRE(book->getTitle() == "1984");
+    }
+
+    SECTION("Read a user") {
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        User* user = db.readUser(1);
+        REQUIRE(user->getUsername() == "john_doe");
+    }
+
+    SECTION("Read a transaction") {
+        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createTransaction("borrow", &book, &user);
+        Transaction* transaction = db.readTransaction(1);
+        REQUIRE(transaction->getType() == "borrow");
+    }
+}
