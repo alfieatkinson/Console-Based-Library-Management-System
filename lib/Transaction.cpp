@@ -39,17 +39,21 @@ bool Transaction::execute() {
             if (user->borrowBook(book)) {
                 status = "completed";
             } else {
-                status = "cancelled";
-                return false;
+                throw std::invalid_argument("Book is not available to borrow.");
             }
         } else if (type == "return") {
             if (user->returnBook(book)) {
                 status = "completed";
             } else {
-                status = "cancelled";
-                return false;
+                throw std::invalid_argument("User has not borrowed this book.");
             }
         }
-        return true;
+    }
+    throw std::logic_error("Transaction is not open.");
+}
+
+void Transaction::cancel() {
+    if (status == "open") {
+        status = "cancelled";
     }
 }
