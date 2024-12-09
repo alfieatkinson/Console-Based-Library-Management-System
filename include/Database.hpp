@@ -17,7 +17,11 @@ private:
     int transaction_id_counter = 0;
 
 public:
+    // Constructor
     Database() = default;
+
+    // Destructor
+    ~Database() = default;
 
     // Getters
     const std::vector<Book>& getBooks() const;
