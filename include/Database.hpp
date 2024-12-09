@@ -20,17 +20,17 @@ public:
     Database() = default;
 
     // Getters
-    const std::vector<Book>& getBooks() const { return books; }
-    const std::vector<User>& getUsers() const { return users; }
-    const std::vector<Transaction>& getTransactions() const { return transactions; }
-    int getBookIDCounter() const { return book_id_counter; }
-    int getUserIDCounter() const { return user_id_counter; }
-    int getTransactionIDCounter() const { return transaction_id_counter; }
+    const std::vector<Book>& getBooks() const;
+    const std::vector<User>& getUsers() const;
+    const std::vector<Transaction>& getTransactions() const;
+    int getBookIDCounter() const;
+    int getUserIDCounter() const;
+    int getTransactionIDCounter() const;
 
     // Setters
-    void setBookIDCounter(int new_counter) { book_id_counter = new_counter; }
-    void setUserIDCounter(int new_counter) { user_id_counter = new_counter; }
-    void setTransactionIDCounter(int new_counter) { transaction_id_counter = new_counter; }
+    void setBookIDCounter(int new_counter);
+    void setUserIDCounter(int new_counter);
+    void setTransactionIDCounter(int new_counter);
 
     // Create operations
     void createBook(const std::string& title, const std::string& author, const std::string& isbn, int year);
