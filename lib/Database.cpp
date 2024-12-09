@@ -48,3 +48,51 @@ T* findById(std::vector<T>& vec, int id) {
 Book* Database::readBook(int id) { return findById(books, id); }
 User* Database::readUser(int id) { return findById(users, id); }
 Transaction* Database::readTransaction(int id) { return findById(transactions, id); }
+
+// Update operations
+void Database::updateBook(int id, const std::string& field, const std::string& value) {
+    Book* book = findById(books, id);
+    if (field == "title") {
+        book->setTitle(value);
+    } else if (field == "author") {
+        book->setAuthor(value);
+    } else if (field == "isbn") {
+        book->setISBN(value);
+    } else if (field == "year_published") {
+        book->setYearPublished(std::stoi(value));
+    } else if (field == "availabile") {
+        book->setIsAvailable(value == "true");
+    } else {
+        throw std::invalid_argument("Invalid field");
+    }
+}
+
+void Database::updateUser(int id, const std::string& field, const std::string& value) {
+    User* user = findById(users, id);
+    if (field == "username") {
+        user->setUsername(value);
+    } else if (field == "forename") {
+        user->setForename(value);
+    } else if (field == "surname") {
+        user->setSurname(value);
+    } else if (field == "email") {
+        user->setEmail(value);
+    } else if (field == "phone_number") {
+        user->setPhoneNumber(value);
+    } else if (field == "password") {
+        user->setPassword(value);
+    } else {
+        throw std::invalid_argument("Invalid field");
+    }
+}
+
+void Database::updateTransaction(int id, const std::string& field, const std::string& value) {
+    Transaction* transaction = findById(transactions, id);
+    if (field == "status") {
+        transaction->setStatus(value);
+    } else if (field == "datetime") {
+        transaction->setDatetime(value);
+    } else {
+        throw std::invalid_argument("Invalid field");
+    }
+}
