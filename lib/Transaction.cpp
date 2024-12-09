@@ -30,7 +30,7 @@ void Transaction::setStatus(const std::string& new_status) { status = new_status
 void Transaction::setDatetime(const std::string& new_datetime) { datetime = new_datetime; }
 
 // Methods
-bool Transaction::execute() {
+void Transaction::execute() {
     if (status == "open") {
         time_t now = time(0);
         datetime = ctime(&now);
@@ -56,4 +56,14 @@ void Transaction::cancel() {
     if (status == "open") {
         status = "cancelled";
     }
+}
+
+// Method to get transaction info
+std::string Transaction::getTransactionInfo() const {
+    return "Transaction ID: " + std::to_string(getTransactionID()) + "\n" +
+           "Type: " + getType() + "\n" +
+           "Status: " + getStatus() + "\n" +
+           "Book: " + getBook()->getTitle() + " by " + getBook()->getAuthor() + "\n" +
+           "User: " + getUser()->getForename() + " " + getUser()->getSurname() + "\n" +
+           "Datetime: " + getDatetime();
 }
