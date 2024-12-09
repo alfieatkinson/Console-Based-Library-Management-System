@@ -28,3 +28,28 @@ std::string Transaction::getDatetime() const { return datetime; }
 // Setters
 void Transaction::setStatus(const std::string& new_status) { status = new_status; }
 void Transaction::setDatetime(const std::string& new_datetime) { datetime = new_datetime; }
+
+// Methods
+bool Transaction::execute() {
+    if (status == "open") {
+        time_t now = time(0);
+        datetime = ctime(&now);
+
+        if (type == "borrow") {
+            if (user->borrowBook(book)) {
+                status = "completed";
+            } else {
+                status = "cancelled";
+                return false;
+            }
+        } else if (type == "return") {
+            if (user->returnBook(book)) {
+                status = "completed";
+            } else {
+                status = "cancelled";
+                return false;
+            }
+        }
+        return true;
+    }
+}
