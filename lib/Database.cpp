@@ -96,3 +96,19 @@ void Database::updateTransaction(int id, const std::string& field, const std::st
         throw std::invalid_argument("Invalid field");
     }
 }
+
+// Delete operations
+void Database::deleteBook(int id) {
+    Book* book = findByID(books, id);  // Find the book by ID
+    books.erase(std::remove(books.begin(), books.end(), *book), books.end());  // Remove the book from the vector
+}
+
+void Database::deleteUser(int id) {
+    User* user = findByID(users, id);  // Find the user by ID
+    users.erase(std::remove(users.begin(), users.end(), *user), users.end());  // Remove the user from the vector
+}
+
+void Database::deleteTransaction(int id) {
+    Transaction* transaction = findByID(transactions, id);  // Find the transaction by ID
+    transactions.erase(std::remove(transactions.begin(), transactions.end(), *transaction), transactions.end());  // Remove the transaction from the vector
+}
