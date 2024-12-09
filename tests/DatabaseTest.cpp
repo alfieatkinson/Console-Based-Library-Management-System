@@ -107,3 +107,27 @@ TEST_CASE("Update operations") {
         REQUIRE(db.readTransaction(1)->getStatus() == "completed");
     }
 }
+
+TEST_CASE("Delete operations") {
+    Database db;
+
+    SECTION("Delete a book") {
+        db.createBook("1984", "George Orwell", "9780451524935", 1949, true);
+        db.deleteBook(1);
+        REQUIRE(db.getBooks().empty());
+    }
+
+    SECTION("Delete a user") {
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.deleteUser(1);
+        REQUIRE(db.getUsers().empty());
+    }
+
+    SECTION("Delete a transaction") {
+        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createTransaction("borrow", &book, &user);
+        db.deleteTransaction(1);
+        REQUIRE(db.getTransactions().empty());
+    }
+}
