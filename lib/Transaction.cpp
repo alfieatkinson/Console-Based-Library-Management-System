@@ -24,3 +24,7 @@ std::string Transaction::getStatus() const { return status; }
 Book* Transaction::getBook() const { return book; }
 User* Transaction::getUser() const { return user; }
 std::string Transaction::getDatetime() const { return datetime; }
+
+// Setters
+void Transaction::setStatus(const std::string& new_status) { status = new_status; }
+void Transaction::setDatetime(const std::string& new_datetime) { datetime = new_datetime; }
