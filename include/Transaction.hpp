@@ -37,7 +37,7 @@ public:
     void setDatetime(const std::string& new_datetime);
 
     // Methods for executing and cancelling the transaction
-    bool execute();
+    void execute();
     void cancel();
 
     // Method to get transaction info
