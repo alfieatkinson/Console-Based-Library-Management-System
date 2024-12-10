@@ -32,13 +32,17 @@ target_link_libraries(LibraryManagementSystem libLibraryManagementSystem)
 # Find Catch2
 find_package(Catch2 REQUIRED)
 
-# Add test executables but don't register them with `add_test()` yet
+# Enable testing
+enable_testing()
+
+# Add test executables and register them with `add_test()`
 file(GLOB TEST_SOURCES tests/*.cpp)
 foreach(test_source ${TEST_SOURCES})
     get_filename_component(test_name ${test_source} NAME_WE)
     message(STATUS "Adding test: ${test_name} from ${test_source}")
     add_executable(${test_name} ${test_source})
     target_link_libraries(${test_name} libLibraryManagementSystem Catch2::Catch2)
+    add_test(NAME ${test_name} COMMAND ${test_name} --reporter console)
 endforeach()
 
 option(BUILD_DOC "Build documentation" ON)
