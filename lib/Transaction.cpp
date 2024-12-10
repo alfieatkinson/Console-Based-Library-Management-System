@@ -51,13 +51,18 @@ void Transaction::execute() {
                 throw std::invalid_argument("User has not borrowed this book.");
             }
         }
+    } else {
+        throw std::logic_error("Transaction is not open.");
     }
-    throw std::logic_error("Transaction is not open.");
 }
 
 void Transaction::cancel() {
     if (status == "open") {
+        time_t now = time(0);
+        datetime = ctime(&now);
         status = "cancelled";
+    } else {
+        throw std::logic_error("Transaction is not open.");
     }
 }
 

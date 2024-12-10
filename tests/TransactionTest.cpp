@@ -68,7 +68,7 @@ TEST_CASE("Execute borrow transaction") {
 }
 
 TEST_CASE("Execute return transaction") {
-    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
     user.borrowBook(&book);  // Borrow the book first
     Transaction transaction(1, "return", &book, &user);
@@ -84,7 +84,6 @@ TEST_CASE("Execute return transaction") {
     }
 
     SECTION("User's borrowed_books does not contain the returned book after execution") {
-        user.borrowBook(&book);  // Borrow the book first
         transaction.execute();
         REQUIRE(user.getBorrowedBooks().empty());
     }
@@ -109,7 +108,7 @@ TEST_CASE("Execute return transaction") {
 }
 
 TEST_CASE("Cancel transaction") {
-    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
     Transaction transaction(1, "borrow", &book, &user);
 
@@ -118,9 +117,9 @@ TEST_CASE("Cancel transaction") {
         REQUIRE(transaction.getStatus() == "cancelled");
     }
 
-    SECTION("Book remains unavailable after cancellation") {
+    SECTION("Book remains available after cancellation") {
         transaction.cancel();
-        REQUIRE_FALSE(book.isAvailable());
+        REQUIRE(book.isAvailable());
     }
 
     SECTION("User's borrowed_books does not contain the book after cancellation") {
@@ -147,7 +146,7 @@ TEST_CASE("Cancel transaction") {
 }
 
 TEST_CASE("Get Transaction Information") {
-    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
     Transaction transaction(1, "borrow", &book, &user);
     transaction.execute();  // Execute the transaction
@@ -166,7 +165,7 @@ TEST_CASE("Get Transaction Information") {
 }
 
 TEST_CASE("Setting transaction attributes using setters") {
-    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
     Transaction transaction(1, "borrow", &book, &user);
 
@@ -183,7 +182,7 @@ TEST_CASE("Setting transaction attributes using setters") {
 }
 
 TEST_CASE("Invalid Transaction Type") {
-    Book book(1, "1984", "George Orwell", "9780451524935", 1949, false);
+    Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("Invalid transaction type throws an exception") {
