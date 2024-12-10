@@ -22,7 +22,7 @@ public:
     Transaction(int transaction_id, const std::string& type, Book* book, User* user);
 
     // Destructor
-    ~Transaction() {}
+    ~Transaction();
 
     // Overloaded operator
     bool operator==(const Transaction& other) const;
