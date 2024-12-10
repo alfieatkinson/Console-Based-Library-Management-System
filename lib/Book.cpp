@@ -16,7 +16,7 @@ Book::~Book() {
 }
 
 // Getters
-int Book::getBookID() const { return book_id; }
+int Book::getID() const { return book_id; }
 std::string Book::getTitle() const { return title; }
 std::string Book::getAuthor() const { return author; }
 std::string Book::getISBN() const { return isbn; }
@@ -49,7 +49,7 @@ void Book::returnBook() {
 }
 
 std::string Book::getBookInfo() const {
-    return "Book ID: " + std::to_string(getBookID()) + "\n" +
+    return "Book ID: " + std::to_string(getID()) + "\n" +
            "Title: " + getTitle() + "\n" +
            "Author: " + getAuthor() + "\n" +
            "ISBN: " + getISBN() + "\n" +

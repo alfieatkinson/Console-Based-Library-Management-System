@@ -21,7 +21,7 @@ class Book {
         ~Book();
 
         // Getters
-        int getBookID() const;
+        int getID() const;
         std::string getTitle() const;
         std::string getAuthor() const;
         std::string getISBN() const;

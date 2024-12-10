@@ -6,7 +6,7 @@ TEST_CASE("Book Constructor initialises correctly") {
     Book book(1, "The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925, true);
 
     SECTION("Book ID is correct") {
-        REQUIRE(book.getBookID() == 1);
+        REQUIRE(book.getID() == 1);
     }
 
     SECTION("Title is correct") {

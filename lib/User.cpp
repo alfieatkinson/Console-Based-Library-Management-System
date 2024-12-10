@@ -24,7 +24,7 @@ User::~User() {
 }
 
 // Getters
-int User::getUserID() const { return user_id; }
+int User::getID() const { return user_id; }
 std::string User::getUsername() const { return username; }
 std::string User::getForename() const { return forename; }
 std::string User::getSurname() const { return surname; }

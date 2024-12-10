@@ -25,7 +25,7 @@ public:
     ~User();
 
     // Getters
-    int getUserID() const;
+    int getID() const;
     std::string getUsername() const;
     std::string getForename() const;
     std::string getSurname() const;

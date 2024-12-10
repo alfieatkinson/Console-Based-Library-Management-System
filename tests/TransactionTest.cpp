@@ -10,7 +10,7 @@ TEST_CASE("Transaction constructor initialises correctly") {
     Transaction transaction(1, "borrow", &book, &user);
 
     SECTION("Transaction ID is correct") {
-        REQUIRE(transaction.getTransactionID() == 1);
+        REQUIRE(transaction.getID() == 1);
     }
 
     SECTION("Type is correct") {

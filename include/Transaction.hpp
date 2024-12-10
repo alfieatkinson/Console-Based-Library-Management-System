@@ -25,7 +25,7 @@ public:
     ~Transaction() {}
 
     // Getters
-    int getTransactionID() const;
+    int getID() const;
     std::string getType() const;
     std::string getStatus() const;
     Book* getBook() const;

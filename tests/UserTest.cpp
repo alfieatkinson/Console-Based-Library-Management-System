@@ -7,7 +7,7 @@ TEST_CASE("User Constructor initialises correctly") {
     User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
 
     SECTION("User ID is correct") {
-        REQUIRE(user.getUserID() == 1);
+        REQUIRE(user.getID() == 1);
     }
 
     SECTION("Username is correct") {

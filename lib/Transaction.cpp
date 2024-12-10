@@ -18,7 +18,7 @@ Transaction::~Transaction() {
 }
 
 // Getters
-int Transaction::getTransactionID() const { return transaction_id; }
+int Transaction::getID() const { return transaction_id; }
 std::string Transaction::getType() const { return type; }
 std::string Transaction::getStatus() const { return status; }
 Book* Transaction::getBook() const { return book; }
@@ -60,7 +60,7 @@ void Transaction::cancel() {
 
 // Method to get transaction info
 std::string Transaction::getTransactionInfo() const {
-    return "Transaction ID: " + std::to_string(getTransactionID()) + "\n" +
+    return "Transaction ID: " + std::to_string(getID()) + "\n" +
            "Type: " + getType() + "\n" +
            "Status: " + getStatus() + "\n" +
            "Book: " + getBook()->getTitle() + " by " + getBook()->getAuthor() + "\n" +
