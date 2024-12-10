@@ -77,18 +77,19 @@ This project uses CMake for the build process. To build the project, follow thes
     make
     ```
 
-4. Optionally, you can run tests using:
+4. Run the tests:
     ```bash
-    make test
+    ctest
     ```
+
+5. Optionally, run a specific test with:
+   ```bash
+   ./testname
+   ```
 
 ## Documentation
 
-This project uses [Doxygen](https://www.doxygen.nl/) for generating documentation. If you have Doxygen installed, you can generate the documentation by running the following command from the project root directory:
-
-```bash
-make doc
-```
+This project uses [Doxygen](https://www.doxygen.nl/) for generating documentation. If you have Doxygen installed, the LaTeX documentation will be generated in the directory `./docs/latex/`.
 
 ## Code of Conduct
 
