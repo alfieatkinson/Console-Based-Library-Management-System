@@ -53,7 +53,7 @@ public:
     bool checkOutStatus(const Book* book) const;
 
     // Method to get user info
-    std::string getUserInfo() const;
+    std::string getInfo() const;
 };
 
 #endif // USER_HPP

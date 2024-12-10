@@ -70,7 +70,7 @@ bool User::checkOutStatus(const Book* book) const {
 }
 
 // Method to get user info
-std::string User::getUserInfo() const {
+std::string User::getInfo() const {
     return "User ID: " + std::to_string(user_id) + "\n" +
            "Username: " + username + "\n" +
            "Forename: " + forename + "\n" +

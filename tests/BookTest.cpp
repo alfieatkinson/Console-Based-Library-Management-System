@@ -77,7 +77,7 @@ TEST_CASE("Get Book Information") {
             "Year: 1813\n"
             "Available: true";
 
-        REQUIRE(book.getBookInfo() == expectedInfo);
+        REQUIRE(book.getInfo() == expectedInfo);
     }
 }
 

@@ -51,7 +51,7 @@ void Book::returnBook() {
     setIsAvailable(true);
 }
 
-std::string Book::getBookInfo() const {
+std::string Book::getInfo() const {
     return "Book ID: " + std::to_string(getID()) + "\n" +
            "Title: " + getTitle() + "\n" +
            "Author: " + getAuthor() + "\n" +

@@ -44,7 +44,7 @@ public:
     void cancel();
 
     // Method to get transaction info
-    std::string getTransactionInfo() const;
+    std::string getInfo() const;
 };
 
 #endif // TRANSACTION_HPP

@@ -43,7 +43,7 @@ class Book {
         void returnBook();
 
         // Method to get book info
-        std::string getBookInfo() const;
+        std::string getInfo() const;
 };
 
 #endif // BOOK_HPP

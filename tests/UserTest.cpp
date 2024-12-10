@@ -95,7 +95,7 @@ TEST_CASE("User Information Retrieval") {
             "Email: johndoe@email.com\n"
             "Phone Number: 01234567890";
 
-        REQUIRE(user.getUserInfo() == expectedInfo);
+        REQUIRE(user.getInfo() == expectedInfo);
     }
 }
 

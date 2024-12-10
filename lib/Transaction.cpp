@@ -67,7 +67,7 @@ void Transaction::cancel() {
 }
 
 // Method to get transaction info
-std::string Transaction::getTransactionInfo() const {
+std::string Transaction::getInfo() const {
     return "Transaction ID: " + std::to_string(getID()) + "\n" +
            "Type: " + getType() + "\n" +
            "Status: " + getStatus() + "\n" +

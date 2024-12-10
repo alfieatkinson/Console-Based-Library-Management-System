@@ -160,7 +160,7 @@ TEST_CASE("Get Transaction Information") {
             "User: John Doe\n"
             "Datetime: " + transaction.getDatetime();
 
-        REQUIRE(transaction.getTransactionInfo() == expectedInfo);
+        REQUIRE(transaction.getInfo() == expectedInfo);
     }
 }
 
