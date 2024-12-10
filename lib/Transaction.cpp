@@ -17,6 +17,9 @@ Transaction::~Transaction() {
     // No dynamic memory allocation to clean up
 }
 
+// Overloaded operator
+bool Transaction::operator==(const Transaction& other) const { return transaction_id == other.transaction_id; }
+
 // Getters
 int Transaction::getID() const { return transaction_id; }
 std::string Transaction::getType() const { return type; }

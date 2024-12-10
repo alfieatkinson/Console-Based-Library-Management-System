@@ -24,6 +24,9 @@ public:
     // Destructor
     ~Transaction() {}
 
+    // Overloaded operator
+    bool operator==(const Transaction& other) const;
+
     // Getters
     int getID() const;
     std::string getType() const;

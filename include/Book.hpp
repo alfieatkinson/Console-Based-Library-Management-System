@@ -20,6 +20,9 @@ class Book {
         // Destructor
         ~Book();
 
+        // Overloaded operator
+        bool operator==(const Book& other) const;
+
         // Getters
         int getID() const;
         std::string getTitle() const;

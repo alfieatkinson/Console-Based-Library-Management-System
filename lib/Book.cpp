@@ -15,6 +15,9 @@ Book::~Book() {
     // No dynamic memory allocation to clean up
 }
 
+// Overloaded operator
+bool Book::operator==(const Book& other) const { return book_id == other.book_id; }
+
 // Getters
 int Book::getID() const { return book_id; }
 std::string Book::getTitle() const { return title; }

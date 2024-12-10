@@ -23,6 +23,9 @@ User::~User() {
     // No dynamic memory allocation to clean up
 }
 
+// Overloaded operator
+bool User::operator==(const User& other) const { return user_id == other.user_id; }
+
 // Getters
 int User::getID() const { return user_id; }
 std::string User::getUsername() const { return username; }

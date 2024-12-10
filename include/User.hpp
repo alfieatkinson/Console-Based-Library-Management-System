@@ -24,6 +24,9 @@ public:
     // Destructor
     ~User();
 
+    // Overloaded operator
+    bool operator==(const User& other) const;
+
     // Getters
     int getID() const;
     std::string getUsername() const;
