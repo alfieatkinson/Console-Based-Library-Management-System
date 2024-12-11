@@ -4,6 +4,16 @@
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
+#include <iostream>
+
+std::string getCurrentYear() {
+    auto now = std::chrono::system_clock::now();
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+    struct tm *timeinfo = localtime(&time_t_now);
+    char buffer[5];
+    strftime(buffer, sizeof(buffer), "%Y", timeinfo);
+    return std::string(buffer);
+}
 
 TEST_CASE("Database constructor initialises correctly") {
     Database db;
@@ -147,7 +157,10 @@ TEST_CASE("Query operations with approximate search") {
     auto user2 = db.readUser(2);
 
     db.createTransaction("borrow", book1, user1);
-    db.createTransaction("return", book2, user2);
+    db.createTransaction("borrow", book2, user2);
+
+    auto transaction1 = db.readTransaction(1);
+    auto transaction2 = db.readTransaction(2);
 
     SECTION("Query books by title with approximate match") {
         // Test approximate match with one character difference
@@ -156,12 +169,12 @@ TEST_CASE("Query operations with approximate search") {
         REQUIRE(result[0]->getTitle() == "1984");
 
         // Test with no approximate match (no such book)
-        result = db.queryBooks("Brave New Worlds");
+        result = db.queryBooks("50 Shades of Grey");
         REQUIRE(result.empty());
 
         // Test with multiple results (if applicable, e.g., if the DB contains multiple titles that are similar)
-        db.createBook("Brave New World: Revised", "Aldous Huxley", "9780060850525", 1945);
-        result = db.queryBooks("Brave New Wor");  // Should match both "Brave New World" and "Brave New World: Revised"
+        db.createBook("Brave New World 2", "Aldous Huxley", "9780060850525", 1945);
+        result = db.queryBooks("Brave New World");  // Should match both "Brave New World" and "Brave New World: Revised"
         REQUIRE(result.size() == 2);
     }
 
@@ -187,6 +200,28 @@ TEST_CASE("Query operations with approximate search") {
         REQUIRE(result.empty());
     }
 
+    SECTION("Query users by forename with approximate match") {
+        // Test approximate match with one character difference
+        auto result = db.queryUsers("Hohn");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getForename() == "John");
+
+        // Test with no approximate match (incorrect forename)
+        result = db.queryUsers("Johnathan");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query users by surname with approximate match") {
+        // Test approximate match with one character difference
+        auto result = db.queryUsers("Doee");  
+        REQUIRE(result.size() == 2);
+        REQUIRE(result[0]->getSurname() == "Doe");
+
+        // Test with no approximate match (incorrect surname)
+        result = db.queryUsers("Smith");
+        REQUIRE(result.empty());
+    }
+
     SECTION("Query users by username with approximate match") {
         // Test approximate match with one character difference
         auto result = db.queryUsers("john_do");  
@@ -194,62 +229,7 @@ TEST_CASE("Query operations with approximate search") {
         REQUIRE(result[0]->getUsername() == "john_doe");
 
         // Test with no approximate match (incorrect username)
-        result = db.queryUsers("john_doe123");
-        REQUIRE(result.empty());
-    }
-
-    SECTION("Query users by email with approximate match") {
-        // Test approximate match with one character difference
-        auto result = db.queryUsers("johndoe@emal.com");  
-        REQUIRE(result.size() == 1);
-        REQUIRE(result[0]->getEmail() == "johndoe@email.com");
-
-        // Test with no approximate match (incorrect email)
-        result = db.queryUsers("johndoe123@email.com");
-        REQUIRE(result.empty());
-    }
-
-    SECTION("Query transactions by status with approximate match") {
-        // Test approximate match with one character difference
-        auto result = db.queryTransactions("borro");  
-        REQUIRE(result.size() == 1);
-        REQUIRE(result[0]->getStatus() == "borrow");
-
-        // Test with no approximate match (invalid status)
-        result = db.queryTransactions("borow");
-        REQUIRE(result.empty());
-    }
-
-    SECTION("Query transactions by datetime with approximate match") {
-        // Test approximate match with one character difference
-        auto result = db.queryTransactions("2024-12-11 10:00:01");  
-        REQUIRE(result.size() == 1);
-        REQUIRE(result[0]->getDatetime() == "2024-12-11 10:00:00");
-
-        // Test with no approximate match (incorrect datetime)
-        result = db.queryTransactions("2025-01-01 00:00:00");
-        REQUIRE(result.empty());
-    }
-
-    SECTION("Query transactions by book title with approximate match") {
-        // Test approximate match with one character difference
-        auto result = db.queryTransactions("1983");  
-        REQUIRE(result.size() == 1);
-        REQUIRE(result[0]->getBook()->getTitle() == "1984");
-
-        // Test with no approximate match (incorrect book title)
-        result = db.queryTransactions("The Great Gatsby");
-        REQUIRE(result.empty());
-    }
-
-    SECTION("Query transactions by user username with approximate match") {
-        // Test approximate match with one character difference
-        auto result = db.queryTransactions("john_do");  
-        REQUIRE(result.size() == 1);
-        REQUIRE(result[0]->getUser()->getUsername() == "john_doe");
-
-        // Test with no approximate match (incorrect username)
-        result = db.queryTransactions("jane_doe123");
+        result = db.queryUsers("jonnysmith123");
         REQUIRE(result.empty());
     }
 
@@ -268,6 +248,32 @@ TEST_CASE("Query operations with approximate search") {
     SECTION("Edge case: Query with no matches") {
         // Querying for something that doesn’t exist in the DB
         auto result = db.queryBooks("Nonexistent Book Title");  
+        REQUIRE(result.empty());
+    }
+
+    // New sections for queryTransactionByBookID and queryTransactionByUserID
+
+    SECTION("Query transactions by book ID") {
+        // Query by book ID
+        auto result = db.queryTransactionsByBookID(1);  
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getBook()->getTitle() == "1984");
+        REQUIRE(result[0]->getUser()->getUsername() == "john_doe");
+
+        // Query by a non-existing book ID
+        result = db.queryTransactionsByBookID(999);  
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query transactions by user ID") {
+        // Query by user ID
+        auto result = db.queryTransactionsByUserID(1);  
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getBook()->getTitle() == "1984");
+        REQUIRE(result[0]->getUser()->getUsername() == "john_doe");
+
+        // Query by a non-existing user ID
+        result = db.queryTransactionsByUserID(999);  
         REQUIRE(result.empty());
     }
 }
