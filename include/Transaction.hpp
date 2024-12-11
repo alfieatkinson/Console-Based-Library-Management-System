@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <memory>
 #include <ctime>
 
 class Book;
@@ -11,18 +12,15 @@ class User;
 class Transaction {
 private:
     int transaction_id;
-    std::string datetime;  // Initially empty until executed
-    std::string type;      // Either "borrow" or "return"
-    std::string status;                // "open", "completed", "cancelled"
-    Book* book;
-    User* user;
+    std::string datetime; // Initially empty until executed
+    std::string type; // Either "borrow" or "return"
+    std::string status; // "open", "completed", "cancelled"
+    std::shared_ptr<Book> book;
+    std::shared_ptr<User> user;
 
 public:
     // Constructor
-    Transaction(int transaction_id, const std::string& type, Book* book, User* user);
-
-    // Destructor
-    ~Transaction();
+    Transaction(int transaction_id, const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user);
 
     // Overloaded operator
     bool operator==(const Transaction& other) const;
@@ -31,8 +29,8 @@ public:
     int getID() const;
     std::string getType() const;
     std::string getStatus() const;
-    Book* getBook() const;
-    User* getUser() const;
+    std::shared_ptr<Book> getBook() const;
+    std::shared_ptr<User> getUser() const;
     std::string getDatetime() const;
 
     // Setters
