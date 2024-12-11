@@ -10,6 +10,11 @@ Transaction::Transaction(int transaction_id, const std::string& type, std::share
     datetime = ""; // Initially empty until executed
 }
 
+// Destructor
+Transaction::~Transaction() {
+    // No dynamic memory allocation to clean up
+}
+
 // Overloaded operator
 bool Transaction::operator==(const Transaction& other) const {
     return transaction_id == other.transaction_id;
