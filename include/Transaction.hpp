@@ -22,6 +22,9 @@ public:
     // Constructor
     Transaction(int transaction_id, const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user);
 
+    // Destructor
+    ~Transaction();
+
     // Overloaded operator
     bool operator==(const Transaction& other) const;
 
