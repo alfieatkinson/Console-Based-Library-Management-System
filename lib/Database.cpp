@@ -119,7 +119,9 @@ void Database::deleteTransaction(int id) {
 std::vector<std::shared_ptr<Book>> Database::queryBooks(const std::string& search_term) {
     std::vector<std::shared_ptr<Book>> result;
     for (auto& book : books) {
-        if (levenshtein(book->getTitle(), search_term) <= 2 || levenshtein(book->getAuthor(), search_term) <= 2 || levenshtein(book->getISBN(), search_term) <= 2) {
+        if (levenshtein(book->getTitle(), search_term) <= 2 || 
+            levenshtein(book->getAuthor(), search_term) <= 2 || 
+            levenshtein(book->getISBN(), search_term) <= 2) {
             result.push_back(book);
         }
     }
@@ -129,8 +131,32 @@ std::vector<std::shared_ptr<Book>> Database::queryBooks(const std::string& searc
 std::vector<std::shared_ptr<User>> Database::queryUsers(const std::string& search_term) {
     std::vector<std::shared_ptr<User>> result;
     for (auto& user : users) {
-        if (levenshtein(user->getForename(), search_term) <= 2 || levenshtein(user->getSurname(), search_term) <= 2 || levenshtein(user->getUsername(), search_term) <= 2 || levenshtein(user->getEmail(), search_term) <= 2) {
+        if (levenshtein(user->getForename(), search_term) <= 2 || 
+            levenshtein(user->getSurname(), search_term) <= 2 || 
+            levenshtein(user->getUsername(), search_term) <= 2 || 
+            levenshtein(user->getEmail(), search_term) <= 2) {
             result.push_back(user);
+        }
+    }
+    return result;
+}
+
+std::vector<std::shared_ptr<Transaction>> Database::queryTransactions(const std::string& search_term) {
+    std::vector<std::shared_ptr<Transaction>> result;
+    for (auto& transaction : transactions) {
+        auto book = transaction->getBook();
+        auto user = transaction->getUser();
+
+        if (levenshtein(transaction->getStatus(), search_term) <= 2 ||
+            levenshtein(transaction->getDatetime(), search_term) <= 2 ||
+            levenshtein(book->getTitle(), search_term) <= 2 ||
+            levenshtein(book->getAuthor(), search_term) <= 2 ||
+            levenshtein(book->getISBN(), search_term) <= 2 ||
+            levenshtein(user->getUsername(), search_term) <= 2 ||
+            levenshtein(user->getForename(), search_term) <= 2 ||
+            levenshtein(user->getSurname(), search_term) <= 2 ||
+            levenshtein(user->getEmail(), search_term) <= 2) {
+            result.push_back(transaction);
         }
     }
     return result;
