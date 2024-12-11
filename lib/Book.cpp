@@ -5,9 +5,7 @@
 // Constructor
 Book::Book(int book_id, const std::string& title, const std::string& author, const std::string& isbn, int year_published, bool available)
     : book_id(book_id), title(title), author(author), isbn(isbn), year_published(year_published), available(available) {
-    if (isbn.length() != 13) {
-        throw std::invalid_argument("ISBN must be 13 characters long.");
-    }
+    if (isbn.length() != 13) throw std::invalid_argument("ISBN must be 13 characters long.");
 }
 
 // Destructor
@@ -30,9 +28,7 @@ bool Book::isAvailable() const { return available; }
 void Book::setTitle(const std::string& new_title) { title = new_title; }
 void Book::setAuthor(const std::string& new_author) { author = new_author; }
 void Book::setISBN(const std::string& new_isbn) {
-    if (new_isbn.length() != 13) {
-        throw std::invalid_argument("ISBN must be 13 characters long");
-    }
+    if (new_isbn.length() != 13) throw std::invalid_argument("ISBN must be 13 characters long.");
     isbn = new_isbn;
 }
 void Book::setYearPublished(int new_year_published) { year_published = new_year_published; }

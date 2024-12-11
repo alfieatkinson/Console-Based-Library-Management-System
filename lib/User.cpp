@@ -7,15 +7,11 @@ User::User(int user_id, const std::string& username, const std::string& forename
     : user_id(user_id), username(username), forename(forename), surname(surname), email(email), phone_number(phone_number), password(password) {
 
     // Validate phone number length
-    if (phone_number.length() != 11) {
-        throw std::invalid_argument("Phone number must be 11 characters long.");
-    }
+    if (phone_number.length() != 11) throw std::invalid_argument("Phone number must be 11 characters long.");
 
     // Validate email format
     std::regex email_regex("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
-    if (!std::regex_match(email, email_regex)) {
-        throw std::invalid_argument("Invalid email format.");
-    }
+    if (!std::regex_match(email, email_regex)) throw std::invalid_argument("Invalid email format.");
 }
 
 // Destructor
@@ -34,7 +30,7 @@ std::string User::getSurname() const { return surname; }
 std::string User::getEmail() const { return email; }
 std::string User::getPhoneNumber() const { return phone_number; }
 std::string User::getPassword() const { return password; }
-std::vector<Book*> User::getBorrowedBooks() const { return borrowed_books; }
+std::vector<std::shared_ptr<Book>> User::getBorrowedBooks() const { return borrowed_books; }
 
 // Setters
 void User::setUsername(const std::string& new_username) { username = new_username; }
@@ -45,7 +41,7 @@ void User::setPhoneNumber(const std::string& new_phone_number) { phone_number = 
 void User::setPassword(const std::string& new_password) { password = new_password; }
 
 // Methods for borrowing and returning books
-bool User::borrowBook(Book* book) {
+bool User::borrowBook(std::shared_ptr<Book> book) {
     if (book->isAvailable()) {
         borrowed_books.push_back(book);
         book->borrowBook();
@@ -54,7 +50,7 @@ bool User::borrowBook(Book* book) {
     return false;
 }
 
-bool User::returnBook(Book* book) {
+bool User::returnBook(std::shared_ptr<Book> book) {
     auto it = std::find(borrowed_books.begin(), borrowed_books.end(), book);
     if (it != borrowed_books.end()) {
         borrowed_books.erase(it);
@@ -65,7 +61,7 @@ bool User::returnBook(Book* book) {
 }
 
 // Method to check the checkout status of a book
-bool User::checkOutStatus(const Book* book) const {
+bool User::checkOutStatus(const std::shared_ptr<Book> book) const {
     return std::find(borrowed_books.begin(), borrowed_books.end(), book) != borrowed_books.end();
 }
 

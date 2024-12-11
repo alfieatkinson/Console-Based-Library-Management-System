@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <stdexcept>
+#include <memory>
 #include "Book.hpp"
 
 class User {
@@ -15,7 +15,7 @@ private:
     std::string email;
     std::string phone_number;
     std::string password;
-    std::vector<Book*> borrowed_books; // Vector of pointers to Book objects
+    std::vector<std::shared_ptr<Book>> borrowed_books; // Vector of shared pointers to Book objects
 
 public:
     // Constructor
@@ -35,22 +35,22 @@ public:
     std::string getEmail() const;
     std::string getPhoneNumber() const;
     std::string getPassword() const;
-    std::vector<Book*> getBorrowedBooks() const;
+    std::vector<std::shared_ptr<Book>> getBorrowedBooks() const;
 
     // Setters
     void setUsername(const std::string& new_username);
     void setForename(const std::string& new_forename);
     void setSurname(const std::string& new_surname);
     void setEmail(const std::string& new_email);
-    void setPhoneNumber(const std::string& new_phone_umber);
+    void setPhoneNumber(const std::string& new_phone_number);
     void setPassword(const std::string& new_password);
 
     // Methods for borrowing and returning books
-    bool borrowBook(Book* book);
-    bool returnBook(Book* book);
+    bool borrowBook(std::shared_ptr<Book> book);
+    bool returnBook(std::shared_ptr<Book> book);
 
     // Method to check the checkout status of a book
-    bool checkOutStatus(const Book* book) const;
+    bool checkOutStatus(const std::shared_ptr<Book> book) const;
 
     // Method to get user info
     std::string getInfo() const;
