@@ -132,6 +132,80 @@ TEST_CASE("Delete operations") {
     }
 }
 
+TEST_CASE("Query operations with approximate search") {
+    Database db;
+
+    // Setup test data
+    db.createBook("1984", "George Orwell", "9780451524935", 1949);
+    db.createBook("Brave New World", "Aldous Huxley", "9780060850524", 1932);
+    db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    db.createUser("jane_doe", "Jane", "Doe", "janedoe@email.com", "09876543210", "password456");
+
+    auto book1 = db.readBook(1);
+    auto book2 = db.readBook(2);
+    auto user1 = db.readUser(1);
+    auto user2 = db.readUser(2);
+
+    auto transaction1 = std::make_shared<Transaction>(1, "borrow", book1, user1, "2024-12-11 10:00:00");
+    auto transaction2 = std::make_shared<Transaction>(2, "return", book2, user2, "2024-12-12 15:30:00");
+    db.createTransaction("borrow", book1, user1);
+    db.createTransaction("return", book2, user2);
+
+    SECTION("Query books by title with approximate match") {
+        auto result = db.queryBooks("1983");  // One character difference from "1984"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getTitle() == "1984");
+    }
+
+    SECTION("Query books by author with approximate match") {
+        auto result = db.queryBooks("George Orwel");  // One character difference from "George Orwell"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getAuthor() == "George Orwell");
+    }
+
+    SECTION("Query books by ISBN with approximate match") {
+        auto result = db.queryBooks("9780451524936");  // One character difference from "9780451524935"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getISBN() == "9780451524935");
+    }
+
+    SECTION("Query users by username with approximate match") {
+        auto result = db.queryUsers("john_do");  // One character difference from "john_doe"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getUsername() == "john_doe");
+    }
+
+    SECTION("Query users by email with approximate match") {
+        auto result = db.queryUsers("johndoe@emal.com");  // One character difference from "johndoe@email.com"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getEmail() == "johndoe@email.com");
+    }
+
+    SECTION("Query transactions by status with approximate match") {
+        auto result = db.queryTransactions("borro");  // One character difference from "borrow"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getStatus() == "borrow");
+    }
+
+    SECTION("Query transactions by datetime with approximate match") {
+        auto result = db.queryTransactions("2024-12-11 10:00:01");  // One character difference from "2024-12-11 10:00:00"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getDatetime() == "2024-12-11 10:00:00");
+    }
+
+    SECTION("Query transactions by book title with approximate match") {
+        auto result = db.queryTransactions("1983");  // One character difference from "1984"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getBook()->getTitle() == "1984");
+    }
+
+    SECTION("Query transactions by user username with approximate match") {
+        auto result = db.queryTransactions("john_do");  // One character difference from "john_doe"
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getUser()->getUsername() == "john_doe");
+    }
+}
+
 TEST_CASE("Invalid operations") {
     Database db;
 
