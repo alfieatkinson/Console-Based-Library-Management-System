@@ -5,6 +5,8 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
+#include <set>
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
@@ -18,9 +20,24 @@ private:
     int user_id_counter = 0;
     int transaction_id_counter = 0;
 
+    // Maps for quick searches
+    std::unordered_map<std::string, std::vector<std::shared_ptr<Book>>> book_author_map;
+    std::unordered_map<std::string, std::vector<std::shared_ptr<Book>>> book_title_map;
+    std::unordered_map<std::string, std::vector<std::shared_ptr<Book>>> book_isbn_map;
+
+    std::unordered_map<std::string, std::vector<std::shared_ptr<User>>> user_forename_map;
+    std::unordered_map<std::string, std::vector<std::shared_ptr<User>>> user_surname_map;
+    std::unordered_map<std::string, std::vector<std::shared_ptr<User>>> user_username_map;
+
+    // Maps for transactions by book ID and user ID
+    std::unordered_map<int, std::vector<std::shared_ptr<Transaction>>> transactions_by_book_id;
+    std::unordered_map<int, std::vector<std::shared_ptr<Transaction>>> transactions_by_user_id;
+
 public:
-    // Constructor and Destructor
+    // Constructor
     Database() = default;
+
+    // Destructor
     ~Database() = default;
 
     // Getters
@@ -59,7 +76,8 @@ public:
     // Query operations with approximate search
     std::vector<std::shared_ptr<Book>> queryBooks(const std::string& search_term, int threshold = 2);
     std::vector<std::shared_ptr<User>> queryUsers(const std::string& search_term, int threshold = 2);
-    std::vector<std::shared_ptr<Transaction>> queryTransactions(const std::string& search_term, int threshold = 2);
+    std::vector<std::shared_ptr<Transaction>> queryTransactionsByBookID(int id);
+    std::vector<std::shared_ptr<Transaction>> queryTransactionsByUserID(int id);
 };
 
 #endif // DATABASE_HPP
