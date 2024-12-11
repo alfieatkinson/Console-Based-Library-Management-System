@@ -39,23 +39,23 @@ TEST_CASE("Create operations") {
     SECTION("Create a book") {
         db.createBook("1984", "George Orwell", "9780451524935", 1949);
         REQUIRE(db.getBooks().size() == 1);
-        REQUIRE(db.getBooks()[0].getTitle() == "1984");
+        REQUIRE(db.getBooks()[0]->getTitle() == "1984");
         REQUIRE(db.getBookIDCounter() == 1);
     }
 
     SECTION("Create a user") {
         db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         REQUIRE(db.getUsers().size() == 1);
-        REQUIRE(db.getUsers()[0].getUsername() == "john_doe");
+        REQUIRE(db.getUsers()[0]->getUsername() == "john_doe");
         REQUIRE(db.getUserIDCounter() == 1);
     }
 
     SECTION("Create a transaction") {
-        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         db.createTransaction("borrow", book, user);
         REQUIRE(db.getTransactions().size() == 1);
-        REQUIRE(db.getTransactions()[0].getType() == "borrow");
+        REQUIRE(db.getTransactions()[0]->getType() == "borrow");
         REQUIRE(db.getTransactionIDCounter() == 1);
     }
 }
@@ -65,21 +65,21 @@ TEST_CASE("Read operations") {
 
     SECTION("Read a book") {
         db.createBook("1984", "George Orwell", "9780451524935", 1949);
-        Book* book = db.readBook(1);
+        auto book = db.readBook(1);
         REQUIRE(book->getTitle() == "1984");
     }
 
     SECTION("Read a user") {
         db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-        User* user = db.readUser(1);
+        auto user = db.readUser(1);
         REQUIRE(user->getUsername() == "john_doe");
     }
 
     SECTION("Read a transaction") {
-        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         db.createTransaction("borrow", book, user);
-        Transaction* transaction = db.readTransaction(1);
+        auto transaction = db.readTransaction(1);
         REQUIRE(transaction->getType() == "borrow");
     }
 }
@@ -100,8 +100,8 @@ TEST_CASE("Update operations") {
     }
 
     SECTION("Update a transaction") {
-        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         db.createTransaction("borrow", book, user);
         db.updateTransaction(1, "status", "completed");
         REQUIRE(db.readTransaction(1)->getStatus() == "completed");
@@ -124,8 +124,8 @@ TEST_CASE("Delete operations") {
     }
 
     SECTION("Delete a transaction") {
-        Book book(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         db.createTransaction("borrow", book, user);
         db.deleteTransaction(1);
         REQUIRE(db.getTransactions().empty());
