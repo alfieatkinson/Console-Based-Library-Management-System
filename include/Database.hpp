@@ -57,9 +57,9 @@ public:
     void deleteTransaction(int id);
 
     // Query operations with approximate search
-    std::vector<std::shared_ptr<Book>> queryBooks(const std::string& search_term);
-    std::vector<std::shared_ptr<User>> queryUsers(const std::string& search_term);
-    std::vector<std::shared_ptr<Transaction>> queryTransactions(const std::string& search_term);
+    std::vector<std::shared_ptr<Book>> queryBooks(const std::string& search_term, int threshold);
+    std::vector<std::shared_ptr<User>> queryUsers(const std::string& search_term, int threshold);
+    std::vector<std::shared_ptr<Transaction>> queryTransactions(const std::string& search_term, int threshold);
 };
 
 #endif // DATABASE_HPP
