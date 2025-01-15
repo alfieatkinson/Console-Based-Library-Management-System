@@ -14,3 +14,19 @@ std::string getCurrentYear() {
     strftime(buffer, sizeof(buffer), "%Y", timeinfo);
     return std::string(buffer);
 }
+
+TEST_CASE("LibraryManager constructor initialises correctly") {
+    LibraryManager lm;
+
+    SECTION("Books is empty") {
+        REQUIRE(lm.db.getBooks().empty());
+    }
+
+    SECTION("Users is empty") {
+        REQUIRE(lm.db.getUsers().empty());
+    }
+
+    SECTION("Transactions is empty") {
+        REQUIRE(lm.db.getTransactions().empty());
+    }
+}
