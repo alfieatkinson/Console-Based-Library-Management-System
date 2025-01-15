@@ -5,6 +5,7 @@
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
+#include <iostream>
 
 std::string getCurrentYear() {
     auto now = std::chrono::system_clock::now();
@@ -49,7 +50,7 @@ TEST_CASE("Create operations") {
     SECTION("Create a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
         auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-        lm.createTransaction("borrow", book, user);
+        lm.db.createTransaction("borrow", book, user);
         REQUIRE(lm.db.getTransactions().size() == 1);
         REQUIRE(lm.db.getTransactions()[0]->getType() == "borrow");
     }
@@ -73,7 +74,7 @@ TEST_CASE("Read operations") {
     SECTION("Read a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
         auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-        lm.createTransaction("borrow", book, user);
+        lm.db.createTransaction("borrow", book, user);
         auto transaction = lm.readTransaction(1);
         REQUIRE(transaction->getType() == "borrow");
     }
@@ -97,7 +98,7 @@ TEST_CASE("Update operations") {
     SECTION("Update a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
         auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-        lm.createTransaction("borrow", book, user);
+        lm.db.createTransaction("borrow", book, user);
         lm.updateTransaction(1, "status", "completed");
         REQUIRE(lm.readTransaction(1)->getStatus() == "completed");
     }
@@ -121,7 +122,7 @@ TEST_CASE("Delete operations") {
     SECTION("Delete a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
         auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-        lm.createTransaction("borrow", book, user);
+        lm.db.createTransaction("borrow", book, user);
         lm.deleteTransaction(1);
         REQUIRE(lm.db.getTransactions().empty());
     }
@@ -163,8 +164,8 @@ TEST_CASE("Query operations with approximate search") {
     auto user1 = lm.readUser(1);
     auto user2 = lm.readUser(2);
 
-    lm.createTransaction("borrow", book1, user1);
-    lm.createTransaction("borrow", book2, user2);
+    lm.db.createTransaction("borrow", book1, user1);
+    lm.db.createTransaction("borrow", book2, user2);
 
     SECTION("Query books by title with approximate match") {
         auto result = lm.queryBooks("1983");
