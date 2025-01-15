@@ -30,3 +30,27 @@ TEST_CASE("LibraryManager constructor initialises correctly") {
         REQUIRE(lm.db.getTransactions().empty());
     }
 }
+
+TEST_CASE("Create operations") {
+    LibraryManager lm;
+
+    SECTION("Create a book") {
+        lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+        REQUIRE(lm.db.getBooks().size() == 1);
+        REQUIRE(lm.db.getBooks()[0]->getTitle() == "1984");
+    }
+
+    SECTION("Create a user") {
+        lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        REQUIRE(lm.db.getUsers().size() == 1);
+        REQUIRE(lm.db.getUsers()[0]->getUsername() == "john_doe");
+    }
+
+    SECTION("Create a transaction") {
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.createTransaction("borrow", book, user);
+        REQUIRE(lm.db.getTransactions().size() == 1);
+        REQUIRE(lm.db.getTransactions()[0]->getType() == "borrow");
+    }
+}
