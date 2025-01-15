@@ -13,10 +13,10 @@ private:
 
 public:
     // Constructor
-    LibraryManager() = default;
+    LibraryManager();
 
     // Destructor
-    LibraryManager() = default;
+    ~LibraryManager();
 
     // Getters
     const Database& getDatabase() const;
