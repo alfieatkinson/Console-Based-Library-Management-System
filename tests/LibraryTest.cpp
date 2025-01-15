@@ -126,3 +126,114 @@ TEST_CASE("Delete operations") {
         REQUIRE(lm.getTransactions().empty());
     }
 }
+
+TEST_CASE("Query operations with approximate search") {
+    LibraryManager lm;
+
+    // Setup test data
+    lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+    lm.createBook("Brave New World", "Aldous Huxley", "9780060850524", 1932);
+    lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    lm.createUser("jane_doe", "Jane", "Doe", "janedoe@email.com", "09876543210", "password456");
+
+    auto book1 = lm.readBook(1);
+    auto book2 = lm.readBook(2);
+    auto user1 = lm.readUser(1);
+    auto user2 = lm.readUser(2);
+
+    lm.createTransaction("borrow", book1, user1);
+    lm.createTransaction("borrow", book2, user2);
+
+    SECTION("Query books by title with approximate match") {
+        auto result = lm.queryBooks("1983");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getTitle() == "1984");
+
+        result = lm.queryBooks("50 Shades of Grey");
+        REQUIRE(result.empty());
+
+        lm.createBook("Brave New World 2", "Aldous Huxley", "9780060850525", 1945);
+        result = lm.queryBooks("Brave New World");
+        REQUIRE(result.size() == 2);
+    }
+
+    SECTION("Query books by author with approximate match") {
+        auto result = lm.queryBooks("George Orwel");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getAuthor() == "George Orwell");
+
+        result = lm.queryBooks("J.K. Rowling");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query books by ISBN with approximate match") {
+        auto result = lm.queryBooks("9780451524936");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getISBN() == "9780451524935");
+
+        result = lm.queryBooks("9780000000000");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query users by forename with approximate match") {
+        auto result = lm.queryUsers("Hohn");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getForename() == "John");
+
+        result = lm.queryUsers("Johnathan");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query users by surname with approximate match") {
+        auto result = lm.queryUsers("Doee");
+        REQUIRE(result.size() == 2);
+        REQUIRE(result[0]->getSurname() == "Doe");
+
+        result = lm.queryUsers("Smith");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query users by username with approximate match") {
+        auto result = lm.queryUsers("john_do");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getUsername() == "john_doe");
+
+        result = lm.queryUsers("jonnysmith123");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Edge case: Query with exact match") {
+        auto result = lm.queryBooks("1984");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getTitle() == "1984");
+
+        result = lm.queryBooks("Brave New World");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getTitle() == "Brave New World");
+    }
+
+    SECTION("Edge case: Query with no matches") {
+        auto result = lm.queryBooks("Nonexistent Book Title");
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query transactions by book ID") {
+        auto result = lm.queryTransactionsByBookID(1);
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getBook()->getTitle() == "1984");
+        REQUIRE(result[0]->getUser()->getUsername() == "john_doe");
+
+        result = lm.queryTransactionsByBookID(99);
+        REQUIRE(result.empty());
+    }
+
+    SECTION("Query transactions by user ID") {
+        auto result = lm.queryTransactionsByUserID(1);
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0]->getBook()->getTitle() == "1984");
+        REQUIRE(result[0]->getUser()->getUsername() == "john_doe");
+
+        result = lm.queryTransactionsByUserID(99);
+        REQUIRE(result.empty());
+    }
+}
