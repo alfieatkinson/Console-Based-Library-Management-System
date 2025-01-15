@@ -54,3 +54,27 @@ TEST_CASE("Create operations") {
         REQUIRE(lm.db.getTransactions()[0]->getType() == "borrow");
     }
 }
+
+TEST_CASE("Read operations") {
+    LibraryManager lm;
+
+    SECTION("Read a book") {
+        lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+        auto book = lm.readBook(1);
+        REQUIRE(book->getTitle() == "1984");
+    }
+
+    SECTION("Read a user") {
+        lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = lm.readUser(1);
+        REQUIRE(user->getUsername() == "john_doe");
+    }
+
+    SECTION("Read a transaction") {
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.createTransaction("borrow", book, user);
+        auto transaction = lm.readTransaction(1);
+        REQUIRE(transaction->getType() == "borrow");
+    }
+}
