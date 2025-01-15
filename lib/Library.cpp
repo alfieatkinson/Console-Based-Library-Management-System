@@ -18,7 +18,7 @@ LibraryManager::~LibraryManager() {
 }
 
 // Getters
-const Database& LibraryManager::getDatabase() const {
+Database& LibraryManager::getDatabase() {
     return db;
 }
 

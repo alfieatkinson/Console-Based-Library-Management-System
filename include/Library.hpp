@@ -19,7 +19,7 @@ public:
     ~LibraryManager();
 
     // Getters
-    const Database& getDatabase() const;
+    Database& getDatabase();
 
     // Setters
     void setDatabase(const Database& new_db);
