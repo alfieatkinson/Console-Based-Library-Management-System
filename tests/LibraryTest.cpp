@@ -102,3 +102,27 @@ TEST_CASE("Update operations") {
         REQUIRE(lm.readTransaction(1)->getStatus() == "completed");
     }
 }
+
+TEST_CASE("Delete operations") {
+    LibraryManager lm;
+
+    SECTION("Delete a book") {
+        lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+        lm.deleteBook(1);
+        REQUIRE(lm.getBooks().empty());
+    }
+
+    SECTION("Delete a user") {
+        lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.deleteUser(1);
+        REQUIRE(lm.getUsers().empty());
+    }
+
+    SECTION("Delete a transaction") {
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.createTransaction("borrow", book, user);
+        lm.deleteTransaction(1);
+        REQUIRE(lm.getTransactions().empty());
+    }
+}
