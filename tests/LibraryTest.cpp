@@ -109,13 +109,13 @@ TEST_CASE("Delete operations") {
     SECTION("Delete a book") {
         lm.createBook("1984", "George Orwell", "9780451524935", 1949);
         lm.deleteBook(1);
-        REQUIRE(lm.getBooks().empty());
+        REQUIRE(lm.db.getBooks().empty());
     }
 
     SECTION("Delete a user") {
         lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         lm.deleteUser(1);
-        REQUIRE(lm.getUsers().empty());
+        REQUIRE(lm.db.getUsers().empty());
     }
 
     SECTION("Delete a transaction") {
@@ -123,7 +123,7 @@ TEST_CASE("Delete operations") {
         auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         lm.createTransaction("borrow", book, user);
         lm.deleteTransaction(1);
-        REQUIRE(lm.getTransactions().empty());
+        REQUIRE(lm.db.getTransactions().empty());
     }
 }
 
@@ -134,8 +134,8 @@ TEST_CASE("Borrow and Return Operations") {
         lm.createBook("1984", "George Orwell", "9780451524935", 1949);
         lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         lm.borrowBook(1, 1);  // Book ID 1, User ID 1
-        REQUIRE(lm.getTransactions().size() == 1);
-        REQUIRE(lm.getTransactions()[0]->getType() == "borrow");
+        REQUIRE(lm.db.getTransactions().size() == 1);
+        REQUIRE(lm.db.getTransactions()[0]->getType() == "borrow");
     }
 
     SECTION("Return a book") {
@@ -143,9 +143,9 @@ TEST_CASE("Borrow and Return Operations") {
         lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
         lm.borrowBook(1, 1);  // Borrow the book
         lm.returnBook(1);     // Return the book
-        REQUIRE(lm.getTransactions().size() == 1);
-        REQUIRE(lm.getTransactions()[0]->getType() == "return");
-        REQUIRE(lm.getTransactions()[0]->getStatus() == "completed");
+        REQUIRE(lm.db.getTransactions().size() == 1);
+        REQUIRE(lm.db.getTransactions()[0]->getType() == "return");
+        REQUIRE(lm.db.getTransactions()[0]->getStatus() == "completed");
     }
 }
 
