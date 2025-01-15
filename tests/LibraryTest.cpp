@@ -78,3 +78,27 @@ TEST_CASE("Read operations") {
         REQUIRE(transaction->getType() == "borrow");
     }
 }
+
+TEST_CASE("Update operations") {
+    LibraryManager lm;
+
+    SECTION("Update a book") {
+        lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+        lm.updateBook(1, "title", "Animal Farm");
+        REQUIRE(lm.readBook(1)->getTitle() == "Animal Farm");
+    }
+
+    SECTION("Update a user") {
+        lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.updateUser(1, "username", "johndoe");
+        REQUIRE(lm.readUser(1)->getUsername() == "johndoe");
+    }
+
+    SECTION("Update a transaction") {
+        auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.createTransaction("borrow", book, user);
+        lm.updateTransaction(1, "status", "completed");
+        REQUIRE(lm.readTransaction(1)->getStatus() == "completed");
+    }
+}
