@@ -7,6 +7,7 @@
 #include <memory>
 #include <cmath>
 #include <cctype>
+#include <iostream>
 
 // Levenshtein distance for approximate string matching
 int levenshtein(const std::string& s1, const std::string& s2) {
@@ -59,6 +60,19 @@ int Database::getTransactionIDCounter() const { return transaction_id_counter; }
 void Database::setBookIDCounter(int new_counter) { book_id_counter = new_counter; }
 void Database::setUserIDCounter(int new_counter) { user_id_counter = new_counter; }
 void Database::setTransactionIDCounter(int new_counter) { transaction_id_counter = new_counter; }
+
+// Save and load operations
+void Database::save() const {
+    // Placeholder for saving data
+    std::cout << "Saving data to storage..." << std::endl;
+    // Actual implementation will persist the data using a persistence layer
+}
+
+void Database::load() const {
+    // Placeholder for loading data
+    std::cout << "Loading data from storage..." << std::endl;
+    // Actual implementation will retrieve data from a storage mechanism
+}
 
 // Create operations
 void Database::createBook(const std::string& title, const std::string& author, const std::string& isbn, int year) {
