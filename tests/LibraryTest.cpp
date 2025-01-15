@@ -156,8 +156,10 @@ TEST_CASE("Borrow and Return Operations") {
         lm.borrowBook(1, 1);  // Borrow the book
         lm.returnBook(1, 1);     // Return the book
         REQUIRE(lm.getDatabase().getTransactions().size() == 2);
-        REQUIRE(lm.getDatabase().getTransactions()[0]->getType() == "return");
+        REQUIRE(lm.getDatabase().getTransactions()[0]->getType() == "borrow");
         REQUIRE(lm.getDatabase().getTransactions()[0]->getStatus() == "completed");
+        REQUIRE(lm.getDatabase().getTransactions()[1]->getType() == "return");
+        REQUIRE(lm.getDatabase().getTransactions()[1]->getStatus() == "completed");
     }
 }
 
