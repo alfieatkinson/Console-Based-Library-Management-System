@@ -28,18 +28,21 @@ public:
     void borrowBook(int book_id, int user_id);
     void returnBook(int book_id, int user_id);
 
-    // CRUD Operations
+    // Create operations
     void createBook(const std::vector<std::string>& book_info);
     void createUser(const std::vector<std::string>& user_info);
 
-    void readBook(int id);
-    void readUser(int id);
-    void readTransaction(int id);
+    // Read operations
+    std::shared_ptr<Book> readBook(int id);
+    std::shared_ptr<User> readUser(int id);
+    std::shared_ptr<Transaction> readTransaction(int id);
 
+    // Update operations
     void updateBook(int id, const std::string& field, const std::string& value);
     void updateUser(int id, const std::string& field, const std::string& value);
     void updateTransaction(int id, const std::string& field, const std::string& value);
 
+    // Delete operations
     void deleteBook(int id);
     void deleteUser(int id);
     void deleteTransaction(int id);
