@@ -127,6 +127,28 @@ TEST_CASE("Delete operations") {
     }
 }
 
+TEST_CASE("Borrow and Return Operations") {
+    LibraryManager lm;
+
+    SECTION("Borrow a book") {
+        lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+        lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.borrowBook(1, 1);  // Book ID 1, User ID 1
+        REQUIRE(lm.getTransactions().size() == 1);
+        REQUIRE(lm.getTransactions()[0]->getType() == "borrow");
+    }
+
+    SECTION("Return a book") {
+        lm.createBook("1984", "George Orwell", "9780451524935", 1949);
+        lm.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        lm.borrowBook(1, 1);  // Borrow the book
+        lm.returnBook(1);     // Return the book
+        REQUIRE(lm.getTransactions().size() == 1);
+        REQUIRE(lm.getTransactions()[0]->getType() == "return");
+        REQUIRE(lm.getTransactions()[0]->getStatus() == "completed");
+    }
+}
+
 TEST_CASE("Query operations with approximate search") {
     LibraryManager lm;
 
