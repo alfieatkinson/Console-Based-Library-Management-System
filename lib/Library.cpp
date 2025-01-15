@@ -92,3 +92,9 @@ void LibraryManager::updateTransaction(int id, const std::string& field, const s
 void LibraryManager::deleteBook(int id) { db.deleteBook(id); }
 void LibraryManager::deleteUser(int id) { db.deleteUser(id); }
 void LibraryManager::deleteTransaction(int id) { db.deleteTransaction(id); }
+
+// Methods for searching
+std::vector<std::shared_ptr<Book>> LibraryManager::queryBooks(const std::string& search_term) { return db.queryBooks(search_term); }
+std::vector<std::shared_ptr<User>> LibraryManager::queryUsers(const std::string& search_term) { return db.queryUsers(search_term); }
+std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByBookID(int id) { return db.queryTransactionsByBookID(id); }
+std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByUserID(int id) { return db.queryTransactionsByUserID(id); }
