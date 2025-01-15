@@ -63,7 +63,7 @@ void LibraryManager::returnBook(int book_id, int user_id) {
     }
 }
 
-// CRUD Operations
+// Create operations
 void LibraryManager::createBook(const std::vector<std::string>& book_info) {
     if (book_info.size() != 4) throw std::invalid_argument("Invalid number of arguments for creating a book.");
 
@@ -77,3 +77,8 @@ void LibraryManager::createUser(const std::vector<std::string>& user_info) {
     // Create a new user
     db.createUser(user_info[0], user_info[1], user_info[2], user_info[3], user_info[4], user_info[5]);
 }
+
+// Read operations
+std::shared_ptr<Book> LibraryManager::readBook(int id) { return db.readBook(id); }
+std::shared_ptr<User> LibraryManager::readUser(int id) { return db.readUser(id); }
+std::shared_ptr<Transaction> LibraryManager::readTransaction(int id) { return db.readTransaction(id); }
