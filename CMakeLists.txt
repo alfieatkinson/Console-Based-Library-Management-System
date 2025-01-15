@@ -21,6 +21,7 @@ add_library(libLibraryManagementSystem
     lib/Multithreading.cpp
     lib/Persistence.cpp
     lib/Transaction.cpp
+    lib/Menu.cpp
 )
 
 # Add the executable for the main program
