@@ -40,7 +40,7 @@ public:
 
     // Methods for borrowing and returning the book
     bool borrowBook();
-    void returnBook();
+    bool returnBook();
 
     // Method to get book info
     std::string getInfo() const;

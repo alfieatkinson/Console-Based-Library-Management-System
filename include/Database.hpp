@@ -58,9 +58,9 @@ public:
     void load() const; // Placeholder, no functionality yet
 
     // Create operations
-    void createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
-    void createUser(const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone, const std::string& password);
-    void createTransaction(const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user);
+    int createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
+    int createUser(const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone, const std::string& password);
+    int createTransaction(const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user);
 
     // Read operations
     std::shared_ptr<Book> readBook(int id);

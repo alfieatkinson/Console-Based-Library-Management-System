@@ -43,8 +43,12 @@ bool Book::borrowBook() {
     return false;
 }
 
-void Book::returnBook() {
-    setIsAvailable(true);
+bool Book::returnBook() {
+    if (!isAvailable()) {
+        setIsAvailable(true);
+        return true;
+    }
+    return false;
 }
 
 std::string Book::getInfo() const {

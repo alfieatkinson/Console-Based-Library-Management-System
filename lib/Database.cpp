@@ -75,7 +75,7 @@ void Database::load() const {
 }
 
 // Create operations
-void Database::createBook(const std::string& title, const std::string& author, const std::string& isbn, int year) {
+int Database::createBook(const std::string& title, const std::string& author, const std::string& isbn, int year) {
     auto new_book = std::make_shared<Book>(++book_id_counter, title, author, isbn, year, true);
     books.push_back(new_book);
 
@@ -83,9 +83,12 @@ void Database::createBook(const std::string& title, const std::string& author, c
     book_author_map[toLowerCase(author)].push_back(new_book);
     book_title_map[toLowerCase(title)].push_back(new_book);
     book_isbn_map[toLowerCase(isbn)].push_back(new_book);
+
+    // Return the new book ID
+    return book_id_counter;
 }
 
-void Database::createUser(const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone, const std::string& password) {
+int Database::createUser(const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone, const std::string& password) {
     auto new_user = std::make_shared<User>(++user_id_counter, username, forename, surname, email, phone, password);
     users.push_back(new_user);
 
@@ -93,15 +96,21 @@ void Database::createUser(const std::string& username, const std::string& forena
     user_forename_map[toLowerCase(forename)].push_back(new_user);
     user_surname_map[toLowerCase(surname)].push_back(new_user);
     user_username_map[toLowerCase(username)].push_back(new_user);
+
+    // Return the new user ID
+    return user_id_counter;
 }
 
-void Database::createTransaction(const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user) {
+int Database::createTransaction(const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user) {
     auto new_transaction = std::make_shared<Transaction>(++transaction_id_counter, type, book, user);
     transactions.push_back(new_transaction);
 
     // Update maps for quick lookup
     transactions_by_book_id[book->getID()].push_back(new_transaction);
     transactions_by_user_id[user->getID()].push_back(new_transaction);
+
+    // Return the new transaction ID
+    return transaction_id_counter;
 }
 
 // Read operations
