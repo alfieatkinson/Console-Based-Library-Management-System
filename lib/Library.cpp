@@ -36,14 +36,9 @@ void LibraryManager::borrowBook(int book_id, int user_id) {
     // Create a new transaction
     int id = db.createTransaction("borrow", book, user);
 
-    // Check if the book is available
-    if (user->borrowBook(book)) {
-        // Execute the transaction
-        auto transaction = db.readTransaction(id);
-        transaction->execute();
-    } else {
-        throw std::invalid_argument("Book is not available to borrow.");
-    }
+    // Execute the transaction
+    auto transaction = db.readTransaction(id);
+    transaction->execute();
 }
 
 void LibraryManager::returnBook(int book_id, int user_id) {
@@ -54,14 +49,9 @@ void LibraryManager::returnBook(int book_id, int user_id) {
     // Create a new transaction
     int id = db.createTransaction("return", book, user);
 
-    // Check if the user has borrowed the book
-    if (user->returnBook(book)) {
-        // Execute the transaction
-        auto transaction = db.readTransaction(id);
-        transaction->execute();
-    } else {
-        throw std::invalid_argument("User has not borrowed this book.");
-    }
+    // Execute the transaction
+    auto transaction = db.readTransaction(id);
+    transaction->execute();
 }
 
 // Create operations
