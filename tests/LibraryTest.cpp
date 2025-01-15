@@ -192,7 +192,7 @@ TEST_CASE("Query operations with approximate search") {
         result = lm.queryBooks("50 Shades of Grey");
         REQUIRE(result.empty());
 
-        lm.createBook(book_info);
+        lm.createBook(book_info3);
         result = lm.queryBooks("Brave New World");
         REQUIRE(result.size() == 2);
     }
