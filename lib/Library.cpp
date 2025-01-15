@@ -87,3 +87,8 @@ std::shared_ptr<Transaction> LibraryManager::readTransaction(int id) { return db
 void LibraryManager::updateBook(int id, const std::string& field, const std::string& value) { db.updateBook(id, field, value); }
 void LibraryManager::updateUser(int id, const std::string& field, const std::string& value) { db.updateUser(id, field, value); }
 void LibraryManager::updateTransaction(int id, const std::string& field, const std::string& value) { db.updateTransaction(id, field, value); }
+
+// Delete operations
+void LibraryManager::deleteBook(int id) { db.deleteBook(id); }
+void LibraryManager::deleteUser(int id) { db.deleteUser(id); }
+void LibraryManager::deleteTransaction(int id) { db.deleteTransaction(id); }
