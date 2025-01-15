@@ -3,6 +3,7 @@
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
+#include <iostream>
 
 // Constructor
 LibraryManager::LibraryManager() {
@@ -98,3 +99,16 @@ std::vector<std::shared_ptr<Book>> LibraryManager::queryBooks(const std::string&
 std::vector<std::shared_ptr<User>> LibraryManager::queryUsers(const std::string& search_term) { return db.queryUsers(search_term); }
 std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByBookID(int id) { return db.queryTransactionsByBookID(id); }
 std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByUserID(int id) { return db.queryTransactionsByUserID(id); }
+
+// Database persistence methods
+void LibraryManager::saveDatabase() const {
+    // Save the database to a file
+    std::cout << "Saving database..." << std::endl;
+    // TODO: Implement the save operation
+}
+
+void LibraryManager::loadDatabase() const {
+    // Load the database from a file
+    std::cout << "Loading database..." << std::endl;
+    // TODO: Implement the load operation
+}
