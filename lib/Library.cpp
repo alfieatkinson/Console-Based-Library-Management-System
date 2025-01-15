@@ -82,3 +82,8 @@ void LibraryManager::createUser(const std::vector<std::string>& user_info) {
 std::shared_ptr<Book> LibraryManager::readBook(int id) { return db.readBook(id); }
 std::shared_ptr<User> LibraryManager::readUser(int id) { return db.readUser(id); }
 std::shared_ptr<Transaction> LibraryManager::readTransaction(int id) { return db.readTransaction(id); }
+
+// Update operations
+void LibraryManager::updateBook(int id, const std::string& field, const std::string& value) { db.updateBook(id, field, value); }
+void LibraryManager::updateUser(int id, const std::string& field, const std::string& value) { db.updateUser(id, field, value); }
+void LibraryManager::updateTransaction(int id, const std::string& field, const std::string& value) { db.updateTransaction(id, field, value); }
