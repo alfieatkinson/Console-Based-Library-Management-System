@@ -42,8 +42,9 @@ void User::setPassword(const std::string& new_password) { password = new_passwor
 
 // Methods for borrowing and returning books
 bool User::borrowBook(std::shared_ptr<Book> book) {
-    if (book->borrowBook()) {
+    if (book->isAvailable()) {
         borrowed_books.push_back(book);
+        book->borrowBook();
         return true;
     }
     return false;
