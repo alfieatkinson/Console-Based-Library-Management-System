@@ -21,71 +21,84 @@ This project is a console-based library management system written in C++. It sup
 
 ```
 Library-Management-System/
-├── CMakeLists.txt              # Build configuration
-├── doc/                        # Documentation (e.g., Doxygen config)
+├── CMakeLists.txt              # Configuration for building the project
+├── doc/                        # Documentation (e.g., Doxygen configuration)
 │   └── Doxyfile
-├── include/                    # Header files
-│   ├── Application.hpp         # Application logic (managing flow)
-│   ├── Book.hpp                # Book model (attributes & methods)
-│   ├── Database.hpp            # Database interaction (loading/saving data)
-│   ├── Library.hpp             # Manages library operations (book/user)
-│   ├── Multithreading.hpp      # Multithreading utilities
-│   ├── Networking.hpp          # Network-related functions
-│   ├── Persistence.hpp         # Handles saving/loading data to/from files
-│   ├── Transaction.hpp         # Transaction (borrow/return books)
-│   └── User.hpp                # User model (attributes & methods)
-├── lib/                        # Source files
-│   ├── Application.cpp         # Application logic (start, login/logout, menu)
-│   ├── Book.cpp                # Book class implementation
-│   ├── Database.cpp            # Database class implementation (load/save data)
-│   ├── Library.cpp             # LibraryManager logic (book/user management)
-│   ├── main.cpp                # Main entry point of the application
-│   ├── Multithreading.cpp      # Multithreading class implementation
-│   ├── Networking.cpp          # Networking-related functions
-│   ├── Persistence.cpp         # File I/O operations for persistence
-│   ├── Transaction.cpp         # Transaction handling (borrow/return)
-│   └── User.cpp                # User class implementation
-└── tests/                      # Unit tests
+├── include/                    # Header files for classes and utilities
+│   ├── Application.hpp         # Manages application flow (start, login/logout)
+│   ├── Book.hpp                # Represents book data and operations
+│   ├── Database.hpp            # Handles data loading and saving
+│   ├── Library.hpp             # Manages library operations (book/user management)
+│   ├── Menu.hpp                # Provides menu display and actions
+│   ├── Multithreading.hpp      # Contains utilities for multithreading
+│   ├── Networking.hpp          # Supports networking functionalities
+│   ├── Persistence.hpp         # Manages data persistence to/from files
+│   ├── Transaction.hpp         # Represents borrow/return transactions
+│   └── User.hpp                # Represents user data and operations
+├── lib/                        # Source files for implementation
+│   ├── Application.cpp         # Implements application logic
+│   ├── Book.cpp                # Implements book class
+│   ├── Database.cpp            # Implements database interactions
+│   ├── Library.cpp             # Implements library management logic
+│   ├── main.cpp                # Entry point of the application
+│   ├── Menu.cpp                # Implements menu functionality
+│   ├── Multithreading.cpp      # Implements multithreading support
+│   ├── Networking.cpp          # Implements networking features
+│   ├── Persistence.cpp         # Handles file I/O for persistence
+│   ├── Transaction.cpp         # Implements transaction management
+│   └── User.cpp                # Implements user class
+└── tests/                      # Unit tests for each component
     ├── ApplicationTest.cpp     # Tests for the Application class
     ├── BookTest.cpp            # Tests for the Book class
-    ├── DatabaseTest.cpp        # Tests for Database interactions
-    ├── LibraryTest.cpp         # Tests for LibraryManager logic
-    ├── MultithreadingTest.cpp  # Tests for Multithreading utilities
-    ├── NetworkingTest.cpp      # Tests for Networking functionality
-    ├── PersistenceTest.cpp     # Tests for Persistence operations
-    ├── TransactionTest.cpp     # Tests for Transaction handling
-    └── UserTest.cpp            # Tests for User class
+    ├── DatabaseTest.cpp        # Tests for database operations
+    ├── LibraryTest.cpp         # Tests for LibraryManager functionality
+    ├── MenuTest.cpp            # Tests for Menu class
+    ├── MultithreadingTest.cpp  # Tests for multithreading utilities
+    ├── NetworkingTest.cpp      # Tests for networking functionalities
+    ├── PersistenceTest.cpp     # Tests for data persistence
+    ├── TransactionTest.cpp     # Tests for transaction handling
+    └── UserTest.cpp            # Tests for the User class
 ```
 
 ## CMake Setup
 
-This project uses CMake for the build process. To build the project, follow these steps:
+This project uses CMake for the build process. The `make.sh` script simplifies the build process. To build the project, use one of the following commands:
 
-1. Create a `build/` directory and navigate into it:
+1. **Build the project without tests**:
     ```bash
-    mkdir build
-    cd build
+    ./make.sh
     ```
 
-2. Run CMake to configure the project:
+2. **Build the project and run tests**:
     ```bash
-    cmake ..
+    ./make.sh -t
     ```
 
-3. Build the project:
+3. **Build and run a specific test**:
     ```bash
-    make
+    ./make.sh -t TestName
     ```
 
-4. Run the tests:
-    ```bash
-    ctest
+Replace `TestName` with the actual name of the test you want to run.
+
+**Note for Windows users**: If you are using Windows, you will need to manually run the build commands and tests using PowerShell or Command Prompt. For example:
+
+1. **Build the project without tests**:
+    ```powershell
+    cmake . && cmake --build . --target all
     ```
 
-5. Optionally, run a specific test with:
-   ```bash
-   ./testname
-   ```
+2. **Build the project and run tests**:
+    ```powershell
+    cmake . && cmake --build . --target all && ctest
+    ```
+
+3. **Build and run a specific test**:
+    ```powershell
+    cmake . && cmake --build . --target TestName && .\TestName.exe
+    ```
+
+Replace `TestName` with the actual name of the test executable you want to run.
 
 ## Documentation
 
