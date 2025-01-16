@@ -1,3 +1,5 @@
+#include <iostream>
+#include <limits>
 #include "Menu.hpp"
 
 // Constructor
@@ -31,25 +33,34 @@ void Menu::addOption(const std::string& description, std::function<void()> actio
 
 // Method to display the menu
 void Menu::display(bool isAdmin) {
-    std::cout << name << std::endl;
+    while (true) { // Use a loop instead of recursion for robustness
+        std::cout << name << std::endl;
 
-    int i = 0;
-    for (const auto& option : options) {
-        if (isAdmin || option.first.find("[Admin]") == std::string::npos) {
-            std::cout << ++i << ". " << option.first << std::endl;
+        int i = 0;
+        for (const auto& option : options) {
+            if (isAdmin || option.first.find("[Admin]") == std::string::npos) {
+                std::cout << ++i << ". " << option.first << std::endl;
+            }
         }
-    }
 
-    int choice;
-    std::cin >> choice;
+        std::cout << "Enter your choice: ";
+        int choice;
 
-    if (choice > 0 && choice <= options.size()) {
-        auto it = std::next(options.begin(), choice - 1);
-        it->second();  // Execute the function associated with the option
-    } else {
-        clearConsole(); // Clear the console
-        std::cout << "Invalid option, please try again.\n" << std::endl;
-        display(isAdmin); // Display the menu again
+        // Validate input
+        if (std::cin >> choice) {
+            if (choice > 0 && choice <= static_cast<int>(options.size())) {
+                auto it = std::next(options.begin(), choice - 1);
+                it->second();  // Execute the function associated with the option
+                break; // Exit loop after valid choice
+            } else {
+                std::cout << "Invalid option, please try again.\n" << std::endl;
+            }
+        } else {
+            // Handle non-integer input
+            std::cin.clear(); // Clear error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+            std::cout << "Invalid input, please enter a number.\n" << std::endl;
+        }
     }
 }
 
