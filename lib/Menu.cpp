@@ -52,3 +52,12 @@ void Menu::display(bool isAdmin) {
         display(isAdmin); // Display the menu again
     }
 }
+
+// Method to clear the console
+void Menu::clearConsole() {
+    #if defined(_WIN32) || defined(_WIN64)
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
