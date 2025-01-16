@@ -114,6 +114,23 @@ TEST_CASE("Menu Handles User Input") {
         REQUIRE(simulatedOutput.str().find("Invalid option, please try again.") != std::string::npos);
         REQUIRE(simulatedOutput.str().find("Option 1 selected") != std::string::npos);
     }
+
+    SECTION("Admin-only options displayed correctly") {
+        menu.addOption("Admin Option 1", []() { std::cout << "Admin Option 1 selected" << std::endl; }, true);
+        menu.addOption("Non-admin Option", []() { std::cout << "Non-admin Option selected" << std::endl; });
+
+        std::istringstream simulatedInput("1\n"); // Admin input
+        std::cin.rdbuf(simulatedInput.rdbuf());
+
+        std::ostringstream simulatedOutput;
+        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
+
+        menu.display(true); // Admin user
+        std::cout.rdbuf(oldCoutBuffer);
+
+        REQUIRE(simulatedOutput.str().find("Admin Option 1 selected") != std::string::npos);
+        REQUIRE(simulatedOutput.str().find("Non-admin Option") == std::string::npos); // Should not display non-admin option
+    }
 }
 
 TEST_CASE("Clear Console Works") {
