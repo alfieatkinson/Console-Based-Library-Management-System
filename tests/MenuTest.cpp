@@ -48,3 +48,25 @@ TEST_CASE("Menu Adding Options") {
         REQUIRE(options.find("[Admin] Option 2") != options.end());
     }
 }
+
+TEST_CASE("Menu Display Options") {
+    Menu menu("Main Menu");
+    menu.addOption("Option 1", []() {});
+    menu.addOption("Option 2", []() {}, true);
+
+    SECTION("Non-admin user sees only non-admin options") {
+        std::string output = captureConsoleOutput([&]() {
+            menu.display(false);
+        });
+        REQUIRE(output.find("Option 1") != std::string::npos);
+        REQUIRE(output.find("Option 2") == std::string::npos);
+    }
+
+    SECTION("Admin user sees all options") {
+        std::string output = captureConsoleOutput([&]() {
+            menu.display(true);
+        });
+        REQUIRE(output.find("Option 1") != std::string::npos);
+        REQUIRE(output.find("[Admin] Option 2") != std::string::npos);
+    }
+}
