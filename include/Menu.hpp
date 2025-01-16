@@ -27,9 +27,6 @@ public:
 
     // Method to display the menu
     bool display(bool isAdmin = false);
-
-    // Method to clear the console
-    void clearConsole();
 };
 
 #endif // MENU_HPP

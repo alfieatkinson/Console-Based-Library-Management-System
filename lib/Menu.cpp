@@ -63,12 +63,3 @@ bool Menu::display(bool isAdmin) {
         return false;  // Non-integer input
     }
 }
-
-// Method to clear the console
-void Menu::clearConsole() {
-    #if defined(_WIN32) || defined(_WIN64)
-        system("cls");
-    #else
-        system("clear");
-    #endif
-}
