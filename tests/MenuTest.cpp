@@ -32,3 +32,19 @@ TEST_CASE("Menu Getters and Setters") {
         REQUIRE(menu.getName() == "New Menu");
     }
 }
+
+TEST_CASE("Menu Adding Options") {
+    Menu menu("Main Menu");
+
+    SECTION("Add a non-admin option") {
+        menu.addOption("Option 1", []() {});
+        auto options = menu.getOptions();
+        REQUIRE(options.find("Option 1") != options.end());
+    }
+
+    SECTION("Add an admin-only option") {
+        menu.addOption("Option 2", []() {}, true);
+        auto options = menu.getOptions();
+        REQUIRE(options.find("[Admin] Option 2") != options.end());
+    }
+}
