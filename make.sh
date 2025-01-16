@@ -15,16 +15,23 @@ cd build
 # Run CMake and build the project
 cmake ..
 
-# Check if a specific test name is passed as an argument
-if [ ! -z "$1" ]; then
-    echo "Building test: $1"
-    make $1
-    echo "Running test: $1"
-    ./$1
+# Check if the -t flag for tests is passed
+if [ "$1" == "-t" ]; then
+    # Check if a specific test name is passed as the second argument
+    if [ ! -z "$2" ]; then
+        echo "Building: $2"
+        make $2
+        echo "Running test: $2"
+        ./$2
+    else
+        echo "Building..."
+        make
+        echo "Running all tests since no specific test is provided..."
+        ctest
+    fi
 else
-    echo "No specific test provided. Making and running all tests..."
+    echo "Building..."
     make
-    ctest
 fi
 
 # Return to the original directory
