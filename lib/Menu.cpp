@@ -29,3 +29,26 @@ void Menu::addOption(const std::string& description, std::function<void()> actio
     }
 }
 
+// Method to display the menu
+void Menu::display(bool isAdmin) {
+    std::cout << name << std::endl;
+
+    int i = 0;
+    for (const auto& option : options) {
+        if (isAdmin || option.first.find("[Admin]") == std::string::npos) {
+            std::cout << ++i << ". " << option.first << std::endl;
+        }
+    }
+
+    int choice;
+    std::cin >> choice;
+
+    if (choice > 0 && choice <= options.size()) {
+        auto it = std::next(options.begin(), choice - 1);
+        it->second();  // Execute the function associated with the option
+    } else {
+        clearConsole(); // Clear the console
+        std::cout << "Invalid option, please try again.\n" << std::endl;
+        display(isAdmin); // Display the menu again
+    }
+}
