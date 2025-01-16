@@ -115,3 +115,11 @@ TEST_CASE("Menu Handles User Input") {
         REQUIRE(simulatedOutput.str().find("Option 1 selected") != std::string::npos);
     }
 }
+
+TEST_CASE("Clear Console Works") {
+    Menu menu("Main Menu");
+
+    SECTION("ClearConsole does not throw errors") {
+        REQUIRE_NOTHROW(menu.clearConsole());
+    }
+}
