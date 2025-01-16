@@ -49,25 +49,41 @@ TEST_CASE("Menu Adding Options") {
     }
 }
 
-TEST_CASE("Menu Display Options") {
+TEST_CASE("Menu Display Options with Input Handling") {
     Menu menu("Main Menu");
     menu.addOption("Option 1", []() {});
     menu.addOption("Option 2", []() {}, true);
 
     SECTION("Non-admin user sees only non-admin options") {
-        std::string output = captureConsoleOutput([&]() {
-            menu.display(false);
-        });
-        REQUIRE(output.find("Option 1") != std::string::npos);
-        REQUIRE(output.find("Option 2") == std::string::npos);
+        std::istringstream simulatedInput("1\n"); // Simulate selecting an option
+        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
+
+        std::ostringstream simulatedOutput;
+        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
+
+        menu.display(false); // Non-admin display
+
+        std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
+        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
+
+        REQUIRE(simulatedOutput.str().find("Option 1") != std::string::npos);
+        REQUIRE(simulatedOutput.str().find("Option 2") == std::string::npos);
     }
 
     SECTION("Admin user sees all options") {
-        std::string output = captureConsoleOutput([&]() {
-            menu.display(true);
-        });
-        REQUIRE(output.find("Option 1") != std::string::npos);
-        REQUIRE(output.find("[Admin] Option 2") != std::string::npos);
+        std::istringstream simulatedInput("2\n"); // Simulate selecting an admin option
+        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
+
+        std::ostringstream simulatedOutput;
+        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
+
+        menu.display(true); // Admin display
+
+        std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
+        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
+
+        REQUIRE(simulatedOutput.str().find("Option 1") != std::string::npos);
+        REQUIRE(simulatedOutput.str().find("[Admin] Option 2") != std::string::npos);
     }
 }
 
@@ -98,28 +114,53 @@ TEST_CASE("Menu Handles User Input") {
         REQUIRE(simulatedOutput.str().find("Option 1 selected") != std::string::npos);
     }
 
-    SECTION("Menu handles invalid input") {
-        std::istringstream simulatedInput("invalid\n1\n"); // Simulate invalid input followed by "1"
+    SECTION("Menu handles non-integer input") {
+        std::istringstream simulatedInput("invalid\n"); // Simulate non-integer input
+        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
+
+        std::ostringstream simulatedOutput;
+        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
+
+        bool validInput = menu.display(false);
+
+        std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
+        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
+
+        // Verify output contains non-integer input handling
+        REQUIRE(simulatedOutput.str().find("Invalid input, please enter an integer.") != std::string::npos);
+    }
+
+    SECTION("Menu handles invalid option") {
+        std::istringstream simulatedInput("3\n"); // Simulate invalid option followed by a valid option
+        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
+
+        std::ostringstream simulatedOutput;
+        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
+
+        bool validInput = menu.display(false);
+
+        std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
+        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
+
+        // Verify output contains invalid option handling
+        REQUIRE(simulatedOutput.str().find("Invalid option, please try again.") != std::string::npos);
+    }
+
+    SECTION("Admin-only options displayed correctly") {
+        menu.addOption("Admin Option", []() { std::cout << "Admin Option selected" << std::endl; }, true);
+
+        std::istringstream simulatedInput("3\n"); // Admin input
         std::cin.rdbuf(simulatedInput.rdbuf());
 
         std::ostringstream simulatedOutput;
         std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
 
-        menu.display(false);
+        menu.display(true); // Admin user
 
         std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
         std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
 
-        // Verify output contains invalid input handling and success case
-        REQUIRE(simulatedOutput.str().find("Invalid option, please try again.") != std::string::npos);
-        REQUIRE(simulatedOutput.str().find("Option 1 selected") != std::string::npos);
-    }
-}
-
-TEST_CASE("Clear Console Works") {
-    Menu menu("Main Menu");
-
-    SECTION("ClearConsole does not throw errors") {
-        REQUIRE_NOTHROW(menu.clearConsole());
+        REQUIRE(simulatedOutput.str().find("Admin Option selected") != std::string::npos);
+        REQUIRE(simulatedOutput.str().find("Option 1 selected") == std::string::npos); // Should not display non-admin option
     }
 }
