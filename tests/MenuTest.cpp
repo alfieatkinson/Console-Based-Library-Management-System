@@ -2,6 +2,7 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 #include <iostream>
+#include "Menu.hpp"
 
 // Helper for redirecting console output
 std::string captureConsoleOutput(std::function<void()> func) {
