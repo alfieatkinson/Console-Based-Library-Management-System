@@ -26,7 +26,7 @@ public:
     void addOption(const std::string& description, std::function<void()> action, bool isAdminOnly = false);
 
     // Method to display the menu
-    void display(bool isAdmin = false);
+    bool display(bool isAdmin = false);
 
     // Method to clear the console
     void clearConsole();
