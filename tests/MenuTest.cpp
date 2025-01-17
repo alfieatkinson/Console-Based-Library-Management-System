@@ -185,8 +185,6 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
             std::cout.rdbuf(oldCoutBuffer1);
             std::cin.rdbuf(std::cin.rdbuf());
 
-            std::cout << simulatedOutput1.str() << std::endl;
-
             REQUIRE(simulatedOutput1.str().find("Option 3") != std::string::npos);  // Next Page, Option 3 should be on the next page
         }
 
@@ -203,8 +201,6 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
             std::cout.rdbuf(oldCoutBuffer2);
             std::cin.rdbuf(std::cin.rdbuf());
 
-            std::cout << simulatedOutput2.str() << std::endl;
-
             REQUIRE(simulatedOutput2.str().find("Option 1") != std::string::npos);  // Back to first page
         }
 
@@ -220,8 +216,6 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
 
             std::cout.rdbuf(oldCoutBuffer3);
             std::cin.rdbuf(std::cin.rdbuf());
-
-            std::cout << simulatedOutput3.str() << std::endl;
 
             REQUIRE(simulatedOutput3.str().find("Option 3") != std::string::npos);  // On second page
 
