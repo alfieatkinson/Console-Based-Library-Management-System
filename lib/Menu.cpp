@@ -3,7 +3,8 @@
 #include "Menu.hpp"
 
 // Constructor
-Menu::Menu(const std::string& name) : name(name) {}
+Menu::Menu(const std::string& name, bool paging, size_t page_size)
+    : name(name), paging(paging), page_size(page_size) {}
 
 // Destructor
 Menu::~Menu() {}

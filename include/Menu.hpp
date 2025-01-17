@@ -9,10 +9,15 @@
 
 class Menu {
 private:
-    std::string name;
-    std::map<std::string, std::function<void()>> options;
+    bool paging; // Flag to enable pagination
+    size_t page_size; // Number of options per page
+    std::string name; // Name of the menu
+    std::map<std::string, std::function<void()>> options; // Map of options
 public:
-    Menu(const std::string& name);
+    // Constructor
+    Menu(const std::string& name, bool paging = false, size_t page_size = 8);
+
+    // Destructor
     ~Menu();
 
     // Getters
