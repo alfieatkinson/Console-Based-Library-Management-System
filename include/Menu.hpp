@@ -17,6 +17,10 @@ private:
     // Helper method to display a single page of options
     void displayPage(size_t page, bool is_admin);
 
+    // Helper methods for handling navigation and choices
+    bool handleNavigation(char choice, size_t& current_page);
+    bool handleChoice(char choice);
+
 public:
     // Constructor
     Menu(const std::string& name, bool paging = false, size_t page_size = 8);
