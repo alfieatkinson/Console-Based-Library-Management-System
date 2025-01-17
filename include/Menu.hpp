@@ -13,6 +13,10 @@ private:
     size_t page_size; // Number of options per page
     std::string name; // Name of the menu
     std::map<std::string, std::function<void()>> options; // Map of options
+
+    // Helper method to display a single page of options
+    void displayPage(size_t page, bool is_admin);
+
 public:
     // Constructor
     Menu(const std::string& name, bool paging = false, size_t page_size = 8);
@@ -28,10 +32,10 @@ public:
     void setName(const std::string& name);
 
     // Method to add an option to the menu
-    void addOption(const std::string& description, std::function<void()> action, bool isAdminOnly = false);
+    void addOption(const std::string& description, std::function<void()> action, bool is_admin_only = false);
 
     // Method to display the menu
-    bool display(bool isAdmin = false);
+    bool display(bool is_admin = false);
 };
 
 #endif // MENU_HPP

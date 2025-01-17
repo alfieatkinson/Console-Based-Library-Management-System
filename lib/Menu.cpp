@@ -24,11 +24,43 @@ void Menu::setName(const std::string& name) {
 }
 
 // Method to add an option to the menu
-void Menu::addOption(const std::string& description, std::function<void()> action, bool isAdminOnly) {
-    if (!isAdminOnly) {
+void Menu::addOption(const std::string& description, std::function<void()> action, bool is_admin_only) {
+    if (!is_admin_only) {
         options[description] = action;
     } else {
         options["[Admin] " + description] = action;
+    }
+}
+
+// Helper method to display a single page of options
+void Menu::displayPage(size_t page, bool is_admin) {
+    size_t start_index = page * page_size;
+    size_t end_index = std::min(start_index + page_size, options.size());
+
+    auto it = options.begin();
+    std::advance(it, start_index);
+
+    std::cout << std::endl;
+    std::cout << name << " - Page " << (page + 1) << "/"
+              << (options.size() + page_size - 1) / page_size << std::endl;
+
+    size_t i = 1;
+    for (size_t index = start_index; index < end_index; ++index) {
+        if (is_admin || it->first.find("[Admin]") == std::string::npos) {
+            std::cout << i << ". " << it->first << std::endl;
+        }
+        ++it;
+        ++i;
+    }
+
+    if (page == 0) {
+        std::cout << "[N] Next  [S] Specific Page" << std::endl;
+    }
+    else if (end_index == options.size()) {
+        std::cout << "[P] Previous  [S] Specific Page" << std::endl;
+    }
+    else {
+        std::cout << "[P] Previous  [N] Next  [S] Specific Page" << std::endl;
     }
 }
 
