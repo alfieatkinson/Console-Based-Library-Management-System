@@ -103,7 +103,6 @@ bool Menu::display(bool is_admin, size_t current_page) {
         if (paging && options.size() > page_size) {
             displayPage(current_page, is_admin);
         } else {
-            // Display all options if paging is disabled
             std::cout << std::endl;
             std::cout << name << std::endl;
             size_t i = 1;
@@ -115,68 +114,31 @@ bool Menu::display(bool is_admin, size_t current_page) {
         }
 
         std::cout << "\nEnter your choice: ";
+        char choice;
 
-        if (paging) {
-            char choice;
-            if (std::cin >> choice) {} else {
-                std::cin.clear(); // Clear error flags
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-                choice = '0';  // Set choice to an invalid value
-            }
-            if (choice == 'P' || choice == 'p') {
-                if (current_page > 0) --current_page;
-            }
-            else if (choice == 'N' || choice == 'n') {
-                if ((current_page + 1) * page_size < options.size()) ++current_page;
-            }
-            else if (choice == 'S' || choice == 's') {
-                int target_page;
-                std::cout << "\nEnter the page number you want to navigate to: ";
-                if (std::cin >> target_page && target_page > 0 && target_page <= (options.size() + page_size - 1) / page_size) {
-                    current_page = target_page - 1;
-                } else {
-                    std::cout << "\nInvalid page number.\n" << std::endl;
+        if (std::cin >> choice) {
+            if (paging) {
+                if (!handleNavigation(choice, current_page)) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "\nInvalid input, please try again.\n" << std::endl;
                 }
             } else {
-                try {
-                    int index = std::stoi(std::string(1, choice));
-                    if (index > 0 && index <= static_cast<int>(options.size())) {
-                            auto it = std::next(options.begin(), index - 1);
-                            it->second();  // Execute the function associated with the option
-                            return true;   // Valid input
-                    } else {
-                        std::cout << "\nInvalid option, please try again.\n" << std::endl;
-                        return false;  // Invalid input
-                    }
-                }
-                catch (const std::invalid_argument&) {
-                    // Handle non-integer input
-                    std::cin.clear(); // Clear error flags
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                int index;
+                if (handleChoice(std::stoi(std::string(1, choice)))) {
+                    return true;
+                } else {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::cout << "\nInvalid option, please try again.\n" << std::endl;
-                    return false;  // Non-integer input
+                    return false;
                 }
             }
         } else {
-            int choice;
-
-            // Validate input
-            if (std::cin >> choice) {
-                if (choice > 0 && choice <= static_cast<int>(options.size())) {
-                    auto it = std::next(options.begin(), choice - 1);
-                    it->second();  // Execute the function associated with the option
-                    return true;   // Valid input
-                } else {
-                    std::cout << "\nInvalid option, please try again.\n" << std::endl;
-                    return false;  // Invalid input
-                }
-            } else {
-                // Handle non-integer input
-                std::cin.clear(); // Clear error flags
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-                std::cout << "\nInvalid input, please enter an integer.\n" << std::endl;
-                return false;  // Non-integer input
-            }
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "\nInvalid input, please enter an integer.\n" << std::endl;
+            return false;
         }
     }
 }
