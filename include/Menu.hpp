@@ -9,10 +9,23 @@
 
 class Menu {
 private:
-    std::string name;
-    std::map<std::string, std::function<void()>> options;
+    bool paging; // Flag to enable pagination
+    size_t page_size; // Number of options per page
+    std::string name; // Name of the menu
+    std::map<std::string, std::function<void()>> options; // Map of options
+
+    // Helper method to display a single page of options
+    void displayPage(size_t page, bool is_admin);
+
+    // Helper methods for handling navigation and choices
+    bool handleNavigation(char choice, size_t& current_page);
+    bool handleChoice(int choice);
+
 public:
-    Menu(const std::string& name);
+    // Constructor
+    Menu(const std::string& name, bool paging = false, size_t page_size = 8);
+
+    // Destructor
     ~Menu();
 
     // Getters
@@ -23,13 +36,10 @@ public:
     void setName(const std::string& name);
 
     // Method to add an option to the menu
-    void addOption(const std::string& description, std::function<void()> action, bool isAdminOnly = false);
+    void addOption(const std::string& description, std::function<void()> action, bool is_admin_only = false);
 
     // Method to display the menu
-    bool display(bool isAdmin = false);
-
-    // Method to clear the console
-    void clearConsole();
+    bool display(bool is_admin = false, size_t current_page = 0);
 };
 
 #endif // MENU_HPP
