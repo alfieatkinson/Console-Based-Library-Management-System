@@ -127,7 +127,7 @@ TEST_CASE("Menu Handles User Input") {
         std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
 
         // Verify output contains non-integer input handling
-        REQUIRE(simulatedOutput.str().find("Invalid input, please enter an integer.") != std::string::npos);
+        REQUIRE(simulatedOutput.str().find("Invalid option, please try again.") != std::string::npos);
     }
 
     SECTION("Menu handles invalid option") {

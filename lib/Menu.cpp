@@ -121,13 +121,14 @@ bool Menu::display(bool is_admin, size_t current_page) {
                 if (!handleNavigation(choice, current_page)) {
                     std::cin.clear();
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cout << "\nInvalid input, please try again.\n" << std::endl;
+                    std::cout << "\nInvalid option, please try again.\n" << std::endl;
                 }
             } else {
                 int index;
-                if (handleChoice(std::stoi(std::string(1, choice)))) {
+                try {
+                    handleChoice(std::stoi(std::string(1, choice)));
                     return true;
-                } else {
+                } catch (const std::invalid_argument&) {
                     std::cin.clear();
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::cout << "\nInvalid option, please try again.\n" << std::endl;
@@ -137,7 +138,7 @@ bool Menu::display(bool is_admin, size_t current_page) {
         } else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "\nInvalid input, please enter an integer.\n" << std::endl;
+            std::cout << "\nInvalid option, please try again.\n" << std::endl;
             return false;
         }
     }
