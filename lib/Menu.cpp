@@ -86,6 +86,17 @@ bool Menu::handleNavigation(char choice, size_t& current_page) {
     return true;
 }
 
+bool Menu::handleChoice(int choice) {
+    if (choice > 0 && choice <= static_cast<int>(options.size())) {
+        auto it = std::next(options.begin(), choice - 1);
+        it->second();  // Execute the function associated with the option
+        return true;   // Valid input
+    } else {
+        std::cout << "\nInvalid option, please try again.\n" << std::endl;
+        return false;  // Invalid input
+    }
+}
+
 // Method to display the menu
 bool Menu::display(bool is_admin, size_t current_page) {
     while (true) {

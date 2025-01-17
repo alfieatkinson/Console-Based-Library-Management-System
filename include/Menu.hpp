@@ -19,7 +19,7 @@ private:
 
     // Helper methods for handling navigation and choices
     bool handleNavigation(char choice, size_t& current_page);
-    bool handleChoice(char choice);
+    bool handleChoice(int choice);
 
 public:
     // Constructor
