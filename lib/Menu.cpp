@@ -64,6 +64,28 @@ void Menu::displayPage(size_t page, bool is_admin) {
     }
 }
 
+// Helper methods for handling navigation and choices
+bool Menu::handleNavigation(char choice, size_t& current_page) {
+    if (choice == 'P' || choice == 'p') {
+        if (current_page > 0) --current_page;
+    } else if (choice == 'N' || choice == 'n') {
+        if ((current_page + 1) * page_size < options.size()) ++current_page;
+    } else if (choice == 'S' || choice == 's') {
+        int target_page;
+        std::cout << "\nEnter the page number you want to navigate to: ";
+        if (std::cin >> target_page && target_page > 0 && target_page <= (options.size() + page_size - 1) / page_size) {
+            current_page = target_page - 1;
+            return true;
+        } else {
+            std::cout << "\nInvalid page number.\n" << std::endl;
+            return false;
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
+
 // Method to display the menu
 bool Menu::display(bool is_admin, size_t current_page) {
     while (true) {
