@@ -35,7 +35,7 @@ public:
     void addOption(const std::string& description, std::function<void()> action, bool is_admin_only = false);
 
     // Method to display the menu
-    bool display(bool is_admin = false);
+    bool display(bool is_admin = false, size_t current_page = 0);
 };
 
 #endif // MENU_HPP
