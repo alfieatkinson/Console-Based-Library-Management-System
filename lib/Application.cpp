@@ -398,3 +398,35 @@ void Application::deleteBook(std::shared_ptr<Book> book) {
         library.deleteBook(book->getID());
     }
 }
+
+// User management methods
+void Application::createUser() {
+    std::vector<std::string> user_info;
+    user_info.push_back(promptInput("Enter the username: "));
+    user_info.push_back(promptInput("Enter the forename: "));
+    user_info.push_back(promptInput("Enter the surname: "));
+    user_info.push_back(promptInput("Enter the email: "));
+    user_info.push_back(promptInput("Enter the phone number: "));
+    while(true) {
+        std::string password = promptInput("Enter the password: ");
+        std::string confirm_password = promptInput("Confirm the password: ");
+        if (password == confirm_password) {
+            user_info.push_back(password);
+            break;
+        } else {
+            std::cout << "Passwords do not match. Please try again." << std::endl;
+        }
+    }
+    try {
+        library.createUser(user_info);
+    } catch (const std::invalid_argument& e) {
+        std::cout << e.what() << std::endl;
+        dummyPrompt();
+    }
+}
+
+void Application::deleteUser(std::shared_ptr<User> user) {
+    if (areYouSurePrompt()) {
+        library.deleteUser(user->getID());
+    }
+}
