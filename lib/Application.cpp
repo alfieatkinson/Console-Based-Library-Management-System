@@ -300,3 +300,48 @@ std::shared_ptr<Menu> Application::makeUpdateBookMenu(std::shared_ptr<Book> book
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user) {
+    auto menu = std::make_shared<Menu>("Update User Menu");
+
+    menu->addOption("Update Forename", [this, user]() {
+        library.updateUser(user->getID(), "forename", promptInput("Enter the new forename: "));
+    });
+    menu->addOption("Update Surname", [this, user]() {
+        library.updateUser(user->getID(), "surname", promptInput("Enter the new surname: "));
+    });
+    menu->addOption("Update Username", [this, user]() {
+        library.updateUser(user->getID(), "username", promptInput("Enter the new username: "));
+    });
+    menu->addOption("Update Password", [this, user]() {
+        std::string new_password = promptInput("Enter the new password: ");
+        std::string confirm_password = promptInput("Confirm the new password: ");
+
+        if (new_password == confirm_password) {
+            library.updateUser(user->getID(), "password", new_password);
+        } else {
+            std::cout << "Passwords do not match. Please try again." << std::endl;
+            dummyPrompt();
+        }
+    });
+    menu->addOption("Update Email", [this, user]() {
+        try {
+            library.updateUser(user->getID(), "email", promptInput("Enter the new email: "));
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+        }
+    });
+    menu->addOption("Update Phone Number", [this, user]() {
+        try {
+            library.updateUser(user->getID(), "phone", promptInput("Enter the new phone number: "));
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+        }
+    });
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
