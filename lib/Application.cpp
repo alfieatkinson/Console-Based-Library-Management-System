@@ -501,3 +501,11 @@ void Application::clearConsole() {
         system("clear");
     #endif
 }
+
+void Application::run() {
+    while (!menu_stack.empty()) {
+        auto current_menu = menu_stack.top();
+        clearConsole();
+        current_menu->display(is_admin);
+    }
+}
