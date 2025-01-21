@@ -55,6 +55,7 @@ public:
 
     // User authentication methods
     std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
+    bool authenticateAdmin(const std::string& password);
 
     // Database persistence methods
     void saveDatabase() const;

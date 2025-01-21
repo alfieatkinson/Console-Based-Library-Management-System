@@ -269,3 +269,7 @@ std::shared_ptr<User> Database::authenticateUser(const std::string& username, co
     }
     throw std::invalid_argument("Invalid username or password");
 }
+
+bool Database::authenticateAdmin(const std::string& password) {
+    return password == admin_password;
+}

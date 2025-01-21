@@ -95,6 +95,10 @@ std::shared_ptr<User> LibraryManager::authenticateUser(const std::string& userna
     return db.authenticateUser(username, password);
 }
 
+bool LibraryManager::authenticateAdmin(const std::string& password) {
+    return db.authenticateAdmin(password);
+}
+
 // Database persistence methods
 void LibraryManager::saveDatabase() const {
     // Save the database to a file

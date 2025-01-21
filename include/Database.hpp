@@ -33,6 +33,9 @@ private:
     std::unordered_map<int, std::vector<std::shared_ptr<Transaction>>> transactions_by_book_id;
     std::unordered_map<int, std::vector<std::shared_ptr<Transaction>>> transactions_by_user_id;
 
+    // Admin password
+    std::string admin_password = "admin";
+
 public:
     // Constructor
     Database() = default;
@@ -85,6 +88,7 @@ public:
 
     // User authentication methods
     std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
+    bool authenticateAdmin(const std::string& password);
 };
 
 #endif // DATABASE_HPP
