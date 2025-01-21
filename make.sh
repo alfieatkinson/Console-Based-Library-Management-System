@@ -12,25 +12,31 @@ mkdir build
 # Navigate to the build directory
 cd build
 
-# Run CMake and build the project
-cmake ..
-
 # Check if the -t flag for tests is passed
+if [ "$1" == "-t" ]; then
+    echo "Configuring with tests enabled..."
+    cmake -DBUILD_TESTS=ON ..
+else
+    echo "Configuring with tests disabled..."
+    cmake -DBUILD_TESTS=OFF ..
+fi
+
+# Build the project
 if [ "$1" == "-t" ]; then
     # Check if a specific test name is passed as the second argument
     if [ ! -z "$2" ]; then
-        echo "Building: $2"
+        echo "Building test: $2"
         make $2
         echo "Running test: $2"
         ./$2
     else
-        echo "Building..."
+        echo "Building project and tests..."
         make
         echo "Running all tests since no specific test is provided..."
         ctest
     fi
 else
-    echo "Building..."
+    echo "Building project..."
     make
 fi
 

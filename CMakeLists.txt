@@ -30,31 +30,37 @@ add_executable(LibraryManagementSystem lib/main.cpp)
 # Link the library to the executable
 target_link_libraries(LibraryManagementSystem libLibraryManagementSystem)
 
-# Find Catch2
-find_package(Catch2 REQUIRED)
+# Option to enable/disable tests
+option(BUILD_TESTS "Build tests" ON)
 
-# Enable testing
-enable_testing()
+if (BUILD_TESTS)
+    # Find Catch2
+    find_package(Catch2 REQUIRED)
 
-# Add test executables and register them with `add_test()`
-file(GLOB TEST_SOURCES tests/*.cpp)
-foreach(test_source ${TEST_SOURCES})
-    get_filename_component(test_name ${test_source} NAME_WE)
-    message(STATUS "Adding test: ${test_name} from ${test_source}")
-    add_executable(${test_name} ${test_source})
-    target_link_libraries(${test_name} libLibraryManagementSystem Catch2::Catch2)
-    add_test(NAME ${test_name} COMMAND ${test_name} --reporter console)
-endforeach()
+    # Enable testing
+    enable_testing()
 
+    # Add test executables and register them with `add_test()`
+    file(GLOB TEST_SOURCES tests/*.cpp)
+    foreach(test_source ${TEST_SOURCES})
+        get_filename_component(test_name ${test_source} NAME_WE)
+        message(STATUS "Adding test: ${test_name} from ${test_source}")
+        add_executable(${test_name} ${test_source})
+        target_link_libraries(${test_name} libLibraryManagementSystem Catch2::Catch2)
+        add_test(NAME ${test_name} COMMAND ${test_name} --reporter console)
+    endforeach()
+endif()
+
+# Option to build documentation
 option(BUILD_DOC "Build documentation" ON)
 
 # Add custom targets for documentation generation
 find_package(Doxygen)
-if (DOXYGEN_FOUND)
+if (DOXYGEN_FOUND AND BUILD_DOC)
     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-    # request to configure the file
+    # Request to configure the file
     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
     message("Doxygen build started")
 
@@ -64,6 +70,6 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM
     )
-else (DOXYGEN_FOUND)
-  message("Doxygen need to be installed to generate the doxygen documentation")
-endif (DOXYGEN_FOUND)
+else()
+    message("Doxygen needs to be installed to generate the documentation")
+endif()
