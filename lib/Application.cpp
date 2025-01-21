@@ -377,3 +377,24 @@ void Application::logout() {
     menu_stack = std::stack<std::shared_ptr<Menu>>();
     menu_stack.push(makeLoginMenu());
 }
+
+// Book management methods
+void Application::createBook() {
+    std::vector<std::string> book_info;
+    book_info.push_back(promptInput("Enter the book title: "));
+    book_info.push_back(promptInput("Enter the book author: "));
+    book_info.push_back(promptInput("Enter the book ISBN: "));
+    book_info.push_back(promptInput("Enter the year published: "));
+    try {
+        library.createBook(book_info);
+    } catch (const std::invalid_argument& e) {
+        std::cout << e.what() << std::endl;
+        dummyPrompt();
+    }
+}
+
+void Application::deleteBook(std::shared_ptr<Book> book) {
+    if (areYouSurePrompt()) {
+        library.deleteBook(book->getID());
+    }
+}
