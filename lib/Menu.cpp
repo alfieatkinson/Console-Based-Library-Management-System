@@ -37,6 +37,16 @@ void Menu::displayPage(size_t page, bool is_admin) {
     size_t start_index = page * page_size;
     size_t end_index = std::min(start_index + page_size, options.size());
 
+    // Find the "[BACK]" option or last option alphabetically
+    auto back_it = options.end();
+    if (!options.empty()) {
+        auto last_it = std::prev(options.end());
+        if (last_it->first == "[BACK]") {
+            back_it = last_it;
+            --end_index; // Adjust end_index to exclude "[BACK]" from normal display
+        }
+    }
+
     auto it = options.begin();
     std::advance(it, start_index);
 
@@ -46,6 +56,9 @@ void Menu::displayPage(size_t page, bool is_admin) {
 
     size_t i = 1;
     for (size_t index = start_index; index < end_index; ++index) {
+        if (it == back_it) {
+            ++it; // Skip "[BACK]" for now
+        }
         if (is_admin || it->first.find("[Admin]") == std::string::npos) {
             std::cout << i << ". " << it->first << std::endl;
         }
@@ -53,13 +66,17 @@ void Menu::displayPage(size_t page, bool is_admin) {
         ++i;
     }
 
+    // Display "[BACK]" at the end of the page
+    if (back_it != options.end()) {
+        std::cout << i << ". " << back_it->first << std::endl;
+    }
+
+    // Navigation options
     if (page == 0) {
         std::cout << "[N] Next  [S] Specific Page" << std::endl;
-    }
-    else if (end_index == options.size()) {
+    } else if (end_index == options.size()) {
         std::cout << "[P] Previous  [S] Specific Page" << std::endl;
-    }
-    else {
+    } else {
         std::cout << "[P] Previous  [N] Next  [S] Specific Page" << std::endl;
     }
 }
