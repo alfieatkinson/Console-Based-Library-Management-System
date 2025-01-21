@@ -356,3 +356,24 @@ std::shared_ptr<Menu> Application::makeUpdateTransactionMenu(std::shared_ptr<Tra
     });
     return menu;
 }
+
+// Methods for user authentication
+void Application::login() {
+    std::string username = promptInput("Enter your username: ");
+    std::string password = promptInput("Enter your password: ");
+    try {
+        current_user = library.authenticateUser(username, password);
+        is_admin = current_user->getUsername() == "admin";
+        menu_stack.push(makeMainMenu());
+    } catch (const std::invalid_argument& e) {
+        std::cout << e.what() << std::endl;
+        dummyPrompt();
+    }
+}
+
+void Application::logout() {
+    current_user = nullptr;
+    is_admin = false;
+    menu_stack = std::stack<std::shared_ptr<Menu>>();
+    menu_stack.push(makeLoginMenu());
+}
