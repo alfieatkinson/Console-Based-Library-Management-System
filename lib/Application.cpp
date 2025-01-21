@@ -345,3 +345,14 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeUpdateTransactionMenu(std::shared_ptr<Transaction> transaction) {
+    auto menu = std::make_shared<Menu>("Update Transaction Menu");
+    menu->addOption("Update Status", [this, transaction]() {
+        library.updateTransaction(transaction->getID(), "status", promptInput("Enter the new status: "));
+    });
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
