@@ -492,3 +492,12 @@ void Application::showTransactionInfo(std::shared_ptr<Transaction> transaction) 
     std::cout << transaction->getInfo() << std::endl;
     dummyPrompt();
 }
+
+// Method to clear the console
+void Application::clearConsole() {
+    #if defined(_WIN32) || defined(_WIN64)
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
