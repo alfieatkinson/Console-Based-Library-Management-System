@@ -231,3 +231,28 @@ std::shared_ptr<Menu> Application::makeBookMenu(std::shared_ptr<Book> book) {
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeUserMenu(std::shared_ptr<User> user) {
+    auto menu = std::make_shared<Menu>(makeUserSummary(user));
+
+    menu->addOption("View User Info", [this, user]() {
+        showUserInfo(user);
+    });
+    menu->addOption("View Borrowed Books", [this, user]() {
+        menu_stack.push(makeBooksMenu(user->getBorrowedBooks()));
+    });
+    menu->addOption("View User Transactions", [this, user]() {
+        auto transactions = library.queryTransactionsByUserID(user->getID());
+        menu_stack.push(makeTransactionsMenu(transactions));
+    });
+    menu->addOption("Update User Info", [this, user]() { // Admin-only option
+        menu_stack.push(makeUpdateUserMenu(user));
+    }, true);
+    menu->addOption("Delete User", [this, user]() { // Admin-only option
+        deleteUser(user);
+    }, true);
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
