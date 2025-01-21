@@ -207,3 +207,27 @@ std::shared_ptr<Menu> Application::makeTransactionsMenu(std::vector<std::shared_
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeBookMenu(std::shared_ptr<Book> book) {
+    auto menu = std::make_shared<Menu>(makeBookSummary(book));
+
+    menu->addOption("View Book Info", [this, book]() {
+        showBookInfo(book);
+    });
+    menu->addOption("Borrow Book", [this, book]() {
+        borrowBook(book);
+    });
+    menu->addOption("Return Book", [this, book]() {
+        returnBook(book);
+    });
+    menu->addOption("Update Book Info", [this, book]() { // Admin-only option
+        menu_stack.push(makeUpdateBookMenu(book));
+    }, true);
+    menu->addOption("Delete Book", [this, book]() { // Admin-only option
+        deleteBook(book);
+    }, true);
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
