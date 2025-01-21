@@ -274,3 +274,29 @@ std::shared_ptr<Menu> Application::makeTransactionMenu(std::shared_ptr<Transacti
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeUpdateBookMenu(std::shared_ptr<Book> book) {
+    auto menu = std::make_shared<Menu>("Update Book Menu");
+
+    menu->addOption("Update Title", [this, book]() { // Admin-only option
+        library.updateBook(book->getID(), "title", promptInput("Enter the new title: "));
+    }, true);
+    menu->addOption("Update Author", [this, book]() { // Admin-only option
+        library.updateBook(book->getID(), "author", promptInput("Enter the new author: "));
+    }, true);
+    menu->addOption("Update ISBN", [this, book]() { // Admin-only option
+        try {
+            library.updateBook(book->getID(), "isbn", promptInput("Enter the new ISBN: "));
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+        }
+    }, true);
+    menu->addOption("Update Year Published", [this, book]() { // Admin-only option
+        library.updateBook(book->getID(), "year_published", promptInput("Enter the new year published: "));
+    }, true);
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
