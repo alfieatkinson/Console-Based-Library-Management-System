@@ -256,3 +256,21 @@ std::shared_ptr<Menu> Application::makeUserMenu(std::shared_ptr<User> user) {
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeTransactionMenu(std::shared_ptr<Transaction> transaction) {
+    auto menu = std::make_shared<Menu>(makeTransactionSummary(transaction));
+
+    menu->addOption("View Transaction Info", [this, transaction]() {
+        showTransactionInfo(transaction);
+    });
+    menu->addOption("Update Transaction Info", [this, transaction]() { // Admin-only option
+        menu_stack.push(makeUpdateTransactionMenu(transaction));
+    }, true);
+    menu->addOption("Delete Transaction", [this, transaction]() { // Admin-only option
+        deleteTransaction(transaction);
+    }, true);
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
