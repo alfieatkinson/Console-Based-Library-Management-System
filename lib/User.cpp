@@ -7,7 +7,10 @@ User::User(int user_id, const std::string& username, const std::string& forename
     : user_id(user_id), username(username), forename(forename), surname(surname), email(email), phone_number(phone_number), password(password) {
 
     // Validate phone number length
-    if (phone_number.length() != 11) throw std::invalid_argument("Phone number must be 11 characters long.");
+    std::regex phone_number_regex("^[+]{1}(?:[0-9\\-\\(\\)\\/""\\.]\\s?){6,15}[0-9]{1}$");
+    if (!std::regex_match(phone_number, phone_number_regex)) {
+        throw std::invalid_argument("Invalid phone number format. Try including the country code.");
+    }
 
     // Validate email format
     std::regex email_regex("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
@@ -36,8 +39,20 @@ std::vector<std::shared_ptr<Book>> User::getBorrowedBooks() const { return borro
 void User::setUsername(const std::string& new_username) { username = new_username; }
 void User::setForename(const std::string& new_forename) { forename = new_forename; }
 void User::setSurname(const std::string& new_surname) { surname = new_surname; }
-void User::setEmail(const std::string& new_email) { email = new_email; }
-void User::setPhoneNumber(const std::string& new_phone_number) { phone_number = new_phone_number; }
+void User::setEmail(const std::string& new_email) {
+    // Validate email format
+    std::regex email_regex("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+    if (!std::regex_match(new_email, email_regex)) throw std::invalid_argument("Invalid email format.");
+    email = new_email;
+}
+void User::setPhoneNumber(const std::string& new_phone_number) {
+    // Validate phone number length
+    std::regex phone_number_regex("^[+]{1}(?:[0-9\\-\\(\\)\\/""\\.]\\s?){6,15}[0-9]{1}$");
+    if (!std::regex_match(phone_number, phone_number_regex)) {
+        throw std::invalid_argument("Invalid phone number format. Try including the country code.");
+    }
+    phone_number = new_phone_number;
+}
 void User::setPassword(const std::string& new_password) { password = new_password; }
 
 // Methods for borrowing and returning books
