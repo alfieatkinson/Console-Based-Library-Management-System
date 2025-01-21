@@ -56,3 +56,23 @@ std::string Application::makeTransactionSummary(const std::shared_ptr<Transactio
         << transaction->getUser()->getUsername() << ")";
     return oss.str();
 }
+
+// Microservices for menu actions
+std::string Application::promptInput(const std::string& prompt) {
+    std::string input;
+    std::cout << prompt;
+    std::cin >> input;
+    return input;
+}
+
+bool Application::areYouSurePrompt(bool undoable) {
+    std::string extra = undoable ? " This action cannot be undone." : "";
+    std::string input = promptInput("Are you sure?" + extra + " [y/N] ");
+    return input == "y" || input == "Y";
+}
+
+void Application::dummyPrompt() {
+    std::cout << "Press Enter to continue...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear any lingering input
+    std::cin.get(); // Wait for Enter
+}
