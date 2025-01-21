@@ -437,3 +437,39 @@ void Application::deleteTransaction(std::shared_ptr<Transaction> transaction) {
         library.deleteTransaction(transaction->getID());
     }
 }
+
+// Borrowing and returning books
+void Application::borrowBook(std::shared_ptr<Book> book) {
+    if (book == nullptr) {
+        int book_id;
+        try {
+            book_id = std::stoi(promptInput("Enter the book ID: "));
+            book = library.readBook(book_id);
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+            return;
+        }
+        book = library.readBook(book_id);
+    }
+    library.borrowBook(book->getID(), current_user->getID());
+    std::cout << "Book borrowed successfully." << std::endl;
+    dummyPrompt();
+}
+
+void Application::returnBook(std::shared_ptr<Book> book) {
+    if (book == nullptr) {
+        int book_id;
+        try {
+            book_id = std::stoi(promptInput("Enter the book ID: "));
+            book = library.readBook(book_id);
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+            return;
+        }
+    }
+    library.returnBook(book->getID(), current_user->getID());
+    std::cout << "Book returned successfully." << std::endl;
+    dummyPrompt();
+}
