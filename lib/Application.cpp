@@ -95,3 +95,37 @@ std::shared_ptr<Menu> Application::makeLoginMenu() {
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeMainMenu() {
+    auto menu = std::make_shared<Menu>("Main Menu");
+
+    menu->addOption("Borrow Book", [this]() {
+        borrowBook();
+    });
+    menu->addOption("Return Book", [this]() {
+        returnBook();
+    });
+    menu->addOption("Search Items", [this]() {
+        menu_stack.push(makeSearchMenu());
+    });
+    menu->addOption("View My Profile", [this]() {
+        if (is_admin) {
+            std::cout << "You are logged in as an admin." << std::endl;
+            dummyPrompt();
+        }
+        showUserInfo(current_user);
+    });
+    menu->addOption("Update My Profile", [this]() {
+        menu_stack.push(makeUpdateUserMenu(current_user));
+    });
+    menu->addOption("Add New Book", [this]() { // Admin-only option
+        createBook();
+    }, true);
+    menu->addOption("Add New User", [this]() { // Admin-only option
+        createUser();
+    }, true);
+    menu->addOption("[LOGOUT]", [this]() {
+        logout();
+    });
+    return menu;
+}
