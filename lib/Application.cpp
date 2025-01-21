@@ -76,3 +76,22 @@ void Application::dummyPrompt() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear any lingering input
     std::cin.get(); // Wait for Enter
 }
+
+// Methods for making menus
+std::shared_ptr<Menu> Application::makeLoginMenu() {
+    auto menu = std::make_shared<Menu>("Login Menu");
+
+    menu->addOption("Login", [this]() {
+        login();
+    });
+    menu->addOption("Register", [this]() {
+        createUser();
+    });
+    menu->addOption("Login as Admin", [this]() {
+        promptAdminPassword();
+    });
+    menu->addOption("[EXIT]", [this]() {
+        menu_stack = std::stack<std::shared_ptr<Menu>>(); // Clear the menu stack
+    });
+    return menu;
+}
