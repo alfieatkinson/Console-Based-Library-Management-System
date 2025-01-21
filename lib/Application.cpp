@@ -129,3 +129,42 @@ std::shared_ptr<Menu> Application::makeMainMenu() {
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeSearchMenu() {
+    auto menu = std::make_shared<Menu>("Search Menu");
+
+    menu->addOption("Search Books", [this]() {
+        std::string query = promptInput("Enter search term: ");
+        std::vector<std::shared_ptr<Book>> results = library.queryBooks(query);
+        menu_stack.push(makeBooksMenu(results));
+    });
+    menu->addOption("Search Users", [this]() { // Admin-only option
+        std::string query = promptInput("Enter search term: ");
+        std::vector<std::shared_ptr<User>> results = library.queryUsers(query);
+        menu_stack.push(makeUsersMenu(results));
+    }, true);
+    menu->addOption("Search Transactions by Book", [this]() { // Admin-only option
+        try {
+            int query = std::stoi(promptInput("Enter book ID: "));
+            std::vector<std::shared_ptr<Transaction>> results = library.queryTransactionsByBookID(query);
+            menu_stack.push(makeTransactionsMenu(results));
+        } catch (const std::invalid_argument&) {
+            std::cout << "Invalid input. Please enter an integer." << std::endl;
+            dummyPrompt();
+        }
+    }, true);
+    menu->addOption("Search Transactions by User", [this]() { // Admin-only option
+        try {
+            int query = std::stoi(promptInput("Enter user ID: "));
+            std::vector<std::shared_ptr<Transaction>> results = library.queryTransactionsByUserID(query);
+            menu_stack.push(makeTransactionsMenu(results));
+        } catch (const std::invalid_argument&) {
+            std::cout << "Invalid input. Please enter an integer." << std::endl;
+            dummyPrompt();
+        }
+    }, true);
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
