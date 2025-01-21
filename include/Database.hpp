@@ -82,6 +82,9 @@ public:
     std::vector<std::shared_ptr<User>> queryUsers(const std::string& search_term, int threshold = 2);
     std::vector<std::shared_ptr<Transaction>> queryTransactionsByBookID(int id);
     std::vector<std::shared_ptr<Transaction>> queryTransactionsByUserID(int id);
+
+    // User authentication methods
+    std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
 };
 
 #endif // DATABASE_HPP

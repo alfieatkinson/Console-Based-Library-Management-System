@@ -257,3 +257,15 @@ std::vector<std::shared_ptr<Transaction>> Database::queryTransactionsByBookID(in
 std::vector<std::shared_ptr<Transaction>> Database::queryTransactionsByUserID(int id) {
     return transactions_by_user_id[id];
 }
+
+// User authentication methods
+std::shared_ptr<User> Database::authenticateUser(const std::string& username, const std::string& password) {
+    if (user_username_map.find(toLowerCase(username)) != user_username_map.end()) {
+        for (const auto& user : user_username_map[toLowerCase(username)]) {
+            if (user->getPassword() == password) {
+                return user;
+            }
+        }
+    }
+    throw std::invalid_argument("Invalid username or password");
+}
