@@ -103,14 +103,24 @@ bool Menu::handleNavigation(char choice, size_t& current_page) {
     return true;
 }
 
-bool Menu::handleChoice(int choice) {
+bool Menu::handleChoice(int choice, bool is_admin) {
     if (choice > 0 && choice <= static_cast<int>(options.size())) {
         auto it = std::next(options.begin(), choice - 1);
-        it->second();  // Execute the function associated with the option
-        return true;   // Valid input
+
+        // Check if the selected option is an admin option and the user is not an admin
+        if (!is_admin && it->first.find("[Admin]") != std::string::npos) {
+            // Use the last option in the map as fallback
+            auto last_it = std::prev(options.end());
+            last_it->second(); // Execute the last option's action
+            return true;
+        }
+
+        // Execute the chosen option if it's valid for the user
+        it->second();
+        return true;
     } else {
         std::cout << "\nInvalid option, please try again.\n" << std::endl;
-        return false;  // Invalid input
+        return false; // Invalid input
     }
 }
 
@@ -136,14 +146,20 @@ bool Menu::display(bool is_admin, size_t current_page) {
         if (std::cin >> choice) {
             if (paging) {
                 if (!handleNavigation(choice, current_page)) {
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cout << "\nInvalid option, please try again.\n" << std::endl;
+                    try {
+                        handleChoice(std::stoi(std::string(1, choice)), is_admin);
+                        return true;
+                    } catch (const std::invalid_argument&) {
+                        std::cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        std::cout << "\nInvalid option, please try again.\n" << std::endl;
+                        return false;
+                    }
                 }
             } else {
                 int index;
                 try {
-                    handleChoice(std::stoi(std::string(1, choice)));
+                    handleChoice(std::stoi(std::string(1, choice)), is_admin);
                     return true;
                 } catch (const std::invalid_argument&) {
                     std::cin.clear();
