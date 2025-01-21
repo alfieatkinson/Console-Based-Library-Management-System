@@ -473,3 +473,22 @@ void Application::returnBook(std::shared_ptr<Book> book) {
     std::cout << "Book returned successfully." << std::endl;
     dummyPrompt();
 }
+
+// Methods for displaying information
+void Application::showBookInfo(std::shared_ptr<Book> book) {
+    clearConsole();
+    std::cout << book->getInfo() << std::endl;
+    dummyPrompt();
+}
+
+void Application::showUserInfo(std::shared_ptr<User> user) {
+    clearConsole();
+    std::cout << user->getInfo() << std::endl;
+    dummyPrompt();
+}
+
+void Application::showTransactionInfo(std::shared_ptr<Transaction> transaction) {
+    clearConsole();
+    std::cout << transaction->getInfo() << std::endl;
+    dummyPrompt();
+}
