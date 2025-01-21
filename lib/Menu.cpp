@@ -37,16 +37,6 @@ void Menu::displayPage(size_t page, bool is_admin) {
     size_t start_index = page * page_size;
     size_t end_index = std::min(start_index + page_size, options.size());
 
-    // Find the "[BACK]" option or last option alphabetically
-    auto back_it = options.end();
-    if (!options.empty()) {
-        auto last_it = std::prev(options.end());
-        if (last_it->first == "[BACK]") {
-            back_it = last_it;
-            --end_index; // Adjust end_index to exclude "[BACK]" from normal display
-        }
-    }
-
     auto it = options.begin();
     std::advance(it, start_index);
 
@@ -54,11 +44,8 @@ void Menu::displayPage(size_t page, bool is_admin) {
     std::cout << name << " - Page " << (page + 1) << "/"
               << (options.size() + page_size - 1) / page_size << std::endl;
 
-    size_t i = 1;
-    for (size_t index = start_index; index < end_index; ++index) {
-        if (it == back_it) {
-            ++it; // Skip "[BACK]" for now
-        }
+    int i = 1;
+    for (size_t index = start_index; index < end_index - 1; ++index) {
         if (is_admin || it->first.find("[Admin]") == std::string::npos) {
             std::cout << i << ". " << it->first << std::endl;
         }
@@ -66,15 +53,13 @@ void Menu::displayPage(size_t page, bool is_admin) {
         ++i;
     }
 
-    // Display "[BACK]" at the end of the page
-    if (back_it != options.end()) {
-        std::cout << i << ". " << back_it->first << std::endl;
-    }
+    // Always display "[BACK]" as the last option
+    std::cout << i << ". " << "[BACK]" << std::endl;
 
     // Navigation options
     if (page == 0) {
         std::cout << "[N] Next  [S] Specific Page" << std::endl;
-    } else if (end_index == options.size()) {
+    } else if (end_index == options.size() - 1) {
         std::cout << "[P] Previous  [S] Specific Page" << std::endl;
     } else {
         std::cout << "[P] Previous  [N] Next  [S] Specific Page" << std::endl;
@@ -82,7 +67,7 @@ void Menu::displayPage(size_t page, bool is_admin) {
 }
 
 // Helper methods for handling navigation and choices
-bool Menu::handleNavigation(char choice, size_t& current_page) {
+bool Menu::handleNavigation(char choice) {
     if (choice == 'P' || choice == 'p') {
         if (current_page > 0) --current_page;
     } else if (choice == 'N' || choice == 'n') {
@@ -104,11 +89,15 @@ bool Menu::handleNavigation(char choice, size_t& current_page) {
 }
 
 bool Menu::handleChoice(int choice, bool is_admin) {
+    if (paging) {
+        choice += current_page * page_size;
+    }
     if (choice > 0 && choice <= static_cast<int>(options.size())) {
         auto it = std::next(options.begin(), choice - 1);
 
         // Check if the selected option is an admin option and the user is not an admin
-        if (!is_admin && it->first.find("[Admin]") != std::string::npos) {
+        if ((!is_admin && it->first.find("[Admin]") != std::string::npos)
+            || (paging && choice == current_page * page_size + page_size)) {
             // Use the last option in the map as fallback
             auto last_it = std::prev(options.end());
             last_it->second(); // Execute the last option's action
@@ -125,7 +114,11 @@ bool Menu::handleChoice(int choice, bool is_admin) {
 }
 
 // Method to display the menu
-bool Menu::display(bool is_admin, size_t current_page) {
+bool Menu::display(bool is_admin, int page) {
+    if (page != -1) {
+        current_page = page;
+    }
+
     while (true) {
         if (paging && options.size() > page_size) {
             displayPage(current_page, is_admin);
@@ -145,7 +138,7 @@ bool Menu::display(bool is_admin, size_t current_page) {
 
         if (std::cin >> choice) {
             if (paging) {
-                if (!handleNavigation(choice, current_page)) {
+                if (!handleNavigation(choice)) {
                     try {
                         handleChoice(std::stoi(std::string(1, choice)), is_admin);
                         return true;
@@ -156,6 +149,7 @@ bool Menu::display(bool is_admin, size_t current_page) {
                         return false;
                     }
                 }
+                return true;
             } else {
                 int index;
                 try {

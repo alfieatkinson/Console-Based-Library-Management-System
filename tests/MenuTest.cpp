@@ -181,6 +181,7 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
             std::streambuf* oldCoutBuffer1 = std::cout.rdbuf(simulatedOutput1.rdbuf());
 
             menu.display(false); // Non-admin display
+            menu.display(false); // Non-admin display
 
             std::cout.rdbuf(oldCoutBuffer1);
             std::cin.rdbuf(std::cin.rdbuf());
@@ -197,6 +198,7 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
             std::streambuf* oldCoutBuffer2 = std::cout.rdbuf(simulatedOutput2.rdbuf());
 
             menu.display(false, 1); // Start on the second page
+            menu.display(false); // Non-admin display
 
             std::cout.rdbuf(oldCoutBuffer2);
             std::cin.rdbuf(std::cin.rdbuf());
@@ -213,6 +215,7 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
             std::streambuf* oldCoutBuffer3 = std::cout.rdbuf(simulatedOutput3.rdbuf());
 
             menu.display(false);
+            menu.display(false); // Non-admin display
 
             std::cout.rdbuf(oldCoutBuffer3);
             std::cin.rdbuf(std::cin.rdbuf());
