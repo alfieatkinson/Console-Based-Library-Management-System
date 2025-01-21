@@ -81,11 +81,11 @@ This project uses CMake for the build process. The `make.sh` script simplifies t
 
 Replace `TestName` with the actual name of the test you want to run.
 
-**Note for Windows users**: If you are using Windows, you will need to manually run the build commands and tests using PowerShell or Command Prompt. For example:
+**Note for Windows users**: If you are using Windows, you will need to manually run the build commands and tests using PowerShell or Command Prompt. By default, tests are built. To disable them, use the `-DBUILD_TESTS=OFF` option. Examples:
 
 1. **Build the project without tests**:
     ```powershell
-    cmake . && cmake --build . --target all
+    cmake -DBUILD_TESTS=OFF . && cmake --build . --target all
     ```
 
 2. **Build the project and run tests**:
