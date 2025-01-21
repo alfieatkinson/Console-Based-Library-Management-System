@@ -21,9 +21,6 @@ public:
     // Getters
     Database& getDatabase();
 
-    // Setters
-    void setDatabase(const Database& new_db);
-
     // Methods for borrowing and returning books
     void borrowBook(int book_id, int user_id);
     void returnBook(int book_id, int user_id);
@@ -58,8 +55,8 @@ public:
     bool authenticateAdmin(const std::string& password);
 
     // Database persistence methods
-    void saveDatabase() const;
-    void loadDatabase() const;
+    void saveDatabase();
+    void loadDatabase();
 };
 
 #endif // LIBRARY_HPP
