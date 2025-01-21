@@ -10,3 +10,8 @@ Application::Application() {
 
 // Destructor
 Application::~Application() {}
+
+// Initialisation methods
+void Application::initialiseMenus() {
+    menu_stack.push(makeLoginMenu());
+}
