@@ -90,6 +90,11 @@ std::vector<std::shared_ptr<User>> LibraryManager::queryUsers(const std::string&
 std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByBookID(int id) { return db.queryTransactionsByBookID(id); }
 std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByUserID(int id) { return db.queryTransactionsByUserID(id); }
 
+// User authentication methods
+std::shared_ptr<User> LibraryManager::authenticateUser(const std::string& username, const std::string& password) {
+    return db.authenticateUser(username, password);
+}
+
 // Database persistence methods
 void LibraryManager::saveDatabase() const {
     // Save the database to a file

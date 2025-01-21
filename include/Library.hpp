@@ -53,6 +53,9 @@ public:
     std::vector<std::shared_ptr<Transaction>> queryTransactionsByBookID(int id);
     std::vector<std::shared_ptr<Transaction>> queryTransactionsByUserID(int id);
 
+    // User authentication methods
+    std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
+
     // Database persistence methods
     void saveDatabase() const;
     void loadDatabase() const;
