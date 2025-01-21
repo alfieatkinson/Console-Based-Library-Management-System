@@ -26,3 +26,33 @@ void Application::promptAdminPassword() {
         std::cout << "Incorrect password. Please try again." << std::endl;
     }
 }
+
+// Methods for making item summaries
+std::string Application::makeBookSummary(const std::shared_ptr<Book>& book) {
+    std::ostringstream oss;
+    oss << book->getAuthor() << ": "
+        << book->getTitle() << " ["
+        << book->getISBN() << ":"
+        << book->getID() << "]";
+    return oss.str();
+}
+
+std::string Application::makeUserSummary(const std::shared_ptr<User>& user) {
+    std::ostringstream oss;
+    oss << user->getForename() << " "
+        << user->getSurname() << " ("
+        << user->getUsername() << ")";
+    return oss.str();
+}
+
+std::string Application::makeTransactionSummary(const std::shared_ptr<Transaction>& transaction) {
+    std::ostringstream oss;
+    oss << transaction->getDatetime() << "    - "
+        << transaction->getBook()->getAuthor() << ": "
+        << transaction->getBook()->getTitle() << " "
+        << transaction->getType() << "ed by "
+        << transaction->getUser()->getForename() << " "
+        << transaction->getUser()->getSurname() << " ("
+        << transaction->getUser()->getUsername() << ")";
+    return oss.str();
+}
