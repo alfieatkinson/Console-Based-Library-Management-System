@@ -430,3 +430,10 @@ void Application::deleteUser(std::shared_ptr<User> user) {
         library.deleteUser(user->getID());
     }
 }
+
+// Transaction management methods
+void Application::deleteTransaction(std::shared_ptr<Transaction> transaction) {
+    if (areYouSurePrompt()) {
+        library.deleteTransaction(transaction->getID());
+    }
+}
