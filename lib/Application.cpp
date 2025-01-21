@@ -450,7 +450,20 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
             dummyPrompt();
             return;
         }
-        book = library.readBook(book_id);
+    }
+    if (is_admin) {
+        int user_id;
+        try {
+            user_id = std::stoi(promptInput("Enter the user ID: "));
+            library.borrowBook(book->getID(), user_id);
+            std::cout << "Book borrowed successfully." << std::endl;
+            dummyPrompt();
+            return;
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+            return;
+        }
     }
     library.borrowBook(book->getID(), current_user->getID());
     std::cout << "Book borrowed successfully." << std::endl;
@@ -458,9 +471,22 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
 }
 
 void Application::returnBook(std::shared_ptr<Book> book) {
+    std::shared_ptr<User> user = current_user;
+    if (is_admin) {
+        int user_id;
+        try {
+            user_id = std::stoi(promptInput("Enter the user ID: "));
+            user = library.readUser(user_id);
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+            dummyPrompt();
+            return;
+        }
+    }
     if (book == nullptr) {
         int book_id;
         try {
+            std::cout << getUserBooks(user) << std::endl;
             book_id = std::stoi(promptInput("Enter the book ID: "));
             book = library.readBook(book_id);
         } catch (const std::invalid_argument& e) {
@@ -469,12 +495,27 @@ void Application::returnBook(std::shared_ptr<Book> book) {
             return;
         }
     }
-    library.returnBook(book->getID(), current_user->getID());
+    if (user->getBorrowedBooks().empty()) {
+        std::cout << "User has no borrowed books." << std::endl;
+        dummyPrompt();
+        return;
+    }
+    library.returnBook(book->getID(), user->getID());
     std::cout << "Book returned successfully." << std::endl;
     dummyPrompt();
 }
 
 // Methods for displaying information
+std::string Application::getUserBooks(std::shared_ptr<User> user) {
+    std::ostringstream oss;
+    oss << "Borrowed Books:" << std::endl;
+    auto books = user->getBorrowedBooks();
+    for (const auto& book : books) {
+        oss << " - " << makeBookSummary(book) << std::endl;
+    }
+    return oss.str();
+}
+
 void Application::showBookInfo(std::shared_ptr<Book> book) {
     clearConsole();
     std::cout << book->getInfo() << std::endl;
@@ -484,6 +525,7 @@ void Application::showBookInfo(std::shared_ptr<Book> book) {
 void Application::showUserInfo(std::shared_ptr<User> user) {
     clearConsole();
     std::cout << user->getInfo() << std::endl;
+    std::cout << getUserBooks(user) << std::endl;
     dummyPrompt();
 }
 

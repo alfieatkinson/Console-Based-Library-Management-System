@@ -72,6 +72,7 @@ private:
     void returnBook(std::shared_ptr<Book> book = nullptr);
 
     // Methods for displaying information
+    std::string getUserBooks(std::shared_ptr<User> user);
     void showBookInfo(std::shared_ptr<Book> book);
     void showUserInfo(std::shared_ptr<User> user);
     void showTransactionInfo(std::shared_ptr<Transaction> transaction);
