@@ -168,3 +168,42 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
     });
     return menu;
 }
+
+std::shared_ptr<Menu> Application::makeBooksMenu(std::vector<std::shared_ptr<Book>> books) {
+    auto menu = std::make_shared<Menu>("Books", true);
+    for (const auto& book : books) {
+        menu->addOption(makeBookSummary(book), [this, book]() {
+            menu_stack.push(makeBookMenu(book));
+        });
+    }
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
+
+std::shared_ptr<Menu> Application::makeUsersMenu(std::vector<std::shared_ptr<User>> users) {
+    auto menu = std::make_shared<Menu>("Users", true);
+    for (const auto& user : users) {
+        menu->addOption(makeUserSummary(user), [this, user]() {
+            menu_stack.push(makeUserMenu(user));
+        });
+    }
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
+
+std::shared_ptr<Menu> Application::makeTransactionsMenu(std::vector<std::shared_ptr<Transaction>> transactions) {
+    auto menu = std::make_shared<Menu>("Transactions", true);
+    for (const auto& transaction : transactions) {
+        menu->addOption(makeTransactionSummary(transaction), [this, transaction]() {
+            menu_stack.push(makeTransactionMenu(transaction));
+        });
+    }
+    menu->addOption("[BACK]", [this]() {
+        menu_stack.pop(); // Go back to the previous menu
+    });
+    return menu;
+}
