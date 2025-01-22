@@ -50,3 +50,15 @@ Server::~Server() {
     }
 }
 
+// Method to start the server
+void Server::start() {
+    std::cout << "Server started, waiting for connections..." << std::endl;
+    while (true) {
+        int client_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
+        if (client_socket < 0) {
+            perror("accept");
+            exit(EXIT_FAILURE);
+        }
+        client_threads.emplace_back(&Server::handleClient, this, client_socket);
+    }
+}
