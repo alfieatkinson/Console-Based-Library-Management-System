@@ -28,10 +28,37 @@ This project is a console-based library management system written in C++. It sup
 
 ## Features
 
-- Add new books to the library
-- Remove books from the library
-- Search for books by title or author
-- Display all books in the library
+- **Book Management**:  
+  - Add, remove, and search for books in the catalogue.  
+  - Each book should be represented as a `Book` class, managing attributes such as title, author, ISBN, and availability status.
+
+- **User Management**:  
+  - Add, remove, and manage library users.  
+  - Each user should be represented as a `User` class, managing attributes such as name, ID, borrowed books, and user roles (e.g., admin, regular user).
+
+- **Borrow and Return Books**:  
+  - Track which user has borrowed which book and manage the due dates for returns.  
+  - Implement transactions via a `Transaction` class that captures book borrowing and returning details along with timestamps.
+
+- **Persistence**:  
+  - Save and load data to and from files for maintaining library state.  
+  - Implement `Library` and `LibraryManager` classes to handle data persistence using object serialization or similar techniques.
+
+- **Multi-threading for Concurrent Operations**:  
+  - Handle multiple client requests simultaneously using threads or a thread pool.  
+  - Ensure that operations such as searches and transactions can execute concurrently without conflicts.
+
+- **Networking for Remote Access**:  
+  - Enable remote access to the library system through a server-client architecture.  
+  - Implement server-side functionality using classes like `Server` and client-side operations using sockets.
+
+- **Additional Functionalities**:  
+  - **Pagination**: Implement a method to navigate through long lists of books, users, and transactions efficiently.
+  - **Approximate Search**: Enable search functionality with fuzzy matching using a dedicated search algorithm or library components.
+
+- **Documentation Generation**:  
+  - Use Doxygen to generate comprehensive project documentation, detailing classes, methods, and relationships.  
+  - Ensure that UML diagrams and class diagrams are part of the documentation for better system understanding.
 
 ## Directory Structure
 
