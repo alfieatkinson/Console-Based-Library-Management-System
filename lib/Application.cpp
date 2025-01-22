@@ -554,18 +554,25 @@ std::string Application::receiveData() {
     if (valread <= 0) { // Check for disconnection or error
         throw std::runtime_error("Client disconnected or error in receiving data.");
     }
-    return std::string(buffer, valread);
+    std::string data(buffer, valread);
+
+    // Remove trailing newline and carriage return (if any)
+    data.erase(data.find_last_not_of("\r\n") + 1);
+
+    std::cout << "Received data: [" << data << "]" << std::endl;
+    return data;
 }
 
 void Application::sendData(const std::string& data) {
+    if (data.find("CLEAR_CONSOLE") == std::string::npos) {
+        std::cout << "Sending data: " << data << std::endl;
+    }
     send(client_socket, data.c_str(), data.length(), 0);
 }
 
 // Method to clear the console
 void Application::clearConsole() {
-    sendData("\n\n\n");
-    sendData("\033[2J\033[1;1H");
-    sendData("\n");
+    sendData("CLEAR_CONSOLE\n\n\n\033[2J\033[1;1H\n");
 }
 
 void Application::run() {
