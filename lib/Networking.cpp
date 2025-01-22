@@ -10,6 +10,7 @@
 #include "Application.hpp"
 #include "Library.hpp"
 
+// Constructor
 Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
     : library_manager(library_manager), addrlen(sizeof(address)) {
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -38,3 +39,14 @@ Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
         exit(EXIT_FAILURE);
     }
 }
+
+// Destructor
+Server::~Server() {
+    close(server_fd);
+    for (auto& thread : client_threads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+}
+

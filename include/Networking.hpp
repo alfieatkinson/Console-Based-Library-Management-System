@@ -18,12 +18,17 @@ private:
     std::shared_ptr<LibraryManager> library_manager;
     std::vector<std::thread> client_threads;
 
+    // Method to handle a client connection
     void handleClient(int client_socket);
 
 public:
+    // Constructor
     Server(int port, std::shared_ptr<LibraryManager> library_manager);
+
+    // Destructor
     ~Server();
 
+    // Method to start the server
     void start();
 };
 
