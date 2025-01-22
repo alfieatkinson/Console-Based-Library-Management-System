@@ -30,35 +30,30 @@ This project is a console-based library management system written in C++. It sup
 
 - **Book Management**:  
   - Add, remove, and search for books in the catalogue.  
-  - Each book should be represented as a `Book` class, managing attributes such as title, author, ISBN, and availability status.
+  - Each book is represented as a `Book` class, managing attributes such as title, author, ISBN, year published, and availability status.
+  - Methods include `getID()`, `getTitle()`, `getAuthor()`, `getISBN()`, `getYearPublished()`, `isAvailable()`, `setTitle()`, `setAuthor()`, `setISBN()`, `setYearPublished()`, `setIsAvailable()`, `borrowBook()`, `returnBook()`, and `getInfo()`.
 
 - **User Management**:  
   - Add, remove, and manage library users.  
-  - Each user should be represented as a `User` class, managing attributes such as name, ID, borrowed books, and user roles (e.g., admin, regular user).
+  - Each user is represented as a `User` class, managing attributes such as username, forename, surname, email, phone number, password, and borrowed books.
+  - Methods include `getID()`, `getUsername()`, `getForename()`, `getSurname()`, `getEmail()`, `getPhoneNumber()`, `getPassword()`, `getBorrowedBooks()`, `setUsername()`, `setForename()`, `setSurname()`, `setEmail()`, `setPhoneNumber()`, `setPassword()`, `borrowBook()`, `returnBook()`, `checkOutStatus()`, and `getInfo()`.
 
 - **Borrow and Return Books**:  
   - Track which user has borrowed which book and manage the due dates for returns.  
   - Implement transactions via a `Transaction` class that captures book borrowing and returning details along with timestamps.
-
-- **Persistence**:  
-  - Save and load data to and from files for maintaining library state.  
-  - Implement `Library` and `LibraryManager` classes to handle data persistence using object serialization or similar techniques.
-
-- **Multi-threading for Concurrent Operations**:  
-  - Handle multiple client requests simultaneously using threads or a thread pool.  
-  - Ensure that operations such as searches and transactions can execute concurrently without conflicts.
+  - Methods include `getID()`, `getType()`, `getStatus()`, `getBook()`, `getUser()`, `getDatetime()`, `setStatus()`, `setDatetime()`, `execute()`, `cancel()`, and `getInfo()`.
 
 - **Networking for Remote Access**:  
   - Enable remote access to the library system through a server-client architecture.  
-  - Implement server-side functionality using classes like `Server` and client-side operations using sockets.
+  - Implement server-side functionality using the `Server` class and client-side operations using sockets.
+  - The `Server` class handles client connections, manages threads for concurrent client handling, and communicates with the `Application` class.
 
 - **Additional Functionalities**:  
-  - **Pagination**: Implement a method to navigate through long lists of books, users, and transactions efficiently.
-  - **Approximate Search**: Enable search functionality with fuzzy matching using a dedicated search algorithm or library components.
+  - **Pagination**: Implement a method to navigate through long lists of books, users, and transactions efficiently using the `Menu` class.
+  - **Approximate Search**: Enable search functionality with fuzzy matching using the `Database` class.
 
 - **Documentation Generation**:  
-  - Use Doxygen to generate comprehensive project documentation, detailing classes, methods, and relationships.  
-  - Ensure that UML diagrams and class diagrams are part of the documentation for better system understanding.
+  - Use Doxygen to generate comprehensive project documentation, detailing classes, methods, and relationships.
 
 ## Directory Structure
 
