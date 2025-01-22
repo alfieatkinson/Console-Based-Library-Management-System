@@ -19,7 +19,8 @@ private:
     std::shared_ptr<User> current_user;
     bool is_admin = false;
 
-    LibraryManager library;
+    // The library manager
+    std::shared_ptr<LibraryManager> library_manager;
 
     // Socket file descriptor for client communication
     int client_socket;
@@ -86,7 +87,7 @@ private:
 
 public:
     // Constructor
-    Application(int client_socket);
+    Application(int client_socket, std::shared_ptr<LibraryManager> library_manager);
 
     // Destructor
     ~Application();

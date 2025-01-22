@@ -7,7 +7,7 @@
 #include "Application.hpp"
 
 // Constructor
-Application::Application(int client_socket) : client_socket(client_socket) {
+Application::Application(int client_socket, std::shared_ptr<LibraryManager> library_manager) : client_socket(client_socket), library_manager(library_manager) {
     initialiseMenus();
 }
 
@@ -23,7 +23,7 @@ void Application::initialiseMenus() {
 
 void Application::promptAdminPassword() {
     std::string input = promptInput("Enter the admin password: ");
-    if (library.authenticateAdmin(input)) {
+    if (library_manager->authenticateAdmin(input)) {
         is_admin = true;
         menu_stack.push(makeMainMenu());
     }
@@ -137,18 +137,18 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
 
     menu->addOption("Search Books", [this]() {
         std::string query = promptInput("Enter search term: ");
-        std::vector<std::shared_ptr<Book>> results = library.queryBooks(query);
+        std::vector<std::shared_ptr<Book>> results = library_manager->queryBooks(query);
         menu_stack.push(makeBooksMenu(results));
     });
     menu->addOption("Search Users", [this]() { // Admin-only option
         std::string query = promptInput("Enter search term: ");
-        std::vector<std::shared_ptr<User>> results = library.queryUsers(query);
+        std::vector<std::shared_ptr<User>> results = library_manager->queryUsers(query);
         menu_stack.push(makeUsersMenu(results));
     }, true);
     menu->addOption("Search Transactions by Book", [this]() { // Admin-only option
         try {
             int query = std::stoi(promptInput("Enter book ID: "));
-            std::vector<std::shared_ptr<Transaction>> results = library.queryTransactionsByBookID(query);
+            std::vector<std::shared_ptr<Transaction>> results = library_manager->queryTransactionsByBookID(query);
             menu_stack.push(makeTransactionsMenu(results));
         } catch (const std::invalid_argument&) {
             sendData("Invalid input. Please enter an integer.\n");
@@ -158,7 +158,7 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
     menu->addOption("Search Transactions by User", [this]() { // Admin-only option
         try {
             int query = std::stoi(promptInput("Enter user ID: "));
-            std::vector<std::shared_ptr<Transaction>> results = library.queryTransactionsByUserID(query);
+            std::vector<std::shared_ptr<Transaction>> results = library_manager->queryTransactionsByUserID(query);
             menu_stack.push(makeTransactionsMenu(results));
         } catch (const std::invalid_argument&) {
             sendData("Invalid input. Please enter an integer.\n");
@@ -244,7 +244,7 @@ std::shared_ptr<Menu> Application::makeUserMenu(std::shared_ptr<User> user) {
         menu_stack.push(makeBooksMenu(user->getBorrowedBooks()));
     });
     menu->addOption("View User Transactions", [this, user]() {
-        auto transactions = library.queryTransactionsByUserID(user->getID());
+        auto transactions = library_manager->queryTransactionsByUserID(user->getID());
         menu_stack.push(makeTransactionsMenu(transactions));
     });
     menu->addOption("Update User Info", [this, user]() { // Admin-only option
@@ -281,14 +281,14 @@ std::shared_ptr<Menu> Application::makeUpdateBookMenu(std::shared_ptr<Book> book
     auto menu = std::make_shared<Menu>("Update Book Menu");
 
     menu->addOption("Update Title", [this, book]() { // Admin-only option
-        library.updateBook(book->getID(), "title", promptInput("Enter the new title: "));
+        library_manager->updateBook(book->getID(), "title", promptInput("Enter the new title: "));
     }, true);
     menu->addOption("Update Author", [this, book]() { // Admin-only option
-        library.updateBook(book->getID(), "author", promptInput("Enter the new author: "));
+        library_manager->updateBook(book->getID(), "author", promptInput("Enter the new author: "));
     }, true);
     menu->addOption("Update ISBN", [this, book]() { // Admin-only option
         try {
-            library.updateBook(book->getID(), "isbn", promptInput("Enter the new ISBN: "));
+            library_manager->updateBook(book->getID(), "isbn", promptInput("Enter the new ISBN: "));
         } catch (const std::invalid_argument& e) {
             sendData(e.what());
             sendData("\n");
@@ -296,7 +296,7 @@ std::shared_ptr<Menu> Application::makeUpdateBookMenu(std::shared_ptr<Book> book
         }
     }, true);
     menu->addOption("Update Year Published", [this, book]() { // Admin-only option
-        library.updateBook(book->getID(), "year_published", promptInput("Enter the new year published: "));
+        library_manager->updateBook(book->getID(), "year_published", promptInput("Enter the new year published: "));
     }, true);
     menu->addOption("[BACK]", [this]() {
         menu_stack.pop(); // Go back to the previous menu
@@ -308,20 +308,20 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
     auto menu = std::make_shared<Menu>("Update User Menu");
 
     menu->addOption("Update Forename", [this, user]() {
-        library.updateUser(user->getID(), "forename", promptInput("Enter the new forename: "));
+        library_manager->updateUser(user->getID(), "forename", promptInput("Enter the new forename: "));
     });
     menu->addOption("Update Surname", [this, user]() {
-        library.updateUser(user->getID(), "surname", promptInput("Enter the new surname: "));
+        library_manager->updateUser(user->getID(), "surname", promptInput("Enter the new surname: "));
     });
     menu->addOption("Update Username", [this, user]() {
-        library.updateUser(user->getID(), "username", promptInput("Enter the new username: "));
+        library_manager->updateUser(user->getID(), "username", promptInput("Enter the new username: "));
     });
     menu->addOption("Update Password", [this, user]() {
         std::string new_password = promptInput("Enter the new password: ");
         std::string confirm_password = promptInput("Confirm the new password: ");
 
         if (new_password == confirm_password) {
-            library.updateUser(user->getID(), "password", new_password);
+            library_manager->updateUser(user->getID(), "password", new_password);
         } else {
             sendData("Passwords do not match. Please try again.\n");
             dummyPrompt();
@@ -329,7 +329,7 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
     });
     menu->addOption("Update Email", [this, user]() {
         try {
-            library.updateUser(user->getID(), "email", promptInput("Enter the new email: "));
+            library_manager->updateUser(user->getID(), "email", promptInput("Enter the new email: "));
         } catch (const std::invalid_argument& e) {
             sendData(e.what());
             sendData("\n");
@@ -338,7 +338,7 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
     });
     menu->addOption("Update Phone Number", [this, user]() {
         try {
-            library.updateUser(user->getID(), "phone", promptInput("Enter the new phone number: "));
+            library_manager->updateUser(user->getID(), "phone", promptInput("Enter the new phone number: "));
         } catch (const std::invalid_argument& e) {
             sendData(e.what());
             sendData("\n");
@@ -354,7 +354,7 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
 std::shared_ptr<Menu> Application::makeUpdateTransactionMenu(std::shared_ptr<Transaction> transaction) {
     auto menu = std::make_shared<Menu>("Update Transaction Menu");
     menu->addOption("Update Status", [this, transaction]() {
-        library.updateTransaction(transaction->getID(), "status", promptInput("Enter the new status: "));
+        library_manager->updateTransaction(transaction->getID(), "status", promptInput("Enter the new status: "));
     });
     menu->addOption("[BACK]", [this]() {
         menu_stack.pop(); // Go back to the previous menu
@@ -367,7 +367,7 @@ void Application::login() {
     std::string username = promptInput("Enter your username: ");
     std::string password = promptInput("Enter your password: ");
     try {
-        current_user = library.authenticateUser(username, password);
+        current_user = library_manager->authenticateUser(username, password);
         is_admin = current_user->getUsername() == "admin";
         menu_stack.push(makeMainMenu());
     } catch (const std::invalid_argument& e) {
@@ -392,7 +392,7 @@ void Application::createBook() {
     book_info.push_back(promptInput("Enter the book ISBN: "));
     book_info.push_back(promptInput("Enter the year published: "));
     try {
-        library.createBook(book_info);
+        library_manager->createBook(book_info);
     } catch (const std::invalid_argument& e) {
         sendData(e.what());
         sendData("\n");
@@ -402,7 +402,7 @@ void Application::createBook() {
 
 void Application::deleteBook(std::shared_ptr<Book> book) {
     if (areYouSurePrompt()) {
-        library.deleteBook(book->getID());
+        library_manager->deleteBook(book->getID());
     }
 }
 
@@ -425,7 +425,7 @@ void Application::createUser() {
         }
     }
     try {
-        library.createUser(user_info);
+        library_manager->createUser(user_info);
     } catch (const std::invalid_argument& e) {
         sendData(e.what());
         sendData("\n");
@@ -435,14 +435,14 @@ void Application::createUser() {
 
 void Application::deleteUser(std::shared_ptr<User> user) {
     if (areYouSurePrompt()) {
-        library.deleteUser(user->getID());
+        library_manager->deleteUser(user->getID());
     }
 }
 
 // Transaction management methods
 void Application::deleteTransaction(std::shared_ptr<Transaction> transaction) {
     if (areYouSurePrompt()) {
-        library.deleteTransaction(transaction->getID());
+        library_manager->deleteTransaction(transaction->getID());
     }
 }
 
@@ -452,7 +452,7 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
         int book_id;
         try {
             book_id = std::stoi(promptInput("Enter the book ID: "));
-            book = library.readBook(book_id);
+            book = library_manager->readBook(book_id);
         } catch (const std::invalid_argument& e) {
             sendData(e.what());
             sendData("\n");
@@ -464,7 +464,7 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
         int user_id;
         try {
             user_id = std::stoi(promptInput("Enter the user ID: "));
-            library.borrowBook(book->getID(), user_id);
+            library_manager->borrowBook(book->getID(), user_id);
             sendData("Book borrowed successfully.\n");
             dummyPrompt();
             return;
@@ -475,7 +475,7 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
             return;
         }
     }
-    library.borrowBook(book->getID(), current_user->getID());
+    library_manager->borrowBook(book->getID(), current_user->getID());
     sendData("Book borrowed successfully.\n");
     dummyPrompt();
 }
@@ -486,7 +486,7 @@ void Application::returnBook(std::shared_ptr<Book> book) {
         int user_id;
         try {
             user_id = std::stoi(promptInput("Enter the user ID: "));
-            user = library.readUser(user_id);
+            user = library_manager->readUser(user_id);
         } catch (const std::invalid_argument& e) {
             sendData(e.what());
             sendData("\n");
@@ -499,7 +499,7 @@ void Application::returnBook(std::shared_ptr<Book> book) {
         try {
             sendData(getUserBooks(user) + "\n");
             book_id = std::stoi(promptInput("Enter the book ID: "));
-            book = library.readBook(book_id);
+            book = library_manager->readBook(book_id);
         } catch (const std::invalid_argument& e) {
             sendData(e.what());
             sendData("\n");
@@ -512,7 +512,7 @@ void Application::returnBook(std::shared_ptr<Book> book) {
         dummyPrompt();
         return;
     }
-    library.returnBook(book->getID(), user->getID());
+    library_manager->returnBook(book->getID(), user->getID());
     sendData("Book returned successfully.\n");
     dummyPrompt();
 }
@@ -551,6 +551,9 @@ void Application::showTransactionInfo(std::shared_ptr<Transaction> transaction) 
 std::string Application::receiveData() {
     char buffer[1024] = {0};
     int valread = read(client_socket, buffer, 1024);
+    if (valread <= 0) { // Check for disconnection or error
+        throw std::runtime_error("Client disconnected or error in receiving data.");
+    }
     return std::string(buffer, valread);
 }
 
@@ -570,5 +573,12 @@ void Application::run() {
         auto current_menu = menu_stack.top();
         clearConsole();
         sendData(current_menu->display(is_admin));
+        
+        // Receive user input
+        std::string input = receiveData();
+        if (!current_menu->handleInput(input, is_admin)) {
+            sendData("Invalid choice. Please try again.\n");
+            dummyPrompt();
+        }
     }
 }
