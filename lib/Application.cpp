@@ -576,7 +576,7 @@ void Application::sendData(const std::string& data) {
 
 // Method to clear the console
 void Application::clearConsole() {
-    sendData("CLEAR_CONSOLE\n\n\n\033[2J\033[1;1H\n");
+    sendData("CLEAR_CONSOLE\n\n\n\033[2J\033[1;1H\n"); // Only works for Unix-like systems (Linux, macOS)
 }
 
 void Application::run() {
