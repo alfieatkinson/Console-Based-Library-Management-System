@@ -21,6 +21,9 @@ private:
 
     LibraryManager library;
 
+    // Socket file descriptor for client communication
+    int client_socket;
+
     // Initialisation methods
     void initialiseMenus();
     void promptAdminPassword();
@@ -77,9 +80,13 @@ private:
     void showUserInfo(std::shared_ptr<User> user);
     void showTransactionInfo(std::shared_ptr<Transaction> transaction);
 
+    // Methods for sending and receiving data through the socket
+    std::string receiveData();
+    void sendData(const std::string& data);
+
 public:
     // Constructor
-    Application();
+    Application(int client_socket);
 
     // Destructor
     ~Application();
