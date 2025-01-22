@@ -54,7 +54,7 @@ TEST_CASE("Create operations") {
     }
 
     SECTION("Create a user") {
-        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         REQUIRE(db.getUsers().size() == 1);
         REQUIRE(db.getUsers()[0]->getUsername() == "john_doe");
         REQUIRE(db.getUserIDCounter() == 1);
@@ -62,7 +62,7 @@ TEST_CASE("Create operations") {
 
     SECTION("Create a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         db.createTransaction("borrow", book, user);
         REQUIRE(db.getTransactions().size() == 1);
         REQUIRE(db.getTransactions()[0]->getType() == "borrow");
@@ -80,14 +80,14 @@ TEST_CASE("Read operations") {
     }
 
     SECTION("Read a user") {
-        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         auto user = db.readUser(1);
         REQUIRE(user->getUsername() == "john_doe");
     }
 
     SECTION("Read a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         db.createTransaction("borrow", book, user);
         auto transaction = db.readTransaction(1);
         REQUIRE(transaction->getType() == "borrow");
@@ -104,14 +104,14 @@ TEST_CASE("Update operations") {
     }
 
     SECTION("Update a user") {
-        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         db.updateUser(1, "username", "johndoe");
         REQUIRE(db.readUser(1)->getUsername() == "johndoe");
     }
 
     SECTION("Update a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         db.createTransaction("borrow", book, user);
         db.updateTransaction(1, "status", "completed");
         REQUIRE(db.readTransaction(1)->getStatus() == "completed");
@@ -128,14 +128,14 @@ TEST_CASE("Delete operations") {
     }
 
     SECTION("Delete a user") {
-        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         db.deleteUser(1);
         REQUIRE(db.getUsers().empty());
     }
 
     SECTION("Delete a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         db.createTransaction("borrow", book, user);
         db.deleteTransaction(1);
         REQUIRE(db.getTransactions().empty());
@@ -148,8 +148,8 @@ TEST_CASE("Query operations with approximate search") {
     // Setup test data
     db.createBook("1984", "George Orwell", "9780451524935", 1949);
     db.createBook("Brave New World", "Aldous Huxley", "9780060850524", 1932);
-    db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    db.createUser("jane_doe", "Jane", "Doe", "janedoe@email.com", "09876543210", "password456");
+    db.createUser("john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
+    db.createUser("jane_doe", "Jane", "Doe", "janedoe@email.com", "+449876543210", "password456");
 
     auto book1 = db.readBook(1);
     auto book2 = db.readBook(2);
