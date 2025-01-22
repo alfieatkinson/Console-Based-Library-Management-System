@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <limits>
 #include "Menu.hpp"
 
@@ -33,37 +34,41 @@ void Menu::addOption(const std::string& description, std::function<void()> actio
 }
 
 // Helper method to display a single page of options
-void Menu::displayPage(size_t page, bool is_admin) {
+std::string Menu::displayPage(size_t page, bool is_admin) {
+    std::ostringstream oss;
+
     size_t start_index = page * page_size;
     size_t end_index = std::min(start_index + page_size, options.size());
 
     auto it = options.begin();
     std::advance(it, start_index);
 
-    std::cout << std::endl;
-    std::cout << name << " - Page " << (page + 1) << "/"
+    oss << std::endl;
+    oss << name << " - Page " << (page + 1) << "/"
               << (options.size() + page_size - 1) / page_size << std::endl;
 
     int i = 1;
     for (size_t index = start_index; index < end_index - 1; ++index) {
         if (is_admin || it->first.find("[Admin]") == std::string::npos) {
-            std::cout << i << ". " << it->first << std::endl;
+            oss << i << ". " << it->first << std::endl;
         }
         ++it;
         ++i;
     }
 
     // Always display "[BACK]" as the last option
-    std::cout << i << ". " << "[BACK]" << std::endl;
+    oss << i << ". " << "[BACK]" << std::endl;
 
     // Navigation options
     if (page == 0) {
-        std::cout << "[N] Next  [S] Specific Page" << std::endl;
+        oss << "[N] Next" << std::endl;
     } else if (end_index == options.size() - 1) {
-        std::cout << "[P] Previous  [S] Specific Page" << std::endl;
+        oss << "[P] Previous" << std::endl;
     } else {
-        std::cout << "[P] Previous  [N] Next  [S] Specific Page" << std::endl;
+        oss << "[P] Previous  [N] Next" << std::endl;
     }
+
+    return oss.str();
 }
 
 // Helper methods for handling navigation and choices
@@ -72,16 +77,6 @@ bool Menu::handleNavigation(char choice) {
         if (current_page > 0) --current_page;
     } else if (choice == 'N' || choice == 'n') {
         if ((current_page + 1) * page_size < options.size()) ++current_page;
-    } else if (choice == 'S' || choice == 's') {
-        int target_page;
-        std::cout << "\nEnter the page number you want to navigate to: ";
-        if (std::cin >> target_page && target_page > 0 && target_page <= (options.size() + page_size - 1) / page_size) {
-            current_page = target_page - 1;
-            return true;
-        } else {
-            std::cout << "\nInvalid page number.\n" << std::endl;
-            return false;
-        }
     } else {
         return false;
     }
@@ -92,6 +87,7 @@ bool Menu::handleChoice(int choice, bool is_admin) {
     if (paging) {
         choice += current_page * page_size;
     }
+
     if (choice > 0 && choice <= static_cast<int>(options.size())) {
         auto it = std::next(options.begin(), choice - 1);
 
@@ -108,65 +104,60 @@ bool Menu::handleChoice(int choice, bool is_admin) {
         it->second();
         return true;
     } else {
-        std::cout << "\nInvalid option, please try again.\n" << std::endl;
         return false; // Invalid input
     }
 }
 
 // Method to display the menu
-bool Menu::display(bool is_admin, int page) {
+std::string Menu::display(bool is_admin, int page) {
+    std::ostringstream oss;
+
     if (page != -1) {
         current_page = page;
     }
 
-    while (true) {
-        if (paging && options.size() > page_size) {
-            displayPage(current_page, is_admin);
-        } else {
-            std::cout << std::endl;
-            std::cout << name << std::endl;
-            size_t i = 1;
-            for (const auto& option : options) {
-                if (is_admin || option.first.find("[Admin]") == std::string::npos) {
-                    std::cout << i++ << ". " << option.first << std::endl;
-                }
+    if (paging && options.size() > page_size) {
+        oss << displayPage(current_page, is_admin);
+    } else {
+        oss << std::endl;
+        oss << name << std::endl;
+        size_t i = 1;
+        for (const auto& option : options) {
+            if (is_admin || option.first.find("[Admin]") == std::string::npos) {
+                oss << i++ << ". " << option.first << std::endl;
             }
         }
+    }
 
-        std::cout << "\nEnter your choice: ";
-        char choice;
+    oss << "\nEnter your choice: ";
+    return oss.str();
+}
 
-        if (std::cin >> choice) {
-            if (paging) {
-                if (!handleNavigation(choice)) {
-                    try {
-                        handleChoice(std::stoi(std::string(1, choice)), is_admin);
-                        return true;
-                    } catch (const std::invalid_argument&) {
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        std::cout << "\nInvalid option, please try again.\n" << std::endl;
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                int index;
+bool Menu::handleInput(std::string input, bool is_admin) {
+    std::istringstream iss(input);
+    char choice;
+
+    if (iss >> choice) {
+        if (paging) {
+            if (!handleNavigation(choice)) {
                 try {
                     handleChoice(std::stoi(std::string(1, choice)), is_admin);
                     return true;
                 } catch (const std::invalid_argument&) {
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cout << "\nInvalid option, please try again.\n" << std::endl;
                     return false;
                 }
             }
+            return true;
         } else {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "\nInvalid option, please try again.\n" << std::endl;
-            return false;
+            int index;
+            try {
+                handleChoice(std::stoi(std::string(1, choice)), is_admin);
+                return true;
+            } catch (const std::invalid_argument&) {
+                return false;
+            }
         }
+    } else {
+        return false;
     }
 }
