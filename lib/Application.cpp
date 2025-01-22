@@ -547,6 +547,13 @@ void Application::showTransactionInfo(std::shared_ptr<Transaction> transaction) 
     dummyPrompt();
 }
 
+// Methods for sending and receiving data through the socket
+std::string Application::receiveData() {
+    char buffer[1024] = {0};
+    int valread = read(client_socket, buffer, 1024);
+    return std::string(buffer, valread);
+}
+
 // Method to clear the console
 void Application::clearConsole() {
     sendData("\n\n\n");
