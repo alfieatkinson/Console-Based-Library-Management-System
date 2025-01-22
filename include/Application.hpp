@@ -19,7 +19,11 @@ private:
     std::shared_ptr<User> current_user;
     bool is_admin = false;
 
-    LibraryManager library;
+    // The library manager
+    std::shared_ptr<LibraryManager> library_manager;
+
+    // Socket file descriptor for client communication
+    int client_socket;
 
     // Initialisation methods
     void initialiseMenus();
@@ -77,9 +81,13 @@ private:
     void showUserInfo(std::shared_ptr<User> user);
     void showTransactionInfo(std::shared_ptr<Transaction> transaction);
 
+    // Methods for sending and receiving data through the socket
+    std::string receiveData();
+    void sendData(const std::string& data);
+
 public:
     // Constructor
-    Application();
+    Application(int client_socket, std::shared_ptr<LibraryManager> library_manager);
 
     // Destructor
     ~Application();

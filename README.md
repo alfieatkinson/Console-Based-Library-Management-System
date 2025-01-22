@@ -100,6 +100,38 @@ Replace `TestName` with the actual name of the test you want to run.
 
 Replace `TestName` with the actual name of the test executable you want to run.
 
+## Running the Server
+
+To run the server, follow these steps:
+
+1. **Build the project**:
+    ```bash
+    ./make.sh
+    ```
+
+2. **Run the server**:
+    ```bash
+    ./LibraryManagementSystem
+    ```
+
+The server will start and listen for client connections on port 8080.
+
+## Connecting Clients
+
+To connect a client to the server, use a TCP client tool such as `telnet` or `netcat`. For example, using `telnet`:
+
+```bash
+telnet localhost 8080
+```
+
+Or using `netcat`:
+
+```bash
+nc localhost 8080
+```
+
+Once connected, you can interact with the library management system through the client.
+
 ## Documentation
 
 This project uses [Doxygen](https://www.doxygen.nl/) for generating documentation. If you have Doxygen installed, the LaTeX documentation will be generated in the directory `./docs/latex/`.

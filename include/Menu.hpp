@@ -16,7 +16,7 @@ private:
     std::map<std::string, std::function<void()>> options; // Map of options
 
     // Helper method to display a single page of options
-    void displayPage(size_t page, bool is_admin);
+    std::string displayPage(size_t page, bool is_admin);
 
     // Helper methods for handling navigation and choices
     bool handleNavigation(char choice);
@@ -40,7 +40,10 @@ public:
     void addOption(const std::string& description, std::function<void()> action, bool is_admin_only = false);
 
     // Method to display the menu
-    bool display(bool is_admin = false, int page = -1);
+    std::string display(bool is_admin = false, int page = -1);
+
+    // Method to handle user input
+    bool handleInput(std::string input, bool is_admin);
 };
 
 #endif // MENU_HPP
