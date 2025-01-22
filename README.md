@@ -1,6 +1,20 @@
 # Library Management System
 
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://shields.io/)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 This project is submitted in partial fulfilment of the Degree of **Master of Science in Computer Science**.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Directory Structure](#directory-structure)
+- [Installation Instructions](#installation-instructions)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 ## Project Overview
 
@@ -21,124 +35,138 @@ This project is a console-based library management system written in C++. It sup
 
 ```
 Library-Management-System/
-├── CMakeLists.txt
-├── doc/
-│   └── Doxyfile
-├── include/
-│   ├── Application.hpp
-│   ├── Book.hpp
-│   ├── Database.hpp
-│   ├── Library.hpp
-│   ├── Menu.hpp
-│   ├── Multithreading.hpp
-│   ├── Networking.hpp
-│   ├── Persistence.hpp
-│   ├── Transaction.hpp
-│   └── User.hpp
-├── lib/
-│   ├── Application.cpp
-│   ├── Book.cpp
-│   ├── Database.cpp
-│   ├── Library.cpp
-│   ├── main.cpp
-│   ├── Menu.cpp
-│   ├── Multithreading.cpp
-│   ├── Networking.cpp
-│   ├── Persistence.cpp
-│   ├── Transaction.cpp
-│   └── User.cpp
-└── tests/
-    ├── ApplicationTest.cpp
-    ├── BookTest.cpp
-    ├── DatabaseTest.cpp
-    ├── LibraryTest.cpp
-    ├── MenuTest.cpp
-    ├── MultithreadingTest.cpp
-    ├── NetworkingTest.cpp
-    ├── PersistenceTest.cpp
-    ├── TransactionTest.cpp
-    └── UserTest.cpp
+├── CMakeLists.txt          # CMake build configuration file
+├── doc/                    # Documentation directory
+│   └── Doxyfile            # Doxygen configuration file
+├── include/                # Header files
+│   ├── Application.hpp     # Application class header
+│   ├── Book.hpp            # Book class header
+│   ├── Database.hpp        # Database class header
+│   ├── Library.hpp         # LibraryManager class header
+│   ├── Menu.hpp            # Menu class header
+│   ├── Multithreading.hpp  # Multithreading utilities header
+│   ├── Networking.hpp      # Networking utilities header
+│   ├── Persistence.hpp     # Persistence utilities header
+│   ├── Transaction.hpp     # Transaction class header
+│   └── User.hpp            # User class header
+├── lib/                    # Source files
+│   ├── Application.cpp     # Application class implementation
+│   ├── Book.cpp            # Book class implementation
+│   ├── Database.cpp        # Database class implementation
+│   ├── Library.cpp         # LibraryManager class implementation
+│   ├── main.cpp            # Main program entry point
+│   ├── Menu.cpp            # Menu class implementation
+│   ├── Multithreading.cpp  # Multithreading utilities implementation
+│   ├── Networking.cpp      # Networking utilities implementation
+│   ├── Persistence.cpp     # Persistence utilities implementation
+│   ├── Transaction.cpp     # Transaction class implementation
+│   └── User.cpp            # User class implementation
+└── tests/                  # Test files
+    ├── ApplicationTest.cpp # Application class tests
+    ├── BookTest.cpp        # Book class tests
+    ├── DatabaseTest.cpp    # Database class tests
+    ├── LibraryTest.cpp     # LibraryManager class tests
+    ├── MenuTest.cpp        # Menu class tests
+    ├── MultithreadingTest.cpp # Multithreading utilities tests
+    ├── NetworkingTest.cpp  # Networking utilities tests
+    ├── PersistenceTest.cpp # Persistence utilities tests
+    ├── TransactionTest.cpp # Transaction class tests
+    └── UserTest.cpp        # User class tests
 ```
 
-## CMake Setup
+## Installation Instructions
 
-This project uses CMake for the build process. The `make.sh` script simplifies the build process. To build the project, use one of the following commands:
+To install and set up the project locally, follow these steps:
 
-1. **Build the project without tests**:
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/alfieatkinson/Library-Management-System.git
+    cd Library-Management-System
+    ```
+
+2. **Run the build script**:
     ```bash
     ./make.sh
     ```
 
-2. **Build the project and run tests**:
+3. **Run the server**:
+    ```bash
+    ./LibraryManagementSystem
+    ```
+
+## Testing
+
+This project uses CMake for the build and test process. The `make.sh` script simplifies the build process. To test the project, use one of the following commands:
+
+1. **Build the project and run tests**:
     ```bash
     ./make.sh -t
     ```
 
-3. **Build and run a specific test**:
+2. **Build and run a specific test**:
     ```bash
     ./make.sh -t TestName
     ```
 
 Replace `TestName` with the actual name of the test you want to run.
 
-**Note for Windows users**: If you are using Windows, you will need to manually run the build commands and tests using PowerShell or Command Prompt. By default, tests are built. To disable them, use the `-DBUILD_TESTS=OFF` option. Examples:
+## Usage
 
-1. **Build the project without tests**:
-    ```powershell
-    cmake -DBUILD_TESTS=OFF . && cmake --build . --target all
-    ```
+To use the library management system, follow these steps:
 
-2. **Build the project and run tests**:
-    ```powershell
-    cmake . && cmake --build . --target all && ctest
-    ```
-
-3. **Build and run a specific test**:
-    ```powershell
-    cmake . && cmake --build . --target TestName && .\TestName.exe
-    ```
-
-Replace `TestName` with the actual name of the test executable you want to run.
-
-## Running the Server
-
-To run the server, follow these steps:
-
-1. **Build the project**:
+1. **Connect a client to the server**:
     ```bash
-    ./make.sh
+    telnet localhost 8080
     ```
 
-2. **Run the server**:
+2. **Interact with the system**:
+    - **Login**: Enter your username and password.
+    - **Register**: Create a new user account.
+    - **Borrow Book**: Borrow a book from the library.
+    - **Return Book**: Return a borrowed book to the library.
+    - **Search Items**: Search for books, users, or transactions.
+    - **View My Profile**: View your user profile.
+    - **Update My Profile**: Update your user profile.
+    - **Add New Book**: Add a new book to the library (admin only).
+    - **Add New User**: Add a new user to the system (admin only).
+
+## Contributing
+
+We welcome contributions to the Library Management System project. To contribute, follow these steps:
+
+1. **Fork the repository** on GitHub.
+2. **Clone your forked repository**:
     ```bash
-    ./LibraryManagementSystem
+    git clone https://github.com/your-username/Library-Management-System.git
+    cd Library-Management-System
     ```
+3. **Create a new branch** for your feature or bugfix:
+    ```bash
+    git checkout -b feature-or-bugfix-name
+    ```
+4. **Make your changes** and commit them with a descriptive message:
+    ```bash
+    git commit -am 'Add new feature or fix bug'
+    ```
+5. **Push your changes** to your forked repository:
+    ```bash
+    git push origin feature-or-bugfix-name
+    ```
+6. **Create a pull request** on the original repository.
 
-The server will start and listen for client connections on port 8080.
-
-## Connecting Clients
-
-To connect a client to the server, use a TCP client tool such as `telnet` or `netcat`. For example, using `telnet`:
-
-```bash
-telnet localhost 8080
-```
-
-Or using `netcat`:
-
-```bash
-nc localhost 8080
-```
-
-Once connected, you can interact with the library management system through the client.
+Please review our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ## Documentation
 
 This project uses [Doxygen](https://www.doxygen.nl/) for generating documentation. If you have Doxygen installed, the LaTeX documentation will be generated in the directory `./docs/latex/`.
 
-## Code of Conduct
+## Acknowledgements
 
-We are committed to fostering a welcoming and inclusive environment for all contributors. Please review our [Code of Conduct](CODE_OF_CONDUCT.md) to understand the behaviours we expect in the community.
+We would like to thank the following contributors and third-party libraries/tools used in this project:
+
+- [Doxygen](https://www.doxygen.nl/) for generating documentation.
+- [Catch2](https://github.com/catchorg/Catch2) for unit testing framework.
+- [Shields.io](https://shields.io/) for providing badges.
 
 ## License
 
