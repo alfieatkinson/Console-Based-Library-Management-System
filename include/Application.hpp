@@ -15,7 +15,7 @@ class Application {
 private:
     // Stack to manage the menu navigation
     std::stack<std::shared_ptr<Menu>> menu_stack;
-    std::mutex menu_stack_mutex;
+    mutable std::mutex menu_stack_mutex;
 
     // Current user and admin status
     std::shared_ptr<User> current_user;

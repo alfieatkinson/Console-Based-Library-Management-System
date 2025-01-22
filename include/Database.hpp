@@ -38,7 +38,7 @@ private:
     std::string admin_password = "admin";
 
     // Mutex for thread safety
-    std::mutex mtx;
+    mutable std::mutex mtx;
 
 public:
     // Constructor

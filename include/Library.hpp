@@ -11,7 +11,7 @@
 class LibraryManager {
 private:
     Database db;
-    std::mutex mtx;
+    mutable std::mutex mtx;
 
 public:
     // Constructor
