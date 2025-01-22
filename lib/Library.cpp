@@ -107,7 +107,7 @@ void LibraryManager::loadDatabase() {
     // TODO: Implement the load operation
 
     // Create some sample data for testing
-
+    /*
     // Books
     db.createBook("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925);
     db.createBook("To Kill a Mockingbird", "Harper Lee", "9780061120084", 1960);
@@ -159,4 +159,5 @@ void LibraryManager::loadDatabase() {
             std::cout << "Conflict occurred during transaction execution: " << e.what() << std::endl;
         }
     }
+    */
 }
