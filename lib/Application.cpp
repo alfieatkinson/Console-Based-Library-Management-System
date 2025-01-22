@@ -28,7 +28,7 @@ void Application::promptAdminPassword() {
         menu_stack.push(makeMainMenu());
     }
     else {
-        std::cout << "Incorrect password. Please try again." << std::endl;
+        sendData("Incorrect password. Please try again.\n");
     }
 }
 
@@ -64,10 +64,8 @@ std::string Application::makeTransactionSummary(const std::shared_ptr<Transactio
 
 // Microservices for menu actions
 std::string Application::promptInput(const std::string& prompt) {
-    std::string input;
-    std::cout << prompt;
-    std::cin >> input;
-    return input;
+    sendData(prompt);
+    return receiveData();
 }
 
 bool Application::areYouSurePrompt(bool undoable) {
@@ -77,9 +75,8 @@ bool Application::areYouSurePrompt(bool undoable) {
 }
 
 void Application::dummyPrompt() {
-    std::cout << "Press Enter to continue...";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear any lingering input
-    std::cin.get(); // Wait for Enter
+    sendData("Press Enter to continue...");
+    receiveData();
 }
 
 // Methods for making menus
@@ -154,7 +151,7 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
             std::vector<std::shared_ptr<Transaction>> results = library.queryTransactionsByBookID(query);
             menu_stack.push(makeTransactionsMenu(results));
         } catch (const std::invalid_argument&) {
-            std::cout << "Invalid input. Please enter an integer." << std::endl;
+            sendData("Invalid input. Please enter an integer.\n");
             dummyPrompt();
         }
     }, true);
@@ -164,7 +161,7 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
             std::vector<std::shared_ptr<Transaction>> results = library.queryTransactionsByUserID(query);
             menu_stack.push(makeTransactionsMenu(results));
         } catch (const std::invalid_argument&) {
-            std::cout << "Invalid input. Please enter an integer." << std::endl;
+            sendData("Invalid input. Please enter an integer.\n");
             dummyPrompt();
         }
     }, true);
@@ -293,7 +290,8 @@ std::shared_ptr<Menu> Application::makeUpdateBookMenu(std::shared_ptr<Book> book
         try {
             library.updateBook(book->getID(), "isbn", promptInput("Enter the new ISBN: "));
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
         }
     }, true);
@@ -325,7 +323,7 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
         if (new_password == confirm_password) {
             library.updateUser(user->getID(), "password", new_password);
         } else {
-            std::cout << "Passwords do not match. Please try again." << std::endl;
+            sendData("Passwords do not match. Please try again.\n");
             dummyPrompt();
         }
     });
@@ -333,7 +331,8 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
         try {
             library.updateUser(user->getID(), "email", promptInput("Enter the new email: "));
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
         }
     });
@@ -341,7 +340,8 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
         try {
             library.updateUser(user->getID(), "phone", promptInput("Enter the new phone number: "));
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
         }
     });
@@ -371,7 +371,8 @@ void Application::login() {
         is_admin = current_user->getUsername() == "admin";
         menu_stack.push(makeMainMenu());
     } catch (const std::invalid_argument& e) {
-        std::cout << e.what() << std::endl;
+        sendData(e.what());
+        sendData("\n");
         dummyPrompt();
     }
 }
@@ -393,7 +394,8 @@ void Application::createBook() {
     try {
         library.createBook(book_info);
     } catch (const std::invalid_argument& e) {
-        std::cout << e.what() << std::endl;
+        sendData(e.what());
+        sendData("\n");
         dummyPrompt();
     }
 }
@@ -419,13 +421,14 @@ void Application::createUser() {
             user_info.push_back(password);
             break;
         } else {
-            std::cout << "Passwords do not match. Please try again." << std::endl;
+            sendData("Passwords do not match. Please try again.\n");
         }
     }
     try {
         library.createUser(user_info);
     } catch (const std::invalid_argument& e) {
-        std::cout << e.what() << std::endl;
+        sendData(e.what());
+        sendData("\n");
         dummyPrompt();
     }
 }
@@ -451,7 +454,8 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
             book_id = std::stoi(promptInput("Enter the book ID: "));
             book = library.readBook(book_id);
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
             return;
         }
@@ -461,17 +465,18 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
         try {
             user_id = std::stoi(promptInput("Enter the user ID: "));
             library.borrowBook(book->getID(), user_id);
-            std::cout << "Book borrowed successfully." << std::endl;
+            sendData("Book borrowed successfully.\n");
             dummyPrompt();
             return;
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
             return;
         }
     }
     library.borrowBook(book->getID(), current_user->getID());
-    std::cout << "Book borrowed successfully." << std::endl;
+    sendData("Book borrowed successfully.\n");
     dummyPrompt();
 }
 
@@ -483,7 +488,8 @@ void Application::returnBook(std::shared_ptr<Book> book) {
             user_id = std::stoi(promptInput("Enter the user ID: "));
             user = library.readUser(user_id);
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
             return;
         }
@@ -491,62 +497,61 @@ void Application::returnBook(std::shared_ptr<Book> book) {
     if (book == nullptr) {
         int book_id;
         try {
-            std::cout << getUserBooks(user) << std::endl;
+            sendData(getUserBooks(user) + "\n");
             book_id = std::stoi(promptInput("Enter the book ID: "));
             book = library.readBook(book_id);
         } catch (const std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+            sendData(e.what());
+            sendData("\n");
             dummyPrompt();
             return;
         }
     }
     if (user->getBorrowedBooks().empty()) {
-        std::cout << "User has no borrowed books." << std::endl;
+        sendData("User has no borrowed books.\n");
         dummyPrompt();
         return;
     }
     library.returnBook(book->getID(), user->getID());
-    std::cout << "Book returned successfully." << std::endl;
+    sendData("Book returned successfully.\n");
     dummyPrompt();
 }
 
 // Methods for displaying information
 std::string Application::getUserBooks(std::shared_ptr<User> user) {
     std::ostringstream oss;
-    oss << "Borrowed Books:" << std::endl;
+    oss << "Borrowed Books:\n";
     auto books = user->getBorrowedBooks();
     for (const auto& book : books) {
-        oss << " - " << makeBookSummary(book) << std::endl;
+        oss << " - " << makeBookSummary(book) << "\n";
     }
     return oss.str();
 }
 
 void Application::showBookInfo(std::shared_ptr<Book> book) {
     clearConsole();
-    std::cout << book->getInfo() << std::endl;
+    sendData(book->getInfo() + "\n");
     dummyPrompt();
 }
 
 void Application::showUserInfo(std::shared_ptr<User> user) {
     clearConsole();
-    std::cout << user->getInfo() << std::endl;
-    std::cout << getUserBooks(user) << std::endl;
+    sendData(user->getInfo() + "\n");
+    sendData(getUserBooks(user) + "\n");
     dummyPrompt();
 }
 
 void Application::showTransactionInfo(std::shared_ptr<Transaction> transaction) {
     clearConsole();
-    std::cout << transaction->getInfo() << std::endl;
+    sendData(transaction->getInfo() + "\n");
     dummyPrompt();
 }
 
 // Method to clear the console
 void Application::clearConsole() {
-    #if defined(_WIN32) || defined(_WIN64)
-        system("cls");
-    #else
-        system("clear");
-    #endif
+    sendData("\n\n\n");
+    sendData("\033[2J\033[1;1H");
+    sendData("\n");
 }
 
 void Application::run() {
