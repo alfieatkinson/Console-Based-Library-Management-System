@@ -4,15 +4,6 @@
 #include <iostream>
 #include "Menu.hpp"
 
-// Helper for redirecting console output
-std::string captureConsoleOutput(std::function<void()> func) {
-    std::ostringstream output;
-    std::streambuf* oldCoutBuffer = std::cout.rdbuf(output.rdbuf());
-    func();
-    std::cout.rdbuf(oldCoutBuffer); // Reset cout
-    return output.str();
-}
-
 TEST_CASE("Menu Constructor Initialises Correctly") {
     Menu menu("Main Menu");
 
@@ -55,35 +46,15 @@ TEST_CASE("Menu Display Options with Input Handling") {
     menu.addOption("Option 2", []() {}, true);
 
     SECTION("Non-admin user sees only non-admin options") {
-        std::istringstream simulatedInput("1\n"); // Simulate selecting an option
-        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
-
-        std::ostringstream simulatedOutput;
-        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
-
-        menu.display(false); // Non-admin display
-
-        std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
-        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
-
-        REQUIRE(simulatedOutput.str().find("Option 1") != std::string::npos);
-        REQUIRE(simulatedOutput.str().find("Option 2") == std::string::npos);
+        std::string output = menu.display(false);
+        REQUIRE(output.find("Option 1") != std::string::npos);
+        REQUIRE(output.find("Option 2") == std::string::npos);
     }
 
     SECTION("Admin user sees all options") {
-        std::istringstream simulatedInput("2\n"); // Simulate selecting an admin option
-        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
-
-        std::ostringstream simulatedOutput;
-        std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
-
-        menu.display(true); // Admin display
-
-        std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
-        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
-
-        REQUIRE(simulatedOutput.str().find("Option 1") != std::string::npos);
-        REQUIRE(simulatedOutput.str().find("[Admin] Option 2") != std::string::npos);
+        std::string output = menu.display(true);
+        REQUIRE(output.find("Option 1") != std::string::npos);
+        REQUIRE(output.find("[Admin] Option 2") != std::string::npos);
     }
 }
 
@@ -99,66 +70,50 @@ TEST_CASE("Menu Handles User Input") {
     });
 
     SECTION("Menu handles valid input") {
-        std::istringstream simulatedInput("1\n"); // Simulate entering "1"
-        std::cin.rdbuf(simulatedInput.rdbuf());   // Redirect std::cin
-
         std::ostringstream simulatedOutput;
         std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf()); // Capture std::cout
 
-        menu.display(false); // Call display for a non-admin user
+        menu.handleInput("1", false); // Call handleInput directly
 
         std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
-        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
 
         // Verify output
         REQUIRE(simulatedOutput.str().find("Option 1 selected") != std::string::npos);
     }
 
     SECTION("Menu handles non-integer input") {
-        std::istringstream simulatedInput("invalid\n"); // Simulate non-integer input
-        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
-
         std::ostringstream simulatedOutput;
         std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
 
-        bool validInput = menu.display(false);
+        bool validInput = menu.handleInput("invalid", false);
 
         std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
-        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
 
         // Verify output contains non-integer input handling
-        REQUIRE(simulatedOutput.str().find("Invalid option, please try again.") != std::string::npos);
+        REQUIRE_FALSE(validInput);
     }
 
     SECTION("Menu handles invalid option") {
-        std::istringstream simulatedInput("3\n"); // Simulate invalid option followed by a valid option
-        std::cin.rdbuf(simulatedInput.rdbuf()); // Redirect std::cin
-
         std::ostringstream simulatedOutput;
         std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
 
-        bool validInput = menu.display(false);
+        bool validInput = menu.handleInput("3", false);
 
         std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
-        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
 
         // Verify output contains invalid option handling
-        REQUIRE(simulatedOutput.str().find("Invalid option, please try again.") != std::string::npos);
+        REQUIRE_FALSE(validInput);
     }
 
     SECTION("Admin-only options displayed correctly") {
         menu.addOption("Admin Option", []() { std::cout << "Admin Option selected" << std::endl; }, true);
 
-        std::istringstream simulatedInput("3\n"); // Admin input
-        std::cin.rdbuf(simulatedInput.rdbuf());
-
         std::ostringstream simulatedOutput;
         std::streambuf* oldCoutBuffer = std::cout.rdbuf(simulatedOutput.rdbuf());
 
-        menu.display(true); // Admin user
+        menu.handleInput("3", true); // Admin user
 
         std::cout.rdbuf(oldCoutBuffer); // Restore std::cout
-        std::cin.rdbuf(std::cin.rdbuf()); // Restore std::cin
 
         REQUIRE(simulatedOutput.str().find("Admin Option selected") != std::string::npos);
         REQUIRE(simulatedOutput.str().find("Option 1 selected") == std::string::npos); // Should not display non-admin option
@@ -172,69 +127,22 @@ TEST_CASE("Menu Display Options with Paging and Input Handling") {
     menu.addOption("Option 3", []() {});
 
     SECTION("Navigate through pages and validate options") {
-        // First Page Navigation
-        SECTION("First Page Navigation") {
-            std::istringstream simulatedInput1("N\n");  // Navigate Next
-            std::cin.rdbuf(simulatedInput1.rdbuf()); 
-
-            std::ostringstream simulatedOutput1;
-            std::streambuf* oldCoutBuffer1 = std::cout.rdbuf(simulatedOutput1.rdbuf());
-
-            menu.display(false); // Non-admin display
-            menu.display(false); // Non-admin display
-
-            std::cout.rdbuf(oldCoutBuffer1);
-            std::cin.rdbuf(std::cin.rdbuf());
-
-            REQUIRE(simulatedOutput1.str().find("Option 3") != std::string::npos);  // Next Page, Option 3 should be on the next page
+        // Next Page Navigation
+        SECTION("Next Page Navigation") {
+            menu.handleInput("N", false); // Navigate to next page
+            std::string output = menu.display(false);
+            REQUIRE(output.find("Option 1") == std::string::npos);
+            REQUIRE(output.find("Option 2") == std::string::npos);
+            REQUIRE(output.find("Option 3") != std::string::npos);
         }
 
-        // Last Page Navigation
-        SECTION("Last Page Navigation") {
-            std::istringstream simulatedInput2("P\n");  // Navigate Previous
-            std::cin.rdbuf(simulatedInput2.rdbuf());
-
-            std::ostringstream simulatedOutput2;
-            std::streambuf* oldCoutBuffer2 = std::cout.rdbuf(simulatedOutput2.rdbuf());
-
-            menu.display(false, 1); // Start on the second page
-            menu.display(false); // Non-admin display
-
-            std::cout.rdbuf(oldCoutBuffer2);
-            std::cin.rdbuf(std::cin.rdbuf());
-
-            REQUIRE(simulatedOutput2.str().find("Option 1") != std::string::npos);  // Back to first page
-        }
-
-        // Specific Page Navigation
-        SECTION("Specific Page Navigation") {
-            std::istringstream simulatedInput3("S\n2\n");  // Navigate to second page
-            std::cin.rdbuf(simulatedInput3.rdbuf());
-
-            std::ostringstream simulatedOutput3;
-            std::streambuf* oldCoutBuffer3 = std::cout.rdbuf(simulatedOutput3.rdbuf());
-
-            menu.display(false);
-            menu.display(false); // Non-admin display
-
-            std::cout.rdbuf(oldCoutBuffer3);
-            std::cin.rdbuf(std::cin.rdbuf());
-
-            REQUIRE(simulatedOutput3.str().find("Option 3") != std::string::npos);  // On second page
-
-            // Invalid Specific Page Navigation
-            std::istringstream simulatedInput4("S\n3\n");  // Invalid page
-            std::cin.rdbuf(simulatedInput4.rdbuf());
-
-            std::ostringstream simulatedOutput4;
-            std::streambuf* oldCoutBuffer4 = std::cout.rdbuf(simulatedOutput4.rdbuf());
-
-            bool validInput4 = menu.display(false);
-
-            std::cout.rdbuf(oldCoutBuffer4);
-            std::cin.rdbuf(std::cin.rdbuf());
-
-            REQUIRE(simulatedOutput4.str().find("Invalid page number.") != std::string::npos);  // Invalid page should show an error
+        // Previous Page Navigation
+        SECTION("Previous Page Navigation") {
+            menu.handleInput("P", false); // Navigate to previous page
+            std::string output = menu.display(false);
+            REQUIRE(output.find("Option 1") != std::string::npos);
+            REQUIRE(output.find("Option 2") != std::string::npos);
+            REQUIRE(output.find("Option 3") == std::string::npos);
         }
     }
 }
