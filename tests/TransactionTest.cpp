@@ -7,7 +7,7 @@
 
 TEST_CASE("Transaction constructor initialises correctly") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
     Transaction transaction(1, "borrow", book, user);
 
     SECTION("Transaction ID is correct") {
@@ -37,7 +37,7 @@ TEST_CASE("Transaction constructor initialises correctly") {
 
 TEST_CASE("Execute borrow transaction") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
     Transaction transaction(1, "borrow", book, user);
 
     SECTION("Transaction status changes to completed after execution") {
@@ -70,7 +70,7 @@ TEST_CASE("Execute borrow transaction") {
 
 TEST_CASE("Execute return transaction") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
     user->borrowBook(book);  // Borrow the book first
     Transaction transaction(1, "return", book, user);
 
@@ -110,7 +110,7 @@ TEST_CASE("Execute return transaction") {
 
 TEST_CASE("Cancel transaction") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
     Transaction transaction(1, "borrow", book, user);
 
     SECTION("Transaction status changes to cancelled after execution") {
@@ -148,7 +148,7 @@ TEST_CASE("Cancel transaction") {
 
 TEST_CASE("Get Transaction Information") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
     Transaction transaction(1, "borrow", book, user);
     transaction.execute();  // Execute the transaction
 
@@ -167,7 +167,7 @@ TEST_CASE("Get Transaction Information") {
 
 TEST_CASE("Setting transaction attributes using setters") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
     Transaction transaction(1, "borrow", book, user);
 
     transaction.setStatus("cancelled");
@@ -184,7 +184,7 @@ TEST_CASE("Setting transaction attributes using setters") {
 
 TEST_CASE("Invalid Transaction Type") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
 
     SECTION("Invalid transaction type throws an exception") {
         REQUIRE_THROWS_AS(Transaction(1, "invalid", book, user), std::invalid_argument);
