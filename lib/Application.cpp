@@ -554,6 +554,10 @@ std::string Application::receiveData() {
     return std::string(buffer, valread);
 }
 
+void Application::sendData(const std::string& data) {
+    send(client_socket, data.c_str(), data.length(), 0);
+}
+
 // Method to clear the console
 void Application::clearConsole() {
     sendData("\n\n\n");
@@ -565,6 +569,6 @@ void Application::run() {
     while (!menu_stack.empty()) {
         auto current_menu = menu_stack.top();
         clearConsole();
-        current_menu->display(is_admin);
+        sendData(current_menu->display(is_admin));
     }
 }
