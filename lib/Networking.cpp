@@ -62,3 +62,21 @@ void Server::start() {
         client_threads.emplace_back(&Server::handleClient, this, client_socket);
     }
 }
+
+// Method to handle a client connection
+void Server::handleClient(int client_socket) {
+    std::cout << "Client connected" << std::endl;
+    auto app = std::make_shared<Application>();
+    char buffer[1024] = {0};
+    while (true) {
+        int valread = read(client_socket, buffer, 1024);
+        if (valread <= 0) {
+            std::cout << "Client disconnected" << std::endl;
+            close(client_socket);
+            return;
+        }
+        std::string input(buffer, valread);
+        std::string output = app->run(input);
+        send(client_socket, output.c_str(), output.length(), 0);
+    }
+}
