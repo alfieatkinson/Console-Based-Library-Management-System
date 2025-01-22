@@ -395,10 +395,9 @@ void Application::login() {
     std::string username = promptInput("Enter your username: ");
     std::string password = promptInput("Enter your password: ");
     try {
-        std::lock_guard<std::mutex> lock(current_user_mutex);
+        std::scoped_lock lock(current_user_mutex, menu_stack_mutex);
         current_user = library_manager->authenticateUser(username, password);
         is_admin = current_user->getUsername() == "admin";
-        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeMainMenu());
     } catch (const std::invalid_argument& e) {
         sendData(e.what());
@@ -408,10 +407,9 @@ void Application::login() {
 }
 
 void Application::logout() {
-    std::lock_guard<std::mutex> lock(current_user_mutex);
+    std::scoped_lock lock(current_user_mutex, menu_stack_mutex);
     current_user = nullptr;
     is_admin = false;
-    std::lock_guard<std::mutex> lock(menu_stack_mutex);
     menu_stack = std::stack<std::shared_ptr<Menu>>();
     menu_stack.push(makeLoginMenu());
 }
