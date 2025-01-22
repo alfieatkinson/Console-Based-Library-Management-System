@@ -37,6 +37,9 @@ void Menu::addOption(const std::string& description, std::function<void()> actio
 std::string Menu::displayPage(size_t page, bool is_admin) {
     std::ostringstream oss;
 
+    // Adjust page size by +1 to account for the "[BACK]" option
+    size_t adjusted_page_size = page_size + 1;
+
     size_t start_index = page * page_size;
     size_t end_index = std::min(start_index + page_size, options.size());
 
@@ -45,10 +48,10 @@ std::string Menu::displayPage(size_t page, bool is_admin) {
 
     oss << std::endl;
     oss << name << " - Page " << (page + 1) << "/"
-              << (options.size() + page_size - 1) / page_size << std::endl;
+              << (options.size() + adjusted_page_size) / adjusted_page_size << std::endl;
 
     int i = 1;
-    for (size_t index = start_index; index < end_index - 1; ++index) {
+    for (size_t index = start_index; index < end_index; ++index) {
         if (is_admin || it->first.find("[Admin]") == std::string::npos) {
             oss << i << ". " << it->first << std::endl;
         }
@@ -62,7 +65,7 @@ std::string Menu::displayPage(size_t page, bool is_admin) {
     // Navigation options
     if (page == 0) {
         oss << "[N] Next" << std::endl;
-    } else if (end_index == options.size() - 1) {
+    } else if (end_index == options.size()) {
         oss << "[P] Previous" << std::endl;
     } else {
         oss << "[P] Previous  [N] Next" << std::endl;
@@ -76,7 +79,7 @@ bool Menu::handleNavigation(char choice) {
     if (choice == 'P' || choice == 'p') {
         if (current_page > 0) --current_page;
     } else if (choice == 'N' || choice == 'n') {
-        if ((current_page + 1) * page_size < options.size()) ++current_page;
+        if ((current_page + 1) * (page_size + 1) <= options.size()) ++current_page;
     } else {
         return false;
     }
@@ -85,7 +88,7 @@ bool Menu::handleNavigation(char choice) {
 
 bool Menu::handleChoice(int choice, bool is_admin) {
     if (paging) {
-        choice += current_page * page_size;
+        choice += current_page * (page_size + 1);
     }
 
     if (choice > 0 && choice <= static_cast<int>(options.size())) {
@@ -93,7 +96,7 @@ bool Menu::handleChoice(int choice, bool is_admin) {
 
         // Check if the selected option is an admin option and the user is not an admin
         if ((!is_admin && it->first.find("[Admin]") != std::string::npos)
-            || (paging && choice == current_page * page_size + page_size)) {
+            || (paging && choice == current_page * (page_size + 1) + page_size)) {
             // Use the last option in the map as fallback
             auto last_it = std::prev(options.end());
             last_it->second(); // Execute the last option's action
@@ -116,7 +119,7 @@ std::string Menu::display(bool is_admin, int page) {
         current_page = page;
     }
 
-    if (paging && options.size() > page_size) {
+    if (paging && options.size() > page_size - 1) {
         oss << displayPage(current_page, is_admin);
     } else {
         oss << std::endl;
@@ -141,8 +144,7 @@ bool Menu::handleInput(std::string input, bool is_admin) {
         if (paging) {
             if (!handleNavigation(choice)) {
                 try {
-                    handleChoice(std::stoi(std::string(1, choice)), is_admin);
-                    return true;
+                    return handleChoice(std::stoi(std::string(1, choice)), is_admin);
                 } catch (const std::invalid_argument&) {
                     return false;
                 }
@@ -151,8 +153,7 @@ bool Menu::handleInput(std::string input, bool is_admin) {
         } else {
             int index;
             try {
-                handleChoice(std::stoi(std::string(1, choice)), is_admin);
-                return true;
+                return handleChoice(std::stoi(std::string(1, choice)), is_admin);
             } catch (const std::invalid_argument&) {
                 return false;
             }
