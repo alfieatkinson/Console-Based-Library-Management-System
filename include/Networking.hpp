@@ -30,6 +30,9 @@ public:
 
     // Method to start the server
     void start();
+
+    // Method to stop the server
+    void stop();
 };
 
 #endif // NETWORKING_HPP
