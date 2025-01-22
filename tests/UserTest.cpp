@@ -1,192 +1,146 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
-#include "Transaction.hpp"
-#include "Book.hpp"
 #include "User.hpp"
-#include <memory> // For smart pointers
+#include "Book.hpp"
 
-TEST_CASE("Transaction constructor initialises correctly") {
-    auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    Transaction transaction(1, "borrow", book, user);
+TEST_CASE("User Constructor initialises correctly") {
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
 
-    SECTION("Transaction ID is correct") {
-        REQUIRE(transaction.getID() == 1);
+    SECTION("User ID is correct") {
+        REQUIRE(user.getID() == 1);
     }
 
-    SECTION("Type is correct") {
-        REQUIRE(transaction.getType() == "borrow");
+    SECTION("Username is correct") {
+        REQUIRE(user.getUsername() == "john_doe");
     }
 
-    SECTION("Status is correct") {
-        REQUIRE(transaction.getStatus() == "open");
+    SECTION("Forename is correct") {
+        REQUIRE(user.getForename() == "John");
     }
 
-    SECTION("Book is correct") {
-        REQUIRE(transaction.getBook() == book);
+    SECTION("Surname is correct") {
+        REQUIRE(user.getSurname() == "Doe");
     }
 
-    SECTION("User is correct") {
-        REQUIRE(transaction.getUser() == user);
+    SECTION("Email is correct") {
+        REQUIRE(user.getEmail() == "johndoe@email.com");
     }
 
-    SECTION("Datetime is initially empty") {
-        REQUIRE(transaction.getDatetime().empty());  // Datetime should be empty initially
-    }
-}
-
-TEST_CASE("Execute borrow transaction") {
-    auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    Transaction transaction(1, "borrow", book, user);
-
-    SECTION("Transaction status changes to completed after execution") {
-        transaction.execute();
-        REQUIRE(transaction.getStatus() == "completed");
+    SECTION("Phone number is correct") {
+        REQUIRE(user.getPhoneNumber() == "+441234567890");
     }
 
-    SECTION("Book becomes unavailable after execution") {
-        transaction.execute();
-        REQUIRE_FALSE(book->isAvailable());
+    SECTION("Password is correct") {
+        REQUIRE(user.getPassword() == "password123");
     }
 
-    SECTION("User's borrowed_books contains the borrowed book after execution") {
-        transaction.execute();
-        REQUIRE(user->getBorrowedBooks().size() == 1);
-        REQUIRE(user->getBorrowedBooks()[0] == book);
-    }
-
-    SECTION("Transaction datetime is set after execution") {
-        transaction.execute();
-        REQUIRE_FALSE(transaction.getDatetime().empty());
-    }
-
-    SECTION("Cannot execute a completed transaction") {
-        transaction.execute();  // Execute the transaction once
-        REQUIRE_THROWS_AS(transaction.execute(), std::logic_error);  // Try to execute again
-        REQUIRE(transaction.getStatus() == "completed");  // Status should remain completed
+    SECTION("Borrowed books array is empty initially") {
+        REQUIRE(user.getBorrowedBooks().empty());
     }
 }
 
-TEST_CASE("Execute return transaction") {
+TEST_CASE("User can borrow books") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    user->borrowBook(book);  // Borrow the book first
-    Transaction transaction(1, "return", book, user);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
 
-    SECTION("Transaction status changes to completed after execution") {
-        transaction.execute();
-        REQUIRE(transaction.getStatus() == "completed");
+    SECTION("User can borrow an available book") {
+        user.borrowBook(book);
+        REQUIRE(user.checkOutStatus(book));  // Should be true
     }
 
-    SECTION("Book becomes available after execution") {
-        transaction.execute();
-        REQUIRE(book->isAvailable());
+    SECTION("User cannot borrow an unavailable book") {
+        book->borrowBook();  // Mark the book as unavailable
+        bool result = user.borrowBook(book);  // Trying to borrow again
+        REQUIRE_FALSE(result);  // Should fail to borrow again
     }
 
-    SECTION("User's borrowed_books does not contain the returned book after execution") {
-        transaction.execute();
-        REQUIRE(user->getBorrowedBooks().empty());
-    }
-
-    SECTION("Transaction datetime is set after execution") {
-        transaction.execute();
-        REQUIRE_FALSE(transaction.getDatetime().empty());
-    }
-
-    SECTION("Cannot execute a completed transaction") {
-        transaction.execute();  // Execute the transaction once
-        REQUIRE_THROWS_AS(transaction.execute(), std::logic_error);  // Try to execute again
-        REQUIRE(transaction.getStatus() == "completed");  // Status should remain completed
-    }
-
-    SECTION("Cannot return a book not in borrowed_books") {
-        auto book2 = std::make_shared<Book>(2, "Pride and Prejudice", "Jane Austen", "9781503290563", 1813, true);
-        Transaction transaction2(2, "return", book2, user);
-
-        REQUIRE_THROWS_AS(transaction2.execute(), std::invalid_argument);  // Try to return a book not borrowed
+    SECTION("User's borrowed_books contains the borrowed book") {
+        user.borrowBook(book);
+        REQUIRE(user.getBorrowedBooks().size() == 1);
+        REQUIRE(user.getBorrowedBooks()[0] == book);
     }
 }
 
-TEST_CASE("Cancel transaction") {
+TEST_CASE("User can return books") {
     auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    Transaction transaction(1, "borrow", book, user);
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
 
-    SECTION("Transaction status changes to cancelled after execution") {
-        transaction.cancel();
-        REQUIRE(transaction.getStatus() == "cancelled");
+    SECTION("User can return a borrowed book") {
+        user.borrowBook(book);
+        user.returnBook(book);
+        REQUIRE_FALSE(user.checkOutStatus(book));  // Should be false
     }
 
-    SECTION("Book remains available after cancellation") {
-        transaction.cancel();
-        REQUIRE(book->isAvailable());
+    SECTION("User cannot return a book they haven't borrowed") {
+        bool result = user.returnBook(book);
+        REQUIRE_FALSE(result);  // Should fail to return
     }
 
-    SECTION("User's borrowed_books does not contain the book after cancellation") {
-        transaction.cancel();
-        REQUIRE(user->getBorrowedBooks().empty());
-    }
-
-    SECTION("Transaction datetime is set after cancellation") {
-        transaction.cancel();
-        REQUIRE_FALSE(transaction.getDatetime().empty());
-    }
-
-    SECTION("Cannot cancel a completed transaction") {
-        transaction.execute();  // Execute the transaction first
-        REQUIRE_THROWS_AS(transaction.cancel(), std::logic_error);  // Try to cancel
-        REQUIRE(transaction.getStatus() == "completed");  // Status should remain completed
-    }
-
-    SECTION("Cannot cancel a cancelled transaction") {
-        transaction.cancel();  // Cancel the transaction first
-        REQUIRE_THROWS_AS(transaction.cancel(), std::logic_error);  // Try to cancel again
-        REQUIRE(transaction.getStatus() == "cancelled");  // Status should remain cancelled
+    SECTION("User's borrowed_books does not contain the returned book") {
+        user.borrowBook(book);
+        user.returnBook(book);
+        REQUIRE(user.getBorrowedBooks().empty());
     }
 }
 
-TEST_CASE("Get Transaction Information") {
-    auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    Transaction transaction(1, "borrow", book, user);
-    transaction.execute();  // Execute the transaction
+TEST_CASE("User Information Retrieval") {
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
 
-    SECTION("Correct transaction info returned with newlines") {
+    SECTION("Correct user info returned") {
         std::string expectedInfo = 
-            "Transaction ID: 1\n"
-            "Type: borrow\n"
-            "Status: completed\n"
-            "Book: 1984 by George Orwell\n"
-            "User: John Doe\n"
-            "Datetime: " + transaction.getDatetime();
+            "User ID: 1\n"
+            "Username: john_doe\n"
+            "Forename: John\n"
+            "Surname: Doe\n"
+            "Email: johndoe@email.com\n"
+            "Phone Number: +441234567890";
 
-        REQUIRE(transaction.getInfo() == expectedInfo);
+        REQUIRE(user.getInfo() == expectedInfo);
     }
 }
 
-TEST_CASE("Setting transaction attributes using setters") {
-    auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
-    Transaction transaction(1, "borrow", book, user);
+TEST_CASE("Setting user attributes using setters") {
+    User user(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
 
-    transaction.setStatus("cancelled");
-    transaction.setDatetime("2021-10-01 12:00:00");
+    user.setUsername("new_username");
+    user.setForename("Jane");
+    user.setSurname("Smith");
+    user.setEmail("newemail@email.com");
+    user.setPhoneNumber("+4409876543210");
+    user.setPassword("newpassword123");
 
-    SECTION("Status updated correctly") {
-        REQUIRE(transaction.getStatus() == "cancelled");
+    SECTION("Username updated correctly") {
+        REQUIRE(user.getUsername() == "new_username");
     }
 
-    SECTION("Datetime updated correctly") {
-        REQUIRE(transaction.getDatetime() == "2021-10-01 12:00:00");
+    SECTION("Forename updated correctly") {
+        REQUIRE(user.getForename() == "Jane");
+    }
+
+    SECTION("Surname updated correctly") {
+        REQUIRE(user.getSurname() == "Smith");
+    }
+
+    SECTION("Email updated correctly") {
+        REQUIRE(user.getEmail() == "newemail@email.com");
+    }
+
+    SECTION("Phone number updated correctly") {
+        REQUIRE(user.getPhoneNumber() == "+4409876543210");
+    }
+
+    SECTION("Password updated correctly") {
+        REQUIRE(user.getPassword() == "newpassword123");
     }
 }
 
-TEST_CASE("Invalid Transaction Type") {
-    auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-    auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+TEST_CASE("User constructor handles invalid phone number length") {
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "johndoe@email.com", "12345", "password123"), std::invalid_argument);  // Invalid phone number length
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "johndoe@email.com", "+123", "password123"), std::invalid_argument);  // Invalid phone number format
+}
 
-    SECTION("Invalid transaction type throws an exception") {
-        REQUIRE_THROWS_AS(Transaction(1, "invalid", book, user), std::invalid_argument);
-    }
+TEST_CASE("User constructor handles invalid email format") {
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "invalidemail.com", "01234567890", "password123"), std::invalid_argument);  // Missing '@'
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "user@domain", "01234567890", "password123"), std::invalid_argument);  // Missing domain
+    REQUIRE_THROWS_AS(User(1, "john_doe", "John", "Doe", "user@domain@domain.com", "01234567890", "password123"), std::invalid_argument);  // Extra '@'
 }
