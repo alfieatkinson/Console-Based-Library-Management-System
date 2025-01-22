@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <string>
 #include <mutex>
-#include <lock_guard>
 #include "Database.hpp"
 
 class LibraryManager {
@@ -48,13 +47,13 @@ public:
     void deleteTransaction(int id);
 
     // Methods for searching
-    std::vector<std::_shared_ptr<Book>> queryBooks(const std::string& search_term);
-    std::vector<std::_shared_ptr<User>> queryUsers(const std::string& search_term);
-    std::vector<std::_shared_ptr<Transaction>> queryTransactionsByBookID(int id);
-    std::vector<std::_shared_ptr<Transaction>> queryTransactionsByUserID(int id);
+    std::vector<std::shared_ptr<Book>> queryBooks(const std::string& search_term);
+    std::vector<std::shared_ptr<User>> queryUsers(const std::string& search_term);
+    std::vector<std::shared_ptr<Transaction>> queryTransactionsByBookID(int id);
+    std::vector<std::shared_ptr<Transaction>> queryTransactionsByUserID(int id);
 
     // User authentication methods
-    std::_shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
+    std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
     bool authenticateAdmin(const std::string& password);
 
     // Database persistence methods

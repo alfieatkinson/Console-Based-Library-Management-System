@@ -8,7 +8,6 @@
 #include <string>
 #include <netinet/in.h>
 #include <mutex>
-#include <lock_guard>
 #include "Application.hpp"
 #include "Library.hpp"
 

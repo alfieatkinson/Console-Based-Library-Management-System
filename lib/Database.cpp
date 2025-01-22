@@ -9,7 +9,6 @@
 #include <cctype>
 #include <iostream>
 #include <mutex>
-#include <lock_guard>
 
 // Levenshtein distance for approximate string matching
 int levenshtein(const std::string& s1, const std::string& s2) {

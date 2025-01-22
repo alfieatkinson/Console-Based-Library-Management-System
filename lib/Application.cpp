@@ -4,7 +4,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <mutex>
-#include <lock_guard>
 
 #include "Application.hpp"
 

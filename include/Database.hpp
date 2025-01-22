@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <set>
 #include <mutex>
-#include <lock_guard>
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"

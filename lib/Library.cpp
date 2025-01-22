@@ -5,7 +5,6 @@
 #include "Transaction.hpp"
 #include <iostream>
 #include <mutex>
-#include <lock_guard>
 
 // Constructor
 LibraryManager::LibraryManager() {
