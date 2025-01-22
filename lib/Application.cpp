@@ -565,7 +565,11 @@ std::string Application::receiveData() {
 
 void Application::sendData(const std::string& data) {
     if (data.find("CLEAR_CONSOLE") == std::string::npos) {
-        std::cout << "Sending data: " << data << std::endl;
+        std::cout << "Sending data to client on socket "
+                << client_socket << ": " << data << std::endl;
+    } else {
+        std::cout << "Sending data to client on socket "
+                << client_socket << ": " << "[CLEAR_CONSOLE]\n\n" << std::endl;
     }
     send(client_socket, data.c_str(), data.length(), 0);
 }
