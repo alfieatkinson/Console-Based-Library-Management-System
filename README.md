@@ -11,8 +11,10 @@ This project is submitted in partial fulfilment of the Degree of **Master of Sci
 - [Features](#features)
 - [Directory Structure](#directory-structure)
 - [Installation Instructions](#installation-instructions)
+- [Testing](#testing)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Documentation](#documentation)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
