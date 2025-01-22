@@ -21,43 +21,43 @@ This project is a console-based library management system written in C++. It sup
 
 ```
 Library-Management-System/
-├── CMakeLists.txt              # Configuration for building the project
-├── doc/                        # Documentation (e.g., Doxygen configuration)
+├── CMakeLists.txt
+├── doc/
 │   └── Doxyfile
-├── include/                    # Header files for classes and utilities
-│   ├── Application.hpp         # Manages application flow (start, login/logout)
-│   ├── Book.hpp                # Represents book data and operations
-│   ├── Database.hpp            # Handles data loading and saving
-│   ├── Library.hpp             # Manages library operations (book/user management)
-│   ├── Menu.hpp                # Provides menu display and actions
-│   ├── Multithreading.hpp      # Contains utilities for multithreading
-│   ├── Networking.hpp          # Supports networking functionalities
-│   ├── Persistence.hpp         # Manages data persistence to/from files
-│   ├── Transaction.hpp         # Represents borrow/return transactions
-│   └── User.hpp                # Represents user data and operations
-├── lib/                        # Source files for implementation
-│   ├── Application.cpp         # Implements application logic
-│   ├── Book.cpp                # Implements book class
-│   ├── Database.cpp            # Implements database interactions
-│   ├── Library.cpp             # Implements library management logic
-│   ├── main.cpp                # Entry point of the application
-│   ├── Menu.cpp                # Implements menu functionality
-│   ├── Multithreading.cpp      # Implements multithreading support
-│   ├── Networking.cpp          # Implements networking features
-│   ├── Persistence.cpp         # Handles file I/O for persistence
-│   ├── Transaction.cpp         # Implements transaction management
-│   └── User.cpp                # Implements user class
-└── tests/                      # Unit tests for each component
-    ├── ApplicationTest.cpp     # Tests for the Application class
-    ├── BookTest.cpp            # Tests for the Book class
-    ├── DatabaseTest.cpp        # Tests for database operations
-    ├── LibraryTest.cpp         # Tests for LibraryManager functionality
-    ├── MenuTest.cpp            # Tests for Menu class
-    ├── MultithreadingTest.cpp  # Tests for multithreading utilities
-    ├── NetworkingTest.cpp      # Tests for networking functionalities
-    ├── PersistenceTest.cpp     # Tests for data persistence
-    ├── TransactionTest.cpp     # Tests for transaction handling
-    └── UserTest.cpp            # Tests for the User class
+├── include/
+│   ├── Application.hpp
+│   ├── Book.hpp
+│   ├── Database.hpp
+│   ├── Library.hpp
+│   ├── Menu.hpp
+│   ├── Multithreading.hpp
+│   ├── Networking.hpp
+│   ├── Persistence.hpp
+│   ├── Transaction.hpp
+│   └── User.hpp
+├── lib/
+│   ├── Application.cpp
+│   ├── Book.cpp
+│   ├── Database.cpp
+│   ├── Library.cpp
+│   ├── main.cpp
+│   ├── Menu.cpp
+│   ├── Multithreading.cpp
+│   ├── Networking.cpp
+│   ├── Persistence.cpp
+│   ├── Transaction.cpp
+│   └── User.cpp
+└── tests/
+    ├── ApplicationTest.cpp
+    ├── BookTest.cpp
+    ├── DatabaseTest.cpp
+    ├── LibraryTest.cpp
+    ├── MenuTest.cpp
+    ├── MultithreadingTest.cpp
+    ├── NetworkingTest.cpp
+    ├── PersistenceTest.cpp
+    ├── TransactionTest.cpp
+    └── UserTest.cpp
 ```
 
 ## CMake Setup
