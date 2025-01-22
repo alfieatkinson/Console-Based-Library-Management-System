@@ -1,15 +1,20 @@
 #include <iostream>
 #include <sstream>
 #include <limits>
+#include <sys/socket.h>
+#include <unistd.h>
+
 #include "Application.hpp"
 
 // Constructor
-Application::Application() {
+Application::Application(int client_socket) : client_socket(client_socket) {
     initialiseMenus();
 }
 
 // Destructor
-Application::~Application() {}
+Application::~Application() {
+    close(client_socket);
+}
 
 // Initialisation methods
 void Application::initialiseMenus() {
