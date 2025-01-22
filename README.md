@@ -93,7 +93,7 @@ To install and set up the project locally, follow these steps:
 
 3. **Run the server**:
     ```bash
-    ./LibraryManagementSystem
+    ./build/LibraryManagementSystem
     ```
 
 ## Testing
