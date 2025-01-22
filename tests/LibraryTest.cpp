@@ -41,8 +41,8 @@ TEST_CASE("Create operations") {
         REQUIRE(lm.getDatabase().getBooks()[0]->getTitle() == "1984");
     }
 
-    SECTION("Create a user") {
-        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
+    SECTION("Create a user with country code") {
+        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
         lm.createUser(user_info);
         REQUIRE(lm.getDatabase().getUsers().size() == 1);
         REQUIRE(lm.getDatabase().getUsers()[0]->getUsername() == "john_doe");
@@ -50,7 +50,7 @@ TEST_CASE("Create operations") {
 
     SECTION("Create a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         lm.getDatabase().createTransaction("borrow", book, user);
         REQUIRE(lm.getDatabase().getTransactions().size() == 1);
         REQUIRE(lm.getDatabase().getTransactions()[0]->getType() == "borrow");
@@ -67,8 +67,8 @@ TEST_CASE("Read operations") {
         REQUIRE(book->getTitle() == "1984");
     }
 
-    SECTION("Read a user") {
-        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
+    SECTION("Read a user with country code") {
+        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
         lm.createUser(user_info);
         auto user = lm.readUser(1);
         REQUIRE(user->getUsername() == "john_doe");
@@ -76,7 +76,7 @@ TEST_CASE("Read operations") {
 
     SECTION("Read a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         lm.getDatabase().createTransaction("borrow", book, user);
         auto transaction = lm.readTransaction(1);
         REQUIRE(transaction->getType() == "borrow");
@@ -93,8 +93,8 @@ TEST_CASE("Update operations") {
         REQUIRE(lm.readBook(1)->getTitle() == "Animal Farm");
     }
 
-    SECTION("Update a user") {
-        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
+    SECTION("Update a user with country code") {
+        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
         lm.createUser(user_info);
         lm.updateUser(1, "username", "johndoe");
         REQUIRE(lm.readUser(1)->getUsername() == "johndoe");
@@ -102,7 +102,7 @@ TEST_CASE("Update operations") {
 
     SECTION("Update a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         lm.getDatabase().createTransaction("borrow", book, user);
         lm.updateTransaction(1, "status", "completed");
         REQUIRE(lm.readTransaction(1)->getStatus() == "completed");
@@ -119,8 +119,8 @@ TEST_CASE("Delete operations") {
         REQUIRE(lm.getDatabase().getBooks().empty());
     }
 
-    SECTION("Delete a user") {
-        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
+    SECTION("Delete a user with country code") {
+        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
         lm.createUser(user_info);
         lm.deleteUser(1);
         REQUIRE(lm.getDatabase().getUsers().empty());
@@ -128,7 +128,7 @@ TEST_CASE("Delete operations") {
 
     SECTION("Delete a transaction") {
         auto book = std::make_shared<Book>(1, "1984", "George Orwell", "9780451524935", 1949, true);
-        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123");
+        auto user = std::make_shared<User>(1, "john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123");
         lm.getDatabase().createTransaction("borrow", book, user);
         lm.deleteTransaction(1);
         REQUIRE(lm.getDatabase().getTransactions().empty());
@@ -140,7 +140,7 @@ TEST_CASE("Borrow and Return Operations") {
 
     SECTION("Borrow a book") {
         std::vector<std::string> book_info = {"1984", "George Orwell", "9780451524935", "1949"};
-        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
+        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
         lm.createBook(book_info);
         lm.createUser(user_info);
         lm.borrowBook(1, 1);  // Book ID 1, User ID 1
@@ -150,7 +150,7 @@ TEST_CASE("Borrow and Return Operations") {
 
     SECTION("Return a book") {
         std::vector<std::string> book_info = {"1984", "George Orwell", "9780451524935", "1949"};
-        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
+        std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
         lm.createBook(book_info);
         lm.createUser(user_info);
         lm.borrowBook(1, 1);  // Borrow the book
@@ -170,8 +170,8 @@ TEST_CASE("Query operations with approximate search") {
     std::vector<std::string> book_info = {"1984", "George Orwell", "9780451524935", "1949"};
     std::vector<std::string> book_info2 = {"Brave New World", "Aldous Huxley", "9780060850524", "1932"};
     std::vector<std::string> book_info3 = {"Brave New World 2", "Aldous Huxley", "9780060850525", "1945"};
-    std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "01234567890", "password123"};
-    std::vector<std::string> user_info2 = {"jane_doe", "Jane", "Doe", "janedoe@email.com", "09876543210", "password456"};
+    std::vector<std::string> user_info = {"john_doe", "John", "Doe", "johndoe@email.com", "+441234567890", "password123"};
+    std::vector<std::string> user_info2 = {"jane_doe", "Jane", "Doe", "janedoe@email.com", "+449876543210", "password456"};
 
     lm.createBook(book_info);
     lm.createBook(book_info2);
