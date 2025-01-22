@@ -7,6 +7,8 @@
 #include <memory>
 #include <string>
 #include <netinet/in.h>
+#include <mutex>
+#include <lock_guard>
 #include "Application.hpp"
 #include "Library.hpp"
 
@@ -17,6 +19,7 @@ private:
     int addrlen;
     std::shared_ptr<LibraryManager> library_manager;
     std::vector<std::thread> client_threads;
+    std::mutex client_threads_mutex;
 
     // Method to handle a client connection
     void handleClient(int client_socket);

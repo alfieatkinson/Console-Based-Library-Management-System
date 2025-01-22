@@ -4,6 +4,7 @@
 #include <stack>
 #include <memory>
 #include <string>
+#include <mutex>
 #include "Menu.hpp"
 #include "Library.hpp"
 #include "User.hpp"
@@ -14,9 +15,11 @@ class Application {
 private:
     // Stack to manage the menu navigation
     std::stack<std::shared_ptr<Menu>> menu_stack;
+    std::mutex menu_stack_mutex;
 
     // Current user and admin status
     std::shared_ptr<User> current_user;
+    std::mutex current_user_mutex;
     bool is_admin = false;
 
     // The library manager

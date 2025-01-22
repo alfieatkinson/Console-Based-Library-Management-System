@@ -4,6 +4,8 @@
 #include "User.hpp"
 #include "Transaction.hpp"
 #include <iostream>
+#include <mutex>
+#include <lock_guard>
 
 // Constructor
 LibraryManager::LibraryManager() {
@@ -24,6 +26,7 @@ Database& LibraryManager::getDatabase() {
 
 // Methods for borrowing and returning books
 void LibraryManager::borrowBook(int book_id, int user_id) {
+    std::lock_guard<std::mutex> lock(mtx);
     // Get the book and user from the database
     auto book = db.readBook(book_id);
     auto user = db.readUser(user_id);
@@ -37,6 +40,7 @@ void LibraryManager::borrowBook(int book_id, int user_id) {
 }
 
 void LibraryManager::returnBook(int book_id, int user_id) {
+    std::lock_guard<std::mutex> lock(mtx);
     // Get the book and user from the database
     auto book = db.readBook(book_id);
     auto user = db.readUser(user_id);
@@ -51,6 +55,7 @@ void LibraryManager::returnBook(int book_id, int user_id) {
 
 // Create operations
 void LibraryManager::createBook(const std::vector<std::string>& book_info) {
+    std::lock_guard<std::mutex> lock(mtx);
     if (book_info.size() != 4) throw std::invalid_argument("Invalid number of arguments for creating a book.");
 
     // Create a new book
@@ -58,6 +63,7 @@ void LibraryManager::createBook(const std::vector<std::string>& book_info) {
 }
 
 void LibraryManager::createUser(const std::vector<std::string>& user_info) {
+    std::lock_guard<std::mutex> lock(mtx);
     if (user_info.size() != 6) throw std::invalid_argument("Invalid number of arguments for creating a user.");
 
     // Create a new user
@@ -65,43 +71,86 @@ void LibraryManager::createUser(const std::vector<std::string>& user_info) {
 }
 
 // Read operations
-std::shared_ptr<Book> LibraryManager::readBook(int id) { return db.readBook(id); }
-std::shared_ptr<User> LibraryManager::readUser(int id) { return db.readUser(id); }
-std::shared_ptr<Transaction> LibraryManager::readTransaction(int id) { return db.readTransaction(id); }
+std::shared_ptr<Book> LibraryManager::readBook(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.readBook(id); 
+}
+std::shared_ptr<User> LibraryManager::readUser(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.readUser(id); 
+}
+std::shared_ptr<Transaction> LibraryManager::readTransaction(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.readTransaction(id); 
+}
 
 // Update operations
-void LibraryManager::updateBook(int id, const std::string& field, const std::string& value) { db.updateBook(id, field, value); }
-void LibraryManager::updateUser(int id, const std::string& field, const std::string& value) { db.updateUser(id, field, value); }
-void LibraryManager::updateTransaction(int id, const std::string& field, const std::string& value) { db.updateTransaction(id, field, value); }
+void LibraryManager::updateBook(int id, const std::string& field, const std::string& value) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    db.updateBook(id, field, value); 
+}
+void LibraryManager::updateUser(int id, const std::string& field, const std::string& value) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    db.updateUser(id, field, value); 
+}
+void LibraryManager::updateTransaction(int id, const std::string& field, const std::string& value) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    db.updateTransaction(id, field, value); 
+}
 
 // Delete operations
-void LibraryManager::deleteBook(int id) { db.deleteBook(id); }
-void LibraryManager::deleteUser(int id) { db.deleteUser(id); }
-void LibraryManager::deleteTransaction(int id) { db.deleteTransaction(id); }
+void LibraryManager::deleteBook(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    db.deleteBook(id); 
+}
+void LibraryManager::deleteUser(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    db.deleteUser(id); 
+}
+void LibraryManager::deleteTransaction(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    db.deleteTransaction(id); 
+}
 
 // Methods for searching
-std::vector<std::shared_ptr<Book>> LibraryManager::queryBooks(const std::string& search_term) { return db.queryBooks(search_term); }
-std::vector<std::shared_ptr<User>> LibraryManager::queryUsers(const std::string& search_term) { return db.queryUsers(search_term); }
-std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByBookID(int id) { return db.queryTransactionsByBookID(id); }
-std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByUserID(int id) { return db.queryTransactionsByUserID(id); }
+std::vector<std::shared_ptr<Book>> LibraryManager::queryBooks(const std::string& search_term) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.queryBooks(search_term); 
+}
+std::vector<std::shared_ptr<User>> LibraryManager::queryUsers(const std::string& search_term) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.queryUsers(search_term); 
+}
+std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByBookID(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.queryTransactionsByBookID(id); 
+}
+std::vector<std::shared_ptr<Transaction>> LibraryManager::queryTransactionsByUserID(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return db.queryTransactionsByUserID(id); 
+}
 
 // User authentication methods
 std::shared_ptr<User> LibraryManager::authenticateUser(const std::string& username, const std::string& password) {
+    std::lock_guard<std::mutex> lock(mtx);
     return db.authenticateUser(username, password);
 }
 
 bool LibraryManager::authenticateAdmin(const std::string& password) {
+    std::lock_guard<std::mutex> lock(mtx);
     return db.authenticateAdmin(password);
 }
 
 // Database persistence methods
 void LibraryManager::saveDatabase() {
+    std::lock_guard<std::mutex> lock(mtx);
     // Save the database to a file
     std::cout << "Saving database..." << std::endl;
     // TODO: Implement the save operation
 }
 
 void LibraryManager::loadDatabase() {
+    std::lock_guard<std::mutex> lock(mtx);
     // Load the database from a file
     std::cout << "Loading database..." << std::endl;
     // TODO: Implement the load operation

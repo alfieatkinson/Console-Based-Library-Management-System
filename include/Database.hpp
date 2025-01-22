@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 #include <set>
+#include <mutex>
+#include <lock_guard>
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
@@ -35,6 +37,9 @@ private:
 
     // Admin password
     std::string admin_password = "admin";
+
+    // Mutex for thread safety
+    std::mutex mtx;
 
 public:
     // Constructor

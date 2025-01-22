@@ -8,6 +8,8 @@
 #include <cmath>
 #include <cctype>
 #include <iostream>
+#include <mutex>
+#include <lock_guard>
 
 // Levenshtein distance for approximate string matching
 int levenshtein(const std::string& s1, const std::string& s2) {
@@ -49,26 +51,55 @@ std::shared_ptr<T> findByID(std::vector<std::shared_ptr<T>>& vec, int id) {
 }
 
 // Getters
-const std::vector<std::shared_ptr<Book>>& Database::getBooks() const { return books; }
-const std::vector<std::shared_ptr<User>>& Database::getUsers() const { return users; }
-const std::vector<std::shared_ptr<Transaction>>& Database::getTransactions() const { return transactions; }
-int Database::getBookIDCounter() const { return book_id_counter; }
-int Database::getUserIDCounter() const { return user_id_counter; }
-int Database::getTransactionIDCounter() const { return transaction_id_counter; }
+const std::vector<std::shared_ptr<Book>>& Database::getBooks() const { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return books; 
+}
+const std::vector<std::shared_ptr<User>>& Database::getUsers() const { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return users; 
+}
+const std::vector<std::shared_ptr<Transaction>>& Database::getTransactions() const { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return transactions; 
+}
+int Database::getBookIDCounter() const { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return book_id_counter; 
+}
+int Database::getUserIDCounter() const { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return user_id_counter; 
+}
+int Database::getTransactionIDCounter() const { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return transaction_id_counter; 
+}
 
 // Setters
-void Database::setBookIDCounter(int new_counter) { book_id_counter = new_counter; }
-void Database::setUserIDCounter(int new_counter) { user_id_counter = new_counter; }
-void Database::setTransactionIDCounter(int new_counter) { transaction_id_counter = new_counter; }
+void Database::setBookIDCounter(int new_counter) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    book_id_counter = new_counter; 
+}
+void Database::setUserIDCounter(int new_counter) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    user_id_counter = new_counter; 
+}
+void Database::setTransactionIDCounter(int new_counter) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    transaction_id_counter = new_counter; 
+}
 
 // Save and load operations
 void Database::save() const {
+    std::lock_guard<std::mutex> lock(mtx);
     // Placeholder for saving data
     std::cout << "Saving data to storage..." << std::endl;
     // Actual implementation will persist the data using a persistence layer
 }
 
 void Database::load() const {
+    std::lock_guard<std::mutex> lock(mtx);
     // Placeholder for loading data
     std::cout << "Loading data from storage..." << std::endl;
     // Actual implementation will retrieve data from a storage mechanism
@@ -76,6 +107,7 @@ void Database::load() const {
 
 // Create operations
 int Database::createBook(const std::string& title, const std::string& author, const std::string& isbn, int year) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto new_book = std::make_shared<Book>(++book_id_counter, title, author, isbn, year, true);
     books.push_back(new_book);
 
@@ -89,6 +121,7 @@ int Database::createBook(const std::string& title, const std::string& author, co
 }
 
 int Database::createUser(const std::string& username, const std::string& forename, const std::string& surname, const std::string& email, const std::string& phone, const std::string& password) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto new_user = std::make_shared<User>(++user_id_counter, username, forename, surname, email, phone, password);
     users.push_back(new_user);
 
@@ -102,6 +135,7 @@ int Database::createUser(const std::string& username, const std::string& forenam
 }
 
 int Database::createTransaction(const std::string& type, std::shared_ptr<Book> book, std::shared_ptr<User> user) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto new_transaction = std::make_shared<Transaction>(++transaction_id_counter, type, book, user);
     transactions.push_back(new_transaction);
 
@@ -114,12 +148,22 @@ int Database::createTransaction(const std::string& type, std::shared_ptr<Book> b
 }
 
 // Read operations
-std::shared_ptr<Book> Database::readBook(int id) { return findByID(books, id); }
-std::shared_ptr<User> Database::readUser(int id) { return findByID(users, id); }
-std::shared_ptr<Transaction> Database::readTransaction(int id) { return findByID(transactions, id); }
+std::shared_ptr<Book> Database::readBook(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return findByID(books, id); 
+}
+std::shared_ptr<User> Database::readUser(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return findByID(users, id); 
+}
+std::shared_ptr<Transaction> Database::readTransaction(int id) { 
+    std::lock_guard<std::mutex> lock(mtx);
+    return findByID(transactions, id); 
+}
 
 // Update operations
 void Database::updateBook(int id, const std::string& field, const std::string& value) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto book = findByID(books, id);
     if (field == "title") {
         book->setTitle(value);
@@ -138,6 +182,7 @@ void Database::updateBook(int id, const std::string& field, const std::string& v
 }
 
 void Database::updateUser(int id, const std::string& field, const std::string& value) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto user = findByID(users, id);
     if (field == "username") {
         user->setUsername(value);
@@ -158,6 +203,7 @@ void Database::updateUser(int id, const std::string& field, const std::string& v
 }
 
 void Database::updateTransaction(int id, const std::string& field, const std::string& value) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto transaction = findByID(transactions, id);
     if (field == "status") transaction->setStatus(value);
     else if (field == "datetime") transaction->setDatetime(value);
@@ -165,6 +211,7 @@ void Database::updateTransaction(int id, const std::string& field, const std::st
 
 // Delete operations
 void Database::deleteBook(int id) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto book = findByID(books, id);
     books.erase(std::remove(books.begin(), books.end(), book), books.end());
     book_author_map[toLowerCase(book->getAuthor())].erase(
@@ -179,6 +226,7 @@ void Database::deleteBook(int id) {
 }
 
 void Database::deleteUser(int id) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto user = findByID(users, id);
     users.erase(std::remove(users.begin(), users.end(), user), users.end());
     user_forename_map[toLowerCase(user->getForename())].erase(
@@ -193,6 +241,7 @@ void Database::deleteUser(int id) {
 }
 
 void Database::deleteTransaction(int id) {
+    std::lock_guard<std::mutex> lock(mtx);
     auto transaction = findByID(transactions, id);
     transactions.erase(std::remove(transactions.begin(), transactions.end(), transaction), transactions.end());
     transactions_by_book_id[transaction->getBook()->getID()].erase(
@@ -205,6 +254,7 @@ void Database::deleteTransaction(int id) {
 
 // Query operations with Levenshtein distance approximation
 std::vector<std::shared_ptr<Book>> Database::queryBooks(const std::string& search_term, int threshold) {
+    std::lock_guard<std::mutex> lock(mtx);
     std::set<std::shared_ptr<Book>> results;
 
     std::string term = toLowerCase(search_term);  // Ensure case-insensitive comparison
@@ -228,6 +278,7 @@ std::vector<std::shared_ptr<Book>> Database::queryBooks(const std::string& searc
 }
 
 std::vector<std::shared_ptr<User>> Database::queryUsers(const std::string& search_term, int threshold) {
+    std::lock_guard<std::mutex> lock(mtx);
     std::set<std::shared_ptr<User>> results;
 
     std::string term = toLowerCase(search_term);  // Ensure case-insensitive comparison
@@ -251,15 +302,18 @@ std::vector<std::shared_ptr<User>> Database::queryUsers(const std::string& searc
 }
 
 std::vector<std::shared_ptr<Transaction>> Database::queryTransactionsByBookID(int id) {
+    std::lock_guard<std::mutex> lock(mtx);
     return transactions_by_book_id[id];
 }
 
 std::vector<std::shared_ptr<Transaction>> Database::queryTransactionsByUserID(int id) {
+    std::lock_guard<std::mutex> lock(mtx);
     return transactions_by_user_id[id];
 }
 
 // User authentication methods
 std::shared_ptr<User> Database::authenticateUser(const std::string& username, const std::string& password) {
+    std::lock_guard<std::mutex> lock(mtx);
     if (user_username_map.find(toLowerCase(username)) != user_username_map.end()) {
         for (const auto& user : user_username_map[toLowerCase(username)]) {
             if (user->getPassword() == password) {
@@ -271,5 +325,6 @@ std::shared_ptr<User> Database::authenticateUser(const std::string& username, co
 }
 
 bool Database::authenticateAdmin(const std::string& password) {
+    std::lock_guard<std::mutex> lock(mtx);
     return password == admin_password;
 }

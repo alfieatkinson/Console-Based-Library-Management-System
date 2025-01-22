@@ -7,11 +7,13 @@
 #include <memory>
 #include <string>
 #include <atomic>
+#include <mutex>
 #include "Networking.hpp"
 #include "Application.hpp"
 #include "Library.hpp"
 
 std::atomic<bool> running{true};
+std::mutex client_threads_mutex;
 
 // Constructor
 Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
@@ -67,7 +69,10 @@ void Server::start() {
             continue; // Skip this iteration and continue waiting for connections
         }
         std::cout << "Accepted connection on socket " << client_socket << std::endl;
-        client_threads.emplace_back(&Server::handleClient, this, client_socket);
+        {
+            std::lock_guard<std::mutex> lock(client_threads_mutex);
+            client_threads.emplace_back(&Server::handleClient, this, client_socket);
+        }
     }
     for (auto& thread : client_threads) {
         if (thread.joinable()) {

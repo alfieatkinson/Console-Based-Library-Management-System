@@ -3,6 +3,8 @@
 #include <limits>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <mutex>
+#include <lock_guard>
 
 #include "Application.hpp"
 
@@ -18,6 +20,7 @@ Application::~Application() {
 
 // Initialisation methods
 void Application::initialiseMenus() {
+    std::lock_guard<std::mutex> lock(menu_stack_mutex);
     menu_stack.push(makeLoginMenu());
 }
 
@@ -25,6 +28,7 @@ void Application::promptAdminPassword() {
     std::string input = promptInput("Enter the admin password: ");
     if (library_manager->authenticateAdmin(input)) {
         is_admin = true;
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeMainMenu());
     }
     else {
@@ -93,6 +97,7 @@ std::shared_ptr<Menu> Application::makeLoginMenu() {
         promptAdminPassword();
     });
     menu->addOption("[EXIT]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack = std::stack<std::shared_ptr<Menu>>(); // Clear the menu stack
     });
     return menu;
@@ -108,6 +113,7 @@ std::shared_ptr<Menu> Application::makeMainMenu() {
         returnBook();
     });
     menu->addOption("Search Items", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeSearchMenu());
     });
     menu->addOption("View My Profile", [this]() {
@@ -118,6 +124,7 @@ std::shared_ptr<Menu> Application::makeMainMenu() {
         showUserInfo(current_user);
     });
     menu->addOption("Update My Profile", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeUpdateUserMenu(current_user));
     });
     menu->addOption("Add New Book", [this]() { // Admin-only option
@@ -138,17 +145,20 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
     menu->addOption("Search Books", [this]() {
         std::string query = promptInput("Enter search term: ");
         std::vector<std::shared_ptr<Book>> results = library_manager->queryBooks(query);
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeBooksMenu(results));
     });
     menu->addOption("Search Users", [this]() { // Admin-only option
         std::string query = promptInput("Enter search term: ");
         std::vector<std::shared_ptr<User>> results = library_manager->queryUsers(query);
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeUsersMenu(results));
     }, true);
     menu->addOption("Search Transactions by Book", [this]() { // Admin-only option
         try {
             int query = std::stoi(promptInput("Enter book ID: "));
             std::vector<std::shared_ptr<Transaction>> results = library_manager->queryTransactionsByBookID(query);
+            std::lock_guard<std::mutex> lock(menu_stack_mutex);
             menu_stack.push(makeTransactionsMenu(results));
         } catch (const std::invalid_argument&) {
             sendData("Invalid input. Please enter an integer.\n");
@@ -159,6 +169,7 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
         try {
             int query = std::stoi(promptInput("Enter user ID: "));
             std::vector<std::shared_ptr<Transaction>> results = library_manager->queryTransactionsByUserID(query);
+            std::lock_guard<std::mutex> lock(menu_stack_mutex);
             menu_stack.push(makeTransactionsMenu(results));
         } catch (const std::invalid_argument&) {
             sendData("Invalid input. Please enter an integer.\n");
@@ -166,6 +177,7 @@ std::shared_ptr<Menu> Application::makeSearchMenu() {
         }
     }, true);
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -175,10 +187,12 @@ std::shared_ptr<Menu> Application::makeBooksMenu(std::vector<std::shared_ptr<Boo
     auto menu = std::make_shared<Menu>("Books", true);
     for (const auto& book : books) {
         menu->addOption(makeBookSummary(book), [this, book]() {
+            std::lock_guard<std::mutex> lock(menu_stack_mutex);
             menu_stack.push(makeBookMenu(book));
         });
     }
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -188,10 +202,12 @@ std::shared_ptr<Menu> Application::makeUsersMenu(std::vector<std::shared_ptr<Use
     auto menu = std::make_shared<Menu>("Users", true);
     for (const auto& user : users) {
         menu->addOption(makeUserSummary(user), [this, user]() {
+            std::lock_guard<std::mutex> lock(menu_stack_mutex);
             menu_stack.push(makeUserMenu(user));
         });
     }
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -201,10 +217,12 @@ std::shared_ptr<Menu> Application::makeTransactionsMenu(std::vector<std::shared_
     auto menu = std::make_shared<Menu>("Transactions", true);
     for (const auto& transaction : transactions) {
         menu->addOption(makeTransactionSummary(transaction), [this, transaction]() {
+            std::lock_guard<std::mutex> lock(menu_stack_mutex);
             menu_stack.push(makeTransactionMenu(transaction));
         });
     }
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -223,12 +241,14 @@ std::shared_ptr<Menu> Application::makeBookMenu(std::shared_ptr<Book> book) {
         returnBook(book);
     });
     menu->addOption("Update Book Info", [this, book]() { // Admin-only option
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeUpdateBookMenu(book));
     }, true);
     menu->addOption("Delete Book", [this, book]() { // Admin-only option
         deleteBook(book);
     }, true);
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -241,19 +261,23 @@ std::shared_ptr<Menu> Application::makeUserMenu(std::shared_ptr<User> user) {
         showUserInfo(user);
     });
     menu->addOption("View Borrowed Books", [this, user]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeBooksMenu(user->getBorrowedBooks()));
     });
     menu->addOption("View User Transactions", [this, user]() {
         auto transactions = library_manager->queryTransactionsByUserID(user->getID());
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeTransactionsMenu(transactions));
     });
     menu->addOption("Update User Info", [this, user]() { // Admin-only option
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeUpdateUserMenu(user));
     }, true);
     menu->addOption("Delete User", [this, user]() { // Admin-only option
         deleteUser(user);
     }, true);
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -266,12 +290,14 @@ std::shared_ptr<Menu> Application::makeTransactionMenu(std::shared_ptr<Transacti
         showTransactionInfo(transaction);
     });
     menu->addOption("Update Transaction Info", [this, transaction]() { // Admin-only option
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeUpdateTransactionMenu(transaction));
     }, true);
     menu->addOption("Delete Transaction", [this, transaction]() { // Admin-only option
         deleteTransaction(transaction);
     }, true);
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -299,6 +325,7 @@ std::shared_ptr<Menu> Application::makeUpdateBookMenu(std::shared_ptr<Book> book
         library_manager->updateBook(book->getID(), "year_published", promptInput("Enter the new year published: "));
     }, true);
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -346,6 +373,7 @@ std::shared_ptr<Menu> Application::makeUpdateUserMenu(std::shared_ptr<User> user
         }
     });
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -357,6 +385,7 @@ std::shared_ptr<Menu> Application::makeUpdateTransactionMenu(std::shared_ptr<Tra
         library_manager->updateTransaction(transaction->getID(), "status", promptInput("Enter the new status: "));
     });
     menu->addOption("[BACK]", [this]() {
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.pop(); // Go back to the previous menu
     });
     return menu;
@@ -367,8 +396,10 @@ void Application::login() {
     std::string username = promptInput("Enter your username: ");
     std::string password = promptInput("Enter your password: ");
     try {
+        std::lock_guard<std::mutex> lock(current_user_mutex);
         current_user = library_manager->authenticateUser(username, password);
         is_admin = current_user->getUsername() == "admin";
+        std::lock_guard<std::mutex> lock(menu_stack_mutex);
         menu_stack.push(makeMainMenu());
     } catch (const std::invalid_argument& e) {
         sendData(e.what());
@@ -378,8 +409,10 @@ void Application::login() {
 }
 
 void Application::logout() {
+    std::lock_guard<std::mutex> lock(current_user_mutex);
     current_user = nullptr;
     is_admin = false;
+    std::lock_guard<std::mutex> lock(menu_stack_mutex);
     menu_stack = std::stack<std::shared_ptr<Menu>>();
     menu_stack.push(makeLoginMenu());
 }
@@ -475,6 +508,7 @@ void Application::borrowBook(std::shared_ptr<Book> book) {
             return;
         }
     }
+    std::lock_guard<std::mutex> lock(current_user_mutex);
     library_manager->borrowBook(book->getID(), current_user->getID());
     sendData("Book borrowed successfully.\n");
     dummyPrompt();
