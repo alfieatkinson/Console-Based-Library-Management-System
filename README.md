@@ -120,6 +120,10 @@ To use the library management system, follow these steps:
     ```bash
     telnet localhost 8080
     ```
+    **OR**
+    ```bash
+    nc localhost 8080
+    ```
 
 2. **Interact with the system**:
     - **Login**: Enter your username and password.
