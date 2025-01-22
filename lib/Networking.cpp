@@ -65,6 +65,7 @@ void Server::start() {
 
 // Method to handle a client connection
 void Server::handleClient(int client_socket) {
+    std::unique_ptr<int, decltype(&close)> socket_guard(&client_socket, close); // RAII guard for the client socket
     std::cout << "Client connected at socket " << client_socket << std::endl;
 
     try {
