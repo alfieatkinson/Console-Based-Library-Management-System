@@ -65,18 +65,19 @@ void Server::start() {
 
 // Method to handle a client connection
 void Server::handleClient(int client_socket) {
-    std::cout << "Client connected" << std::endl;
-    auto app = std::make_shared<Application>();
-    char buffer[1024] = {0};
-    while (true) {
-        int valread = read(client_socket, buffer, 1024);
-        if (valread <= 0) {
-            std::cout << "Client disconnected" << std::endl;
-            close(client_socket);
-            return;
-        }
-        std::string input(buffer, valread);
-        std::string output = app->run(input);
-        send(client_socket, output.c_str(), output.length(), 0);
+    std::cout << "Client connected at socket " << client_socket << std::endl;
+
+    try {
+        // Create and run the application
+        auto app = std::make_shared<Application>(client_socket, library_manager);
+        app->run();
+    } catch (const std::runtime_error& e) {
+        // Handle any runtime errors
+        std::cerr << "Error: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "An unknown error occurred." << std::endl;
     }
+
+    // Clean up and close the socket
+    close(client_socket);
 }
