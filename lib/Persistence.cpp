@@ -60,10 +60,15 @@ bool PersistenceManager::save(const Database& db) const {
     // Write to file
     std::ofstream file(filename);
     if (file.is_open()) {
-        file << j.dump(4);
-        file.close();
-        std::cout << "Data saved to " << filename << std::endl;
-        return true;
+        try {
+            file << j.dump(4);
+            file.close();
+            std::cout << "Data saved to " << filename << std::endl;
+            return true;
+        } catch (const std::exception& e) {
+            std::cerr << "Error saving data to file: " << e.what() << std::endl;
+            return false;
+        }
     } else {
         std::cerr << "Unable to open file for saving: " << filename << std::endl;
         return false;
