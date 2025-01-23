@@ -10,7 +10,7 @@ std::string toLowerCase(const std::string& input) {
 }
 
 // Method to save the database to a file
-void PersistenceManager::save(const Database& db) const {
+bool PersistenceManager::save(const Database& db) const {
     std::lock_guard<std::mutex> lock(mtx);
 
     nlohmann::json j;
@@ -63,24 +63,32 @@ void PersistenceManager::save(const Database& db) const {
         file << j.dump(4);
         file.close();
         std::cout << "Data saved to " << filename << std::endl;
+        return true;
     } else {
         std::cerr << "Unable to open file for saving: " << filename << std::endl;
+        return false;
     }
 }
 
 // Method to load the database from a file
-void PersistenceManager::load(Database& db) const {
+bool PersistenceManager::load(Database& db) const {
     std::lock_guard<std::mutex> lock(mtx);
 
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Unable to open file for loading: " << filename << std::endl;
-        return;
+        return false;
     }
 
     nlohmann::json j;
     file >> j;
     file.close();
+
+    // Check if JSON data is empty
+    if (j.empty()) {
+        std::cout << "No data to load. Populating database with test data." << std::endl;
+        return false;
+    }
 
     // Deserialize books
     for (const auto& item : j["books"]) {
@@ -144,4 +152,5 @@ void PersistenceManager::load(Database& db) const {
     db.setTransactionIDCounter(j["transaction_id_counter"].get<int>());
 
     std::cout << "Data loaded from " << filename << std::endl;
+    return true;
 }

@@ -14,8 +14,8 @@ private:
 public:
     PersistenceManager(const std::string& filename) : filename(filename) {}
 
-    void save(const Database& db) const;
-    void load(Database& db) const;
+    bool save(const Database& db) const;
+    bool load(Database& db) const;
 };
 
 #endif // PERSISTENCE_HPP
