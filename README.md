@@ -43,10 +43,14 @@ This project is a console-based library management system written in C++. It sup
   - Implement transactions via a `Transaction` class that captures book borrowing and returning details along with timestamps.
   - Methods include `getID()`, `getType()`, `getStatus()`, `getBook()`, `getUser()`, `getDatetime()`, `setStatus()`, `setDatetime()`, `execute()`, `cancel()`, and `getInfo()`.
 
-- **Networking for Remote Access**:  
+- **Networking for Concurrent Remote Access**:  
   - Enable remote access to the library system through a server-client architecture.  
   - Implement server-side functionality using the `Server` class and client-side operations using sockets.
   - The `Server` class handles client connections, manages threads for concurrent client handling, and communicates with the `Application` class.
+
+- **Data Persistence with JSON**:
+  - Enable data persistence through the `PersistenceManager` class which saves and loads data to and from the `Database`.
+  - If there is no data to load, `Database` is populated with sample data for testing.
 
 - **Additional Functionalities**:  
   - **Pagination**: Implement a method to navigate through long lists of books, users, and transactions efficiently using the `Menu` class.
@@ -72,7 +76,8 @@ Library-Management-System/
 │   ├── Networking.hpp      # Networking utilities header
 │   ├── Persistence.hpp     # Persistence utilities header
 │   ├── Transaction.hpp     # Transaction class header
-│   └── User.hpp            # User class header
+│   ├── User.hpp            # User class header
+│   └── Utils.hpp           # Utility functions header
 ├── lib/                    # Source files
 │   ├── Application.cpp     # Application class implementation
 │   ├── Book.cpp            # Book class implementation
@@ -84,7 +89,8 @@ Library-Management-System/
 │   ├── Networking.cpp      # Networking utilities implementation
 │   ├── Persistence.cpp     # Persistence utilities implementation
 │   ├── Transaction.cpp     # Transaction class implementation
-│   └── User.cpp            # User class implementation
+│   ├── User.cpp            # User class implementation
+│   └── Utils.cpp           # Utility functions implementation
 └── tests/                  # Test files
     ├── ApplicationTest.cpp # Application class tests
     ├── BookTest.cpp        # Book class tests
