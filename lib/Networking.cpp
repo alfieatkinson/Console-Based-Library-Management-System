@@ -76,6 +76,7 @@ void Server::handleClient(int client_socket) {
         new int(client_socket),  // Allocate and initialise the resource
         [](int* socket) { 
             if (socket) { 
+                std::cout << "Closing socket " << *socket << std::endl;
                 close(*socket);  // Close the socket using the dereferenced value
                 delete socket;   // Free the allocated memory
             }
@@ -95,6 +96,5 @@ void Server::handleClient(int client_socket) {
         std::cerr << "An unknown error occurred." << std::endl;
     }
 
-    // Clean up and close the socket
-    close(client_socket);
+    // Socket closed at the end of RAII scope
 }

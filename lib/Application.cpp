@@ -620,4 +620,5 @@ void Application::run() {
             dummyPrompt();
         }
     }
+    sendData("Server is closing the connection. Press CTRL+C to exit.\n");
 }
