@@ -41,14 +41,14 @@ private:
     std::string admin_password = "admin";
 
     // Persistence manager
-    PersistenceManager persistence_manager{"database.json"};
+    std::unique_ptr<PersistenceManager> persistence_manager;
 
 public:
     // Constructor
-    Database() = default;
+    Database();
 
     // Destructor
-    ~Database() = default;
+    ~Database();
 
     // Getters
     const std::vector<std::shared_ptr<Book>>& getBooks() const;

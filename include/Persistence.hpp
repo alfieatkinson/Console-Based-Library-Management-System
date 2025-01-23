@@ -15,7 +15,11 @@ private:
     mutable std::mutex mtx;
 
 public:
-    PersistenceManager(const std::string& filename) : filename(filename) {}
+    // Constructor
+    PersistenceManager(const std::string& filename);
+
+    // Destructor
+    ~PersistenceManager();
 
     bool save(const Database& db) const;
     bool load(Database& db) const;

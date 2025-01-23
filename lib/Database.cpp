@@ -48,6 +48,12 @@ std::shared_ptr<T> findByID(std::vector<std::shared_ptr<T>>& vec, int id) {
     throw std::invalid_argument("Object not found");
 }
 
+// Constructor
+Database::Database() : persistence_manager(std::make_unique<PersistenceManager>("database.json")) {}
+
+// Destructor
+Database::~Database() {}
+
 // Getters
 const std::vector<std::shared_ptr<Book>>& Database::getBooks() const { return books; }
 const std::vector<std::shared_ptr<User>>& Database::getUsers() const { return users; }
@@ -63,11 +69,11 @@ void Database::setTransactionIDCounter(int new_counter) { transaction_id_counter
 
 // Save and load operations
 bool Database::save() const {
-    return persistence_manager.save(*this);
+    return persistence_manager->save(*this);
 }
 
 bool Database::load() {
-    return persistence_manager.load(*this);
+    return persistence_manager->load(*this);
 }
 
 // Create operations

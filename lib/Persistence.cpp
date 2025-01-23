@@ -9,6 +9,12 @@ std::string toLowerCase(const std::string& input) {
     return result;
 }
 
+// Constructor
+PersistenceManager::PersistenceManager(const std::string& filename) : filename(filename) {}
+
+// Destructor
+PersistenceManager::~PersistenceManager() {}
+
 // Method to save the database to a file
 bool PersistenceManager::save(const Database& db) const {
     std::lock_guard<std::mutex> lock(mtx);
