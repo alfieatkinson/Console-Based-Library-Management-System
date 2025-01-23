@@ -11,8 +11,6 @@
 #include "Application.hpp"
 #include "Library.hpp"
 
-std::atomic<bool> running{true};
-
 // Constructor
 Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
     : library_manager(library_manager), addrlen(sizeof(address)) {
@@ -46,11 +44,8 @@ Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
 // Destructor
 Server::~Server() {
     close(server_fd);
-    for (auto& thread : client_threads) {
-        if (thread.joinable()) {
-            thread.join();
-        }
-    }
+    thread_manager.stopBackgroundSave(); // Stop background save thread
+    thread_manager.joinClientThreads(); // Join client threads
 }
 
 // Method to start the server
