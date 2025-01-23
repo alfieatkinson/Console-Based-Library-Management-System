@@ -126,7 +126,7 @@ std::shared_ptr<Menu> Application::makeMainMenu() {
                 dummyPrompt();
             }
         } else {
-            showUserInfo(current_user);
+            menu_stack.push(makeUserMenu(current_user));
         }
     });
     menu->addOption("Update User Profile", [this]() {
