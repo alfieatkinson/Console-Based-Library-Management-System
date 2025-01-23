@@ -63,15 +63,13 @@ void Database::setTransactionIDCounter(int new_counter) { transaction_id_counter
 
 // Save and load operations
 void Database::save() const {
-    // Placeholder for saving data
     std::cout << "Saving data to storage..." << std::endl;
-    // Actual implementation will persist the data using a persistence layer
+    persistence_manager.save(*this);
 }
 
-void Database::load() const {
-    // Placeholder for loading data
+void Database::load() {
     std::cout << "Loading data from storage..." << std::endl;
-    // Actual implementation will retrieve data from a storage mechanism
+    persistence_manager.load(*this);
 }
 
 // Create operations

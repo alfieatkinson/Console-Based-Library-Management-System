@@ -62,7 +62,7 @@ public:
 
     // Save and load operations
     void save() const;
-    void load() const;
+    void load();
 
     // Create operations
     int createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
