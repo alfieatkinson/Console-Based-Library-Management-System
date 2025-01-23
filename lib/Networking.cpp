@@ -7,9 +7,19 @@
 #include <memory>
 #include <string>
 #include <atomic>
+#include <csignal>
 #include "Networking.hpp"
 #include "Application.hpp"
 #include "Library.hpp"
+
+std::atomic<bool> server_running(true);
+
+// Signal handler for SIGINT
+void handleSignal(int signal) {
+    if (signal == SIGINT) {
+        server_running = false;
+    }
+}
 
 // Constructor
 Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
@@ -44,6 +54,9 @@ Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
     thread_manager.startBackgroundSave([this, library_manager]() {
         library_manager->saveDatabase();
     }, std::chrono::minutes(10));
+
+    // Set up signal handler for SIGINT
+    std::signal(SIGINT, handleSignal);
 }
 
 // Destructor
@@ -57,9 +70,12 @@ Server::~Server() {
 void Server::start() {
     std::cout << "Server started, waiting for connections at " << inet_ntoa(address.sin_addr)
             << ":" << ntohs(address.sin_port) << std::endl;
-    while (true) {
+    while (server_running) {
         int client_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
         if (client_socket < 0) {
+            if (errno == EINTR) {
+                break; // Exit the loop if interrupted by a signal
+            }
             std::cerr << "Error accepting client connection: " << strerror(errno) << std::endl;
             continue; // Skip this iteration and try to accept the next connection
         }
@@ -71,6 +87,7 @@ void Server::start() {
 
 // Method to stop the server
 void Server::stop() {
+    library_manager->saveDatabase(); // Save the database before shutting down
     close(server_fd); // Close the server socket to unblock the accept call
 }
 
