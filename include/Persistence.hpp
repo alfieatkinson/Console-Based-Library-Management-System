@@ -6,6 +6,9 @@
 #include <string>
 #include <mutex>
 
+// Forward declaration
+class Database;
+
 class PersistenceManager {
 private:
     std::string filename;

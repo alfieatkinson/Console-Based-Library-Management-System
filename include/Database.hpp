@@ -12,6 +12,9 @@
 #include "Transaction.hpp"
 #include "Persistence.hpp"
 
+// Forward declaration
+class PersistenceManager;
+
 class Database {
 private:
     std::vector<std::shared_ptr<Book>> books;
