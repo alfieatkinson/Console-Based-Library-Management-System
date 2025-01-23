@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include "Application.hpp"
 #include "Library.hpp"
+#include "Multithreading.hpp"
 
 class Server {
 private:
@@ -16,7 +17,7 @@ private:
     struct sockaddr_in address;
     int addrlen;
     std::shared_ptr<LibraryManager> library_manager;
-    std::vector<std::thread> client_threads;
+    ThreadManager thread_manager;
 
     // Method to handle a client connection
     void handleClient(int client_socket);
