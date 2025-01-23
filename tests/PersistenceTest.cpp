@@ -131,3 +131,55 @@ TEST_CASE("PersistenceManager populates maps correctly") {
         REQUIRE(db2.queryTransactionsByUserID(1).size() == 1);
     }
 }
+
+TEST_CASE("PersistenceManager handles incremental updates correctly") {
+    // Create a temporary file for testing
+    std::string filename = "test.json";
+
+    // Create a PersistenceManager instance
+    PersistenceManager pm(filename);
+
+    // Create a Database instance and add some sample data
+    Database db;
+    db.createBook("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925);
+    db.createUser("jdoe", "John", "Doe", "jdoe@example.com", "+1234567890", "password123");
+    db.createTransaction("borrow", db.readBook(1), db.readUser(1));
+
+    // Save the database to a file
+    pm.save(db);
+
+    // Modify the database
+    db.updateBook(1, "title", "The Great Gatsby - Updated");
+    db.updateUser(1, "email", "johndoe@example.com");
+
+    // Save the database again
+    pm.save(db);
+
+    // Load the database from the file to a new Database instance
+    Database db2;
+    pm.load(db2);
+
+    // Check if the loaded data matches the modified data
+    SECTION("Book data matches after incremental update") {
+        auto book1 = db.readBook(1);
+        auto book2 = db2.readBook(1);
+        REQUIRE(book1->getID() == book2->getID());
+        REQUIRE(book1->getTitle() == book2->getTitle());
+        REQUIRE(book1->getAuthor() == book2->getAuthor());
+        REQUIRE(book1->getISBN() == book2->getISBN());
+        REQUIRE(book1->getYearPublished() == book2->getYearPublished());
+        REQUIRE(book1->isAvailable() == book2->isAvailable());
+    }
+
+    SECTION("User data matches after incremental update") {
+        auto user1 = db.readUser(1);
+        auto user2 = db2.readUser(1);
+        REQUIRE(user1->getID() == user2->getID());
+        REQUIRE(user1->getUsername() == user2->getUsername());
+        REQUIRE(user1->getForename() == user2->getForename());
+        REQUIRE(user1->getSurname() == user2->getSurname());
+        REQUIRE(user1->getEmail() == user2->getEmail());
+        REQUIRE(user1->getPhoneNumber() == user2->getPhoneNumber());
+        REQUIRE(user1->getPassword() == user2->getPassword());
+    }
+}
