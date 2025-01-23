@@ -96,15 +96,29 @@ bool LibraryManager::authenticateAdmin(const std::string& password) {
 
 // Database persistence methods
 void LibraryManager::saveDatabase() {
-    // Save the database to a file
-    std::cout << "Saving database..." << std::endl;
-    // TODO: Implement the save operation
+    int retries = 0;
+    const int max_retries = 3; // Maximum number of retries
+
+    while (retries < max_retries) {
+        std::cout << "Saving database (attempt " << (retries + 1) << ")..." << std::endl;
+        
+        if (db.save()) {
+            std::cout << "Database saved successfully." << std::endl;
+            break;
+        } else {
+            std::cerr << "Failed to save database. Retrying..." << std::endl;
+            retries++;
+        }
+    }
+
+    if (retries == max_retries) {
+        std::cerr << "Failed to save the database after " << max_retries << " attempts." << std::endl;
+    }
 }
 
 void LibraryManager::loadDatabase() {
     // Load the database from a file
     std::cout << "Loading database..." << std::endl;
-    // TODO: Implement the load operation
 
     // Create some sample data for testing
     /*
