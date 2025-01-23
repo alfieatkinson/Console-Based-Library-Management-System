@@ -12,10 +12,7 @@ LibraryManager::LibraryManager() {
 }
 
 // Destructor
-LibraryManager::~LibraryManager() {
-    // Save the database on destruction
-    saveDatabase();
-}
+LibraryManager::~LibraryManager() {}
 
 // Getters
 Database& LibraryManager::getDatabase() {
