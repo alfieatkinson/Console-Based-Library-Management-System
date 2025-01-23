@@ -117,11 +117,18 @@ void LibraryManager::saveDatabase() {
 }
 
 void LibraryManager::loadDatabase() {
-    // Load the database from a file
     std::cout << "Loading database..." << std::endl;
 
-    // Create some sample data for testing
-    /*
+    // Try loading the database
+    if (!db.load()) {
+        std::cout << "Failed to load database. Populating with sample data..." << std::endl;
+        createSampleData();
+    } else {
+        std::cout << "Database loaded successfully." << std::endl;
+    }
+}
+
+void LibraryManager::createSampleData() {
     // Books
     db.createBook("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925);
     db.createBook("To Kill a Mockingbird", "Harper Lee", "9780061120084", 1960);
@@ -173,5 +180,4 @@ void LibraryManager::loadDatabase() {
             std::cout << "Conflict occurred during transaction execution: " << e.what() << std::endl;
         }
     }
-    */
 }
