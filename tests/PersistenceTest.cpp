@@ -77,3 +77,57 @@ TEST_CASE("PersistenceManager saves and loads data correctly") {
         REQUIRE(transaction1->getDatetime() == transaction2->getDatetime());
     }
 }
+
+TEST_CASE("PersistenceManager populates maps correctly") {
+    // Create a temporary file for testing
+    std::string filename = "test.json";
+
+    // Create a PersistenceManager instance
+    PersistenceManager pm(filename);
+
+    // Create a Database instance and add some sample data
+    Database db;
+    db.createBook("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925);
+    db.createUser("jdoe", "John", "Doe", "jdoe@example.com", "+1234567890", "password123");
+    db.createTransaction("borrow", db.readBook(1), db.readUser(1));
+
+    // Save the database to a file
+    pm.save(db);
+
+    // Load the database from the file to a new Database instance
+    Database db2;
+    pm.load(db2);
+
+    // Check if the maps are populated correctly
+    SECTION("Book maps are populated correctly") {
+        auto book1 = db.readBook(1);
+        auto book2 = db2.readBook(1);
+        REQUIRE(db2.getBooks().size() == 1);
+        REQUIRE(db2.getBooks()[0] == book2);
+        REQUIRE(db2.getBookIDCounter() == 1);
+        REQUIRE(db2.queryBooks("Gatsby").size() == 1);
+        REQUIRE(db2.queryBooks("Fitzgerald").size() == 1);
+        REQUIRE(db2.queryBooks("9780743273565").size() == 1);
+    }
+
+    SECTION("User maps are populated correctly") {
+        auto user1 = db.readUser(1);
+        auto user2 = db2.readUser(1);
+        REQUIRE(db2.getUsers().size() == 1);
+        REQUIRE(db2.getUsers()[0] == user2);
+        REQUIRE(db2.getUserIDCounter() == 1);
+        REQUIRE(db2.queryUsers("John").size() == 1);
+        REQUIRE(db2.queryUsers("Doe").size() == 1);
+        REQUIRE(db2.queryUsers("jdoe").size() == 1);
+    }
+
+    SECTION("Transaction maps are populated correctly") {
+        auto transaction1 = db.readTransaction(1);
+        auto transaction2 = db2.readTransaction(1);
+        REQUIRE(db2.getTransactions().size() == 1);
+        REQUIRE(db2.getTransactions()[0] == transaction2);
+        REQUIRE(db2.getTransactionIDCounter() == 1);
+        REQUIRE(db2.queryTransactionsByBookID(1).size() == 1);
+        REQUIRE(db2.queryTransactionsByUserID(1).size() == 1);
+    }
+}
