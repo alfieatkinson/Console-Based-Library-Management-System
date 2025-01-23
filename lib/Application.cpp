@@ -110,19 +110,43 @@ std::shared_ptr<Menu> Application::makeMainMenu() {
     menu->addOption("Search Items", [this]() {
         menu_stack.push(makeSearchMenu());
     });
-    menu->addOption("View My Profile", [this]() {
+    menu->addOption("View User Profile", [this]() {
         if (is_admin) {
-            std::cout << "You are logged in as an admin." << std::endl;
-            dummyPrompt();
+            try {
+                int user_id = std::stoi(promptInput("Enter user ID: "));
+                try {
+                    auto user = library_manager->readUser(user_id);
+                    menu_stack.push(makeUserMenu(user));
+                } catch (const std::invalid_argument&) {
+                    sendData("User not found.\n");
+                    dummyPrompt();
+                }
+            } catch (const std::invalid_argument&) {
+                sendData("Invalid input. Please enter an integer.\n");
+                dummyPrompt();
+            }
+        } else {
+            showUserInfo(current_user);
         }
-        showUserInfo(current_user);
     });
-    menu->addOption("Update My Profile", [this]() {
+    menu->addOption("Update User Profile", [this]() {
         if (is_admin) {
-            std::cout << "You are logged in as an admin." << std::endl;
-            dummyPrompt();
+            try {
+                int user_id = std::stoi(promptInput("Enter user ID: "));
+                try {
+                    auto user = library_manager->readUser(user_id);
+                    menu_stack.push(makeUpdateUserMenu(user));
+                } catch (const std::invalid_argument&) {
+                    sendData("User not found.\n");
+                    dummyPrompt();
+                }
+            } catch (const std::invalid_argument&) {
+                sendData("Invalid input. Please enter an integer.\n");
+                dummyPrompt();
+            }
+        } else {
+            menu_stack.push(makeUpdateUserMenu(current_user));
         }
-        menu_stack.push(makeUpdateUserMenu(current_user));
     });
     menu->addOption("Add New Book", [this]() { // Admin-only option
         createBook();
