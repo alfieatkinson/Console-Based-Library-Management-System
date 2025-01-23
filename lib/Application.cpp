@@ -118,6 +118,10 @@ std::shared_ptr<Menu> Application::makeMainMenu() {
         showUserInfo(current_user);
     });
     menu->addOption("Update My Profile", [this]() {
+        if (is_admin) {
+            std::cout << "You are logged in as an admin." << std::endl;
+            dummyPrompt();
+        }
         menu_stack.push(makeUpdateUserMenu(current_user));
     });
     menu->addOption("Add New Book", [this]() { // Admin-only option
