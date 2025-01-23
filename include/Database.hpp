@@ -10,6 +10,7 @@
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
+#include "Persistence.hpp"
 
 class Database {
 private:
@@ -36,6 +37,9 @@ private:
     // Admin password
     std::string admin_password = "admin";
 
+    // Persistence manager
+    PersistenceManager persistence_manager{"database.json"};
+
 public:
     // Constructor
     Database() = default;
@@ -58,7 +62,7 @@ public:
 
     // Save and load operations
     void save() const;
-    void load() const; // Placeholder, no functionality yet
+    void load() const;
 
     // Create operations
     int createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
@@ -89,6 +93,9 @@ public:
     // User authentication methods
     std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
     bool authenticateAdmin(const std::string& password);
+
+    // Friend class
+    friend class PersistenceManager;
 };
 
 #endif // DATABASE_HPP
