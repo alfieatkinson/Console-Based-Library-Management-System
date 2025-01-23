@@ -11,8 +11,6 @@
 #include "Application.hpp"
 #include "Library.hpp"
 
-std::atomic<bool> running{true};
-
 // Constructor
 Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
     : library_manager(library_manager), addrlen(sizeof(address)) {
@@ -46,39 +44,28 @@ Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
 // Destructor
 Server::~Server() {
     close(server_fd);
-    for (auto& thread : client_threads) {
-        if (thread.joinable()) {
-            thread.join();
-        }
-    }
+    thread_manager.stopBackgroundSave(); // Stop background save thread
+    thread_manager.joinClientThreads(); // Join client threads
 }
 
 // Method to start the server
 void Server::start() {
-    std::cout << "Server started, waiting for connections at " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << std::endl;
-    while (running) {
+    std::cout << "Server started, waiting for connections at " << inet_ntoa(address.sin_addr)
+            << ":" << ntohs(address.sin_port) << std::endl;
+    while (true) {
         int client_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
         if (client_socket < 0) {
-            if (!running) {
-                std::cout << "Server shutting down..." << std::endl;
-                break; // If shutdown was requested, exit gracefully
-            }
-            perror("accept failed");
-            continue; // Skip this iteration and continue waiting for connections
+            std::cerr << "Error accepting client connection: " << strerror(errno) << std::endl;
+            continue; // Skip this iteration and try to accept the next connection
         }
         std::cout << "Accepted connection on socket " << client_socket << std::endl;
-        client_threads.emplace_back(&Server::handleClient, this, client_socket);
+        thread_manager.addClientThread(std::thread(&Server::handleClient, this, client_socket));
     }
-    for (auto& thread : client_threads) {
-        if (thread.joinable()) {
-            thread.join();
-        }
-    }
+    thread_manager.joinClientThreads(); 
 }
 
 // Method to stop the server
 void Server::stop() {
-    running = false;
     close(server_fd); // Close the server socket to unblock the accept call
 }
 
