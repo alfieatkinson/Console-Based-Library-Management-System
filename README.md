@@ -22,9 +22,9 @@ This project is submitted in partial fulfilment of the Degree of **Master of Sci
 
 This project is a console-based library management system written in C++. It supports adding, removing, and searching for books within a library. The system is designed to be extensible, allowing for the addition of more features such as user management, networking capabilities, and persistence with a database.
 
-### Abstract
+### Report Abstract
 
-*Insert abstract here with link to final report.*
+*This paper presents the design and implementation of a console-based library management system developed in C++. The system encompasses core functionalities such as book and user management, facilitating the addition, removal, and searching of library resources. It incorporates advanced features including borrowing and returning operations, data persistence through a database, multi-threading for efficient concurrency, and networking support for remote access. Additionally, there is potential for future enhancements such as advanced search capabilities, enhanced user management, and improved data visualisation. Through a modular and well-structured architecture, the Library Management System ensures seamless interaction between its components, providing a robust solution for managing library resources effectively.*
 
 ## Features
 
