@@ -17,15 +17,21 @@ private:
     std::mutex mtx;
     std::condition_variable cv;
 
+    // Method to periodically save data in the background
     void periodicSaveTask(std::function<void()> saveFunction, std::chrono::minutes interval);
 
 public:
+    // Constructor
     ThreadManager();
+
+    // Destructor
     ~ThreadManager();
 
+    // Methods for background save
     void startBackgroundSave(std::function<void()> saveFunction, std::chrono::minutes interval);
     void stopBackgroundSave();
 
+    // Methods for client threads
     void addClientThread(std::thread client_thread);
     void joinClientThreads();
 };
