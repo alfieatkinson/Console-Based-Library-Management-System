@@ -1,13 +1,7 @@
 #include "Persistence.hpp"
+#include "Utils.hpp"
 #include <fstream>
 #include <iostream>
-
-// Helper function to convert a string to lower case
-std::string toLowerCase(const std::string& input) {
-    std::string result = input;
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-    return result;
-}
 
 // Constructor
 PersistenceManager::PersistenceManager(const std::string& filename) : filename(filename) {}
