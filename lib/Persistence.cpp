@@ -2,6 +2,14 @@
 #include <fstream>
 #include <iostream>
 
+// Helper function to convert a string to lower case
+std::string toLowerCase(const std::string& input) {
+    std::string result = input;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+// Method to save the database to a file
 void PersistenceManager::save(const Database& db) const {
     std::lock_guard<std::mutex> lock(mtx);
 
@@ -60,6 +68,7 @@ void PersistenceManager::save(const Database& db) const {
     }
 }
 
+// Method to load the database from a file
 void PersistenceManager::load(Database& db) const {
     std::lock_guard<std::mutex> lock(mtx);
 
