@@ -37,3 +37,19 @@ void ThreadManager::stopBackgroundSave() {
         background_save_thread.join();
     }
 }
+
+// Methods for client threads
+void ThreadManager::addClientThread(std::thread client_thread) {
+    std::lock_guard<std::mutex> lock(mtx);
+    client_threads.push_back(std::move(client_thread));
+}
+
+void ThreadManager::joinClientThreads() {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (auto& thread : client_threads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+    client_threads.clear();
+}
