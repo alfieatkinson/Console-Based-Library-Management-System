@@ -62,14 +62,12 @@ void Database::setUserIDCounter(int new_counter) { user_id_counter = new_counter
 void Database::setTransactionIDCounter(int new_counter) { transaction_id_counter = new_counter; }
 
 // Save and load operations
-void Database::save() const {
-    std::cout << "Saving data to storage..." << std::endl;
-    persistence_manager.save(*this);
+bool Database::save() const {
+    return persistence_manager.save(*this);
 }
 
-void Database::load() {
-    std::cout << "Loading data from storage..." << std::endl;
-    persistence_manager.load(*this);
+bool Database::load() {
+    return persistence_manager.load(*this);
 }
 
 // Create operations

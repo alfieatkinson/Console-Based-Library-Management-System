@@ -61,8 +61,8 @@ public:
     void setTransactionIDCounter(int new_counter);
 
     // Save and load operations
-    void save() const;
-    void load();
+    bool save() const;
+    bool load();
 
     // Create operations
     int createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
