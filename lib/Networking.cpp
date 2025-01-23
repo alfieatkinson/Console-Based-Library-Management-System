@@ -39,6 +39,11 @@ Server::Server(int port, std::shared_ptr<LibraryManager> library_manager)
         perror("listen");
         exit(EXIT_FAILURE);
     }
+
+    // Start background save thread
+    thread_manager.startBackgroundSave([this, library_manager]() {
+        library_manager->saveDatabase();
+    }, std::chrono::minutes(10));
 }
 
 // Destructor
