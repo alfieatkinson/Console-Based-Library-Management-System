@@ -105,8 +105,8 @@ TEST_CASE("PersistenceManager populates maps correctly") {
         REQUIRE(db2.getBooks().size() == 1);
         REQUIRE(db2.getBooks()[0] == book2);
         REQUIRE(db2.getBookIDCounter() == 1);
-        REQUIRE(db2.queryBooks("Gatsby").size() == 1);
-        REQUIRE(db2.queryBooks("Fitzgerald").size() == 1);
+        REQUIRE(db2.queryBooks("The Great Gatsby").size() == 1);
+        REQUIRE(db2.queryBooks("F. Scott Fitzgerald").size() == 1);
         REQUIRE(db2.queryBooks("9780743273565").size() == 1);
     }
 

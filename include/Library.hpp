@@ -57,6 +57,9 @@ public:
     // Database persistence methods
     void saveDatabase();
     void loadDatabase();
+
+    // Method to create sample data
+    void createSampleData();
 };
 
 #endif // LIBRARY_HPP

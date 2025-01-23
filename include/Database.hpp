@@ -10,6 +10,10 @@
 #include "Book.hpp"
 #include "User.hpp"
 #include "Transaction.hpp"
+#include "Persistence.hpp"
+
+// Forward declaration
+class PersistenceManager;
 
 class Database {
 private:
@@ -36,12 +40,15 @@ private:
     // Admin password
     std::string admin_password = "admin";
 
+    // Persistence manager
+    std::unique_ptr<PersistenceManager> persistence_manager;
+
 public:
     // Constructor
-    Database() = default;
+    Database();
 
     // Destructor
-    ~Database() = default;
+    ~Database();
 
     // Getters
     const std::vector<std::shared_ptr<Book>>& getBooks() const;
@@ -57,8 +64,8 @@ public:
     void setTransactionIDCounter(int new_counter);
 
     // Save and load operations
-    void save() const;
-    void load() const; // Placeholder, no functionality yet
+    bool save() const;
+    bool load();
 
     // Create operations
     int createBook(const std::string& title, const std::string& author, const std::string& isbn, int year_published);
@@ -89,6 +96,9 @@ public:
     // User authentication methods
     std::shared_ptr<User> authenticateUser(const std::string& username, const std::string& password);
     bool authenticateAdmin(const std::string& password);
+
+    // Friend class
+    friend class PersistenceManager;
 };
 
 #endif // DATABASE_HPP
