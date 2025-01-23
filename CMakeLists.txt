@@ -12,16 +12,17 @@ include_directories(include)
 
 # Add the library sources
 add_library(libLibraryManagementSystem
-    lib/Library.cpp
-    lib/User.cpp
+    lib/Application.cpp
     lib/Book.cpp
     lib/Database.cpp
-    lib/Application.cpp
-    lib/Networking.cpp
+    lib/Library.cpp
+    lib/Menu.cpp
     lib/Multithreading.cpp
+    lib/Networking.cpp
     lib/Persistence.cpp
     lib/Transaction.cpp
-    lib/Menu.cpp
+    lib/User.cpp
+    lib/Utils.cpp
 )
 
 # Add the executable for the main program
