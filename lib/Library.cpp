@@ -7,8 +7,7 @@
 
 // Constructor
 LibraryManager::LibraryManager() {
-    // Load the database on construction
-    loadDatabase();
+    loadDatabase(); // Load the database on construction
 }
 
 // Destructor
