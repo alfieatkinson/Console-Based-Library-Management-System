@@ -31,13 +31,19 @@ TEST_CASE("PersistenceManager saves and loads data correctly") {
     pm.load(db2);
 
     // Check if the loaded data matches the original data
-    SECTION("Saved and loaded vector sizes match") {
+    SECTION("Book, user, and transaction vector sizes match") {
         REQUIRE(db.getBooks().size() == db2.getBooks().size());
         REQUIRE(db.getUsers().size() == db2.getUsers().size());
         REQUIRE(db.getTransactions().size() == db2.getTransactions().size());
     }
 
-    SECTION("Saved and loaded book data match") {
+    SECTION("ID counters match") {
+        REQUIRE(db.getBookIDCounter() == db2.getBookIDCounter());
+        REQUIRE(db.getUserIDCounter() == db2.getUserIDCounter());
+        REQUIRE(db.getTransactionIDCounter() == db2.getTransactionIDCounter());
+    }
+
+    SECTION("Book data matches") {
         auto book1 = db.readBook(1);
         auto book2 = db2.readBook(1);
         REQUIRE(book1->getID() == book2->getID());
@@ -48,7 +54,7 @@ TEST_CASE("PersistenceManager saves and loads data correctly") {
         REQUIRE(book1->isAvailable() == book2->isAvailable());
     }
 
-    SECTION("Saved and loaded user data match") {
+    SECTION("User data matches") {
         auto user1 = db.readUser(1);
         auto user2 = db2.readUser(1);
         REQUIRE(user1->getID() == user2->getID());
@@ -60,7 +66,7 @@ TEST_CASE("PersistenceManager saves and loads data correctly") {
         REQUIRE(user1->getPassword() == user2->getPassword());
     }
 
-    SECTION("Saved and loaded transaction data match") {
+    SECTION("Transaction data matches") {
         auto transaction1 = db.readTransaction(1);
         auto transaction2 = db2.readTransaction(1);
         REQUIRE(transaction1->getID() == transaction2->getID());
