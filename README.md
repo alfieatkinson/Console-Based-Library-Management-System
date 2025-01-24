@@ -196,7 +196,9 @@ This project uses [Doxygen](https://www.doxygen.nl/) for generating documentatio
 
 ## Acknowledgements
 
-We would like to thank the following contributors and third-party libraries/tools used in this project:
+I would like to thank Dr. Riccardo Polvara for providing excellent teaching in the Programming Principles module which this project was a part of.
+
+We would also like to thank the following third-party libraries/tools used in this project:
 
 - [Doxygen](https://www.doxygen.nl/) for generating documentation.
 - [Catch2](https://github.com/catchorg/Catch2) for unit testing framework.
