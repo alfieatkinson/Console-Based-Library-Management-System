@@ -29,6 +29,8 @@ This project is a console-based library management system written in C++. It sup
 
 *This paper presents the design and implementation of a console-based library management system developed in C++. The system encompasses core functionalities such as book and user management, facilitating the addition, removal, and searching of library resources. It incorporates advanced features including borrowing and returning operations, data persistence through a database, multi-threading for efficient concurrency, and networking support for remote access. Additionally, there is potential for future enhancements such as advanced search capabilities, enhanced user management, and improved data visualisation. Through a modular and well-structured architecture, the Library Management System ensures seamless interaction between its components, providing a robust solution for managing library resources effectively.*
 
+**The full report can be found [here](https://raw.githubusercontent.com/alfieatkinson/Library-Management-System/main/Report.pdf).**
+
 ## Features
 
 - **Book Management**:  
@@ -201,7 +203,7 @@ This project uses [Doxygen](https://www.doxygen.nl/) for generating documentatio
 
 I would like to thank Dr. Riccardo Polvara for providing excellent teaching in the module which this project is a part of.
 
-We would also like to thank the following third-party libraries/tools used in this project:
+I would also like to thank the following third-party libraries/tools used in this project:
 
 - [Doxygen](https://www.doxygen.nl/) for generating documentation.
 - [Catch2](https://github.com/catchorg/Catch2) for unit testing framework.
