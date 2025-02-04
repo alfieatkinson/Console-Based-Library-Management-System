@@ -1,9 +1,12 @@
+<div align="center">
+  
 # Library Management System
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://shields.io/)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-
 This project is submitted in partial fulfilment of the Degree of **Master of Science in Computer Science**.
+
+### Grade Achieved: 100%
+
+</div>
 
 ## Table of Contents
 
